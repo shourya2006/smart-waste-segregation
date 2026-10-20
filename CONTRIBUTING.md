@@ -5,8 +5,9 @@ small descriptive commits, and open a pull request for teammate review.
 Examples: `feat/dataset-audit`, `feat/image-descriptors`, `feat/ml-baselines`.
 
 Run `ruff check .` before committing Python changes. Once functional code is
-added, introduce tests for meaningful behavior: duplicate isolation, feature
-dimensions, train/inference consistency, and leakage prevention.
+added, introduce tests for meaningful behavior. Run existing data checks with
+`python -m unittest discover -s tests -v`. Extend them for feature dimensions
+and train/inference consistency as the modeling pipeline is implemented.
 
 Do not commit credentials, source datasets, cached feature matrices, or model
 binaries. Review `git diff --staged` before committing. Record deliberate

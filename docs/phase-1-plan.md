@@ -19,12 +19,12 @@ The split ratios, feature settings, and sequence below are implementation
 choices. They are not additional faculty requirements.
 
 - [x] Initialize the repository, package metadata, configuration, and workflow.
-- [ ] Validate and lock the working Python environment.
-- [ ] Record dataset provenance and verify all image files.
-- [ ] Identify exact duplicates; review near duplicates and related item views.
-- [ ] Create an audited manifest and preserve duplicate decisions.
-- [ ] Create approximately 70/15/15 stratified splits, respecting groups.
-- [ ] Explore class balance, samples, image dimensions, brightness, and ambiguity.
+- [x] Validate and lock the working Python environment.
+- [x] Record dataset provenance and verify all image files.
+- [x] Identify exact duplicates; review perceptual-hash candidates and document limits.
+- [x] Create an audited manifest and preserve duplicate decisions.
+- [x] Create approximately 70/15/15 stratified splits, respecting detected groups.
+- [x] Explore training class balance, samples, dimensions, brightness, and ambiguity.
 - [ ] Implement consistent orientation correction, RGB conversion, and letterboxing.
 - [ ] Extract HSV histograms, HOG, and uniform LBP with documented dimensions.
 - [ ] Train a dummy baseline, linear SVM, RBF SVM, and Random Forest.

@@ -20,17 +20,23 @@ The official README lists 2,527 images: paper 594, glass 501, plastic 482,
 metal 410, cardboard 403, and trash 137. Verify the downloaded copy and record
 any differences. Preserve the source images unchanged.
 
-Record the source URL, retrieval date, source revision or dataset version,
-archive checksum, dataset terms, and citation before the first experiment.
+The downloader records source URL, retrieval date, source revision, archive
+checksum, dataset terms, and citation in `docs/dataset/provenance.json`.
 Credit Gary Thung and Mindy Yang and their 2016 report, *Classification of Trash
 for Recyclability Status*.
 
-The first data implementation should produce an audit and manifest containing
+The data commands produce an audit and manifest containing
 relative path, label, image dimensions, read status, file checksum, perceptual
-hash, duplicate group, and split. Near-duplicate candidates need manual review.
-Make duplicate decisions before creating stratified, group-aware splits.
+hash, duplicate group, and split. The 45 near-duplicate candidates have a recorded
+visual review in `docs/dataset/duplicate_reviews.csv`; six uncertain pairs are
+grouped conservatively. Review decisions were completed before split creation.
+
+Three identical-content pairs have conflicting class labels. All six images are
+excluded from modeling while their source files remain unchanged. See
+`docs/dataset/audit_manifest.csv` for the exact rows and
+`docs/dataset/audit_summary.json` for totals.
 
 Source images and generated data are ignored by Git. Keep the data acquisition
 procedure, provenance summary, and final evaluation protocol in version control.
-Split assignments and the approved dataset manifest should be preserved in a
-small, deliberately tracked release location once their format is established.
+The approved manifest, split assignments, duplicate review decisions, provenance,
+audit summaries, and train-only EDA are deliberately tracked under `docs/dataset/`.

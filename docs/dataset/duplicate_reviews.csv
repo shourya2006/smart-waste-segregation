@@ -1,0 +1,46 @@
+pair_id,decision,reviewer,reason
+90223d0e1efd9f01,uncertain,Codex visual review,Similar dark textured sheet and framing; distinct item identity is not established.
+4fdd6cfe6238a33d,uncertain,Codex visual review,Similar dark textured sheet; lighting changes and no unique identifier prevent certainty.
+8f0bdf10b951c215,different_items,Codex visual review,Bottle viewed from above versus a green glue-stick package.
+79f80ba32652cf78,same_item,Codex visual review,"Matching foil tray rim, embossed center, and distinctive creases."
+60a65f05cc7e1bbf,same_item,Codex visual review,Matching oval tray and distinctive dents around the center.
+0ce34dd9351f666f,same_item,Codex visual review,Same irregular foil clump silhouette and colored reflections.
+bbfe9cffda323b96,uncertain,Codex visual review,Matching purple can branding but different deformation; retain together conservatively.
+2ac784b0848f0680,different_items,Codex visual review,Purple metal can versus transparent water bottle.
+9400eb4a10e71c2d,different_items,Codex visual review,Silver metal bottle versus crushed plastic glue package.
+5c203d140b98f67f,uncertain,Codex visual review,Can seen from opposite ends; shared shadow and scale suggest relation but do not prove it.
+f1976b9a850d5966,different_items,Codex visual review,Crushed dark metal can versus green plastic glue package.
+c513b29aaf1a6639,uncertain,Codex visual review,Foil pieces with different silhouettes could be the same item reshaped.
+5d3cc8409400d31b,different_items,Codex visual review,Metal beverage can versus red and yellow cylindrical packaging.
+fb0e9c4c1b3456dd,different_items,Codex visual review,Red metal can versus green plastic glue package.
+f08b3615e9d8ccbb,same_item,Codex visual review,Matching concentric can rings and distinctive radial crease.
+3bae4b705f5ec1a5,same_item,Codex visual review,"Matching advertisement print, position, folded corner, and framing."
+0715f0739b2a689b,same_item,Codex visual review,Matching crumpled newspaper folds and print layout.
+2461a6321dcb892c,same_item,Codex visual review,Matching discount sheet print and folded edges.
+c8ec10b563d8b09b,same_item,Codex visual review,Matching open pamphlet scene and page layout.
+30399948599c6cd4,same_item,Codex visual review,Matching folded advertising stack and exposed page arrangement.
+ba4ce8e242a1c3d6,same_item,Codex visual review,"Matching map advertisement print, folds, and curved edge."
+f538f16207e67bf9,same_item,Codex visual review,Matching black food advertisement and page boundary.
+fd74eb652614ab44,same_item,Codex visual review,Matching brown advertisement print and curved top corner.
+0064ee55a595570d,same_item,Codex visual review,"Matching magazine cover, curl, and placement."
+902f8806512db932,same_item,Codex visual review,Matching grocery advertisement and fold boundaries.
+4dca9d335e1a31d3,same_item,Codex visual review,"Matching envelope tear, label, and creases."
+46ef433b94e0a8ed,same_item,Codex visual review,Matching room advertisement and curved page edge.
+33275012cd662136,same_item,Codex visual review,Matching blue advertisement and page deformation.
+e0922d771c9c3016,same_item,Codex visual review,Matching overlapping newspaper stack and arrangement.
+4f817125f15c17ee,same_item,Codex visual review,Matching open book spread and page framing.
+aedd4f2d3bda683b,same_item,Codex visual review,Matching food advertisement typography and page geometry.
+0d8feb5035f4a885,same_item,Codex visual review,"Matching printed sheet, shadow, and folded lower edge."
+50f8e87bcca3f7da,same_item,Codex visual review,"Matching grocery advertisement print, fold, and framing."
+01843a423008388c,same_item,Codex visual review,Matching red graphic and distinctive folded paper strips.
+7fd9e5bb6b56080b,same_item,Codex visual review,Matching sandwich advertisement and page curl.
+bbba729d57c31e1f,same_item,Codex visual review,Matching coupon sheet print and fold geometry.
+42cd9f7e1134434c,same_item,Codex visual review,Matching red sheet with same torn white lower flap.
+225c026f63acc361,same_item,Codex visual review,"Matching store flyer, overlapping sheets, and framing."
+e5fef224fa0a2e9c,same_item,Codex visual review,Matching green-capped bottle label and distinctive dents below cap.
+e4ae08f1db8fd3b0,different_items,Codex visual review,Round clear bottle bottom versus red and yellow cylinder.
+ab7c6252f5798c72,different_items,Codex visual review,Different bottle labels and visibly different crushed shapes.
+67dd17eeede4a1b5,uncertain,Codex visual review,Same glue packaging but different deformation; exact item identity is uncertain.
+4b2d5985e7f4ed3d,different_items,Codex visual review,Yellow plastic bottle top versus red and yellow cylinder.
+3a473e38646645fa,same_item,Codex visual review,Matching water-bottle label and lower-body creases with small framing change.
+520a2d86d595a8f1,different_items,Codex visual review,Flat printed plastic fragment versus rounded green container.

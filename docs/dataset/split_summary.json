@@ -1,0 +1,53 @@
+{
+  "counts": {
+    "test": {
+      "cardboard": 60,
+      "glass": 75,
+      "metal": 61,
+      "paper": 89,
+      "plastic": 72,
+      "trash": 20
+    },
+    "train": {
+      "cardboard": 282,
+      "glass": 348,
+      "metal": 286,
+      "paper": 416,
+      "plastic": 336,
+      "trash": 96
+    },
+    "validation": {
+      "cardboard": 61,
+      "glass": 75,
+      "metal": 62,
+      "paper": 89,
+      "plastic": 72,
+      "trash": 21
+    }
+  },
+  "groups": 2486,
+  "leakage_checks": {
+    "duplicate_group": true,
+    "pixel_sha256": true,
+    "sha256": true
+  },
+  "limitation": "pHash review cannot guarantee all same-item views were detected",
+  "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+  "review_decisions": {
+    "different_items": 10,
+    "same_item": 29,
+    "uncertain": 6
+  },
+  "review_sha256": "b98153ca95e2ec872e211d9c5e6de0db2da963ad11b08fd7c6839e162cc32dd7",
+  "seed": 42,
+  "target_fractions": {
+    "test": 0.15,
+    "train": 0.7,
+    "validation": 0.15
+  },
+  "totals": {
+    "test": 377,
+    "train": 1764,
+    "validation": 380
+  }
+}

@@ -9,9 +9,14 @@ Transfer learning with MobileNetV2 or EfficientNet is reserved for Phase 2.
 
 ## Current status
 
-Repository foundation only. Dataset preparation, feature extraction, training,
-evaluation, and the photo upload demo have not been implemented yet. No accuracy
-or other experimental results are claimed.
+Dataset preparation is complete: 2,527 images audited, six images with conflicting
+labels excluded, 45 near-duplicate candidates visually reviewed, and 2,521 usable
+images assigned to fixed group-aware splits. Training contains 1,764 images,
+validation 380, and test 377. Training-only EDA is available in
+[the dataset report](docs/dataset/README.md).
+
+Feature extraction, training, model evaluation, and the upload demo are next.
+No accuracy or other model results are claimed.
 
 ## Local setup
 
@@ -21,15 +26,17 @@ Use Python 3.12. From the repository root:
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e '.[dev]'
+python -m pip install -r requirements.lock
+python -m pip install --no-deps -e .
 ruff check .
+python -m unittest discover -s tests -v
 python -c "import waste_sorting; print(waste_sorting.__version__)"
 ```
 
 The upload demo will use the optional dependencies installed with
 `python -m pip install -e '.[dev,demo]'` once it is implemented.
-Dependency ranges are declared in `pyproject.toml`; an exact environment lock
-will be committed after validating the first working data pipeline.
+Dependency ranges are declared in `pyproject.toml`. `requirements.lock` pins the
+resolved Python 3.12 development environment, excluding the optional demo.
 
 ## Repository layout
 
@@ -45,12 +52,29 @@ docs/                     Phase 1 milestones and contribution records
 .github/workflows/        Automated repository checks
 ```
 
-## First implementation milestone
+## Reproduce dataset preparation
 
-Acquire TrashNet, validate every image, inventory class counts, identify exact
-and near duplicates, and create a reproducible image manifest. Review duplicate
-groups before assigning approximately 70/15/15 train/validation/test splits.
-No related image group may cross split boundaries.
+From the repository root, after environment setup:
+
+```sh
+waste-data download
+waste-data audit
+waste-data split
+waste-data eda
+```
+
+The download is pinned to a source revision and SHA-256 checksum. The committed
+review decisions apply to this archive at pHash distance 6. Audit regenerates
+candidates and local review sheets; split refuses missing or stale reviews and
+changed source files. If changing the data or candidate threshold, review the
+new pairs before replacing split assignments. Do not change frozen splits after
+model evaluation begins. Keep uncertain related images in the same partition.
+
+The [tracked manifest](docs/dataset/manifest.csv) includes every source image,
+exclusion reason, hashes, duplicate group, and assigned split. Perceptual hashing
+does not establish exhaustive same-item detection; this limitation is documented.
+
+Next milestone: implement consistent preprocessing and HSV/HOG/LBP features.
 
 ## Evaluation commitments
 

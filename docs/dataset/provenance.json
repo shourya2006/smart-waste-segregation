@@ -1,0 +1,12 @@
+{
+  "dataset": "TrashNet dataset-resized",
+  "source_url": "https://raw.githubusercontent.com/garythung/trashnet/6fa2b878c6c1b4304b91109070ce0edf9279bb31/data/dataset-resized.zip",
+  "source_revision": "6fa2b878c6c1b4304b91109070ce0edf9279bb31",
+  "archive_sha256": "0bf472790f8b20e5c950d5b5012a9d38af0d3392efd65f8ce171334fc16b07c2",
+  "archive_bytes": 42834870,
+  "acquired_at_utc": "2026-10-20T10:14:45.677973+00:00",
+  "upstream_repository": "https://github.com/garythung/trashnet",
+  "license_url": "https://github.com/garythung/trashnet/blob/6fa2b878c6c1b4304b91109070ce0edf9279bb31/LICENSE",
+  "terms_note": "Upstream repository provides MIT terms; preserve author attribution.",
+  "citation": "Gary Thung and Mindy Yang (2016), Classification of Trash for Recyclability Status"
+}

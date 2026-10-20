@@ -18,11 +18,15 @@ dependencies = [
     "seaborn>=0.13",
     "joblib>=1.4",
     "ImageHash>=4.3",
+    "requests>=2.32",
 ]
 
 [project.optional-dependencies]
 dev = ["ruff>=0.8"]
 demo = ["gradio>=5"]
+
+[project.scripts]
+waste-data = "waste_sorting.data_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

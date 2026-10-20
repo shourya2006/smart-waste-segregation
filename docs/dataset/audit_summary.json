@@ -1,0 +1,34 @@
+{
+  "byte_duplicate_excess": 3,
+  "color_modes": {
+    "RGB": 2527
+  },
+  "dimensions": {
+    "512x384": 2527
+  },
+  "excluded_duplicate_content": 0,
+  "excluded_label_conflicts": 6,
+  "included_images": 2521,
+  "label_conflict_groups": 3,
+  "matches_upstream_counts": true,
+  "near_duplicate_candidates": 45,
+  "observed_class_counts": {
+    "cardboard": 403,
+    "glass": 501,
+    "metal": 410,
+    "paper": 594,
+    "plastic": 482,
+    "trash": 137
+  },
+  "readable_files": 2527,
+  "total_files": 2527,
+  "unreadable_files": 0,
+  "upstream_class_counts": {
+    "cardboard": 403,
+    "glass": 501,
+    "metal": 410,
+    "paper": 594,
+    "plastic": 482,
+    "trash": 137
+  }
+}
