@@ -1,0 +1,45 @@
+# Starting choices, not official course-mandated hyperparameters.
+# Paths are relative to the repository root.
+seed = 42
+classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
+
+[paths]
+raw = "data/raw"
+processed = "data/processed"
+artifacts = "artifacts"
+
+[splits]
+train = 0.70
+validation = 0.15
+test = 0.15
+group_related_images = true
+
+[preprocessing]
+width = 128
+height = 128
+preserve_aspect_ratio = true
+padding_rgb = [255, 255, 255]
+
+[features.color]
+space = "HSV"
+bins = [16, 8, 8]
+
+[features.hog]
+orientations = 9
+pixels_per_cell = [16, 16]
+cells_per_block = [2, 2]
+block_norm = "L2-Hys"
+
+[features.lbp]
+neighbors = 8
+radius = 1
+method = "uniform"
+
+[training]
+cv_folds = 5
+selection_metric = "f1_macro"
+models = ["dummy", "linear_svm", "rbf_svm", "random_forest"]
+
+[confidence]
+calibration_method = "sigmoid"
+select_threshold_on_validation = true

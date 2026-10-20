@@ -1,0 +1,28 @@
+name: Repository checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  package-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install package metadata and lint tool
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --no-deps .
+          python -m pip install 'ruff>=0.8'
+      - name: Lint Python sources
+        run: ruff check .
+      - name: Verify package import and experiment configuration
+        run: |
+          python -c "import waste_sorting; print(waste_sorting.__version__)"
+          python -c "import pathlib, tomllib; tomllib.loads(pathlib.Path('configs/phase1.toml').read_text())"
