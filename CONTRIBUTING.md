@@ -46,8 +46,11 @@ git push -u origin HEAD
 Stage the specific files with `git add` before inspecting and committing them.
 Open a pull request targeting `main`, request the assigned partner's review, and
 link it in `docs/contributions.md`. The repository is private: its owner needs
-to invite collaborators before they can push. Five collaborators’ GitHub usernames are pending;
-no invitations have been sent as part of the assignment.
+to invite collaborators before they can push. Shourya reports that all members
+have now been added as collaborators; each member should accept their invitation.
+The other members' handles have not yet been recorded in the contribution ledger.
+
+Ready-to-share coding-assistant briefs are in [docs/llm-prompts/](docs/llm-prompts/README.md).
 
 If preserving every reviewed commit on `main` is important, use **Create a merge
 commit** when merging. Squash merges combine branch commits. Attribution still

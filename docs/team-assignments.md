@@ -9,6 +9,9 @@ division is not evidence of approval for a six-person submission.
 
 ## Ownership and concrete deliverables
 
+Ready-to-paste coding-assistant prompts and detailed acceptance criteria are in
+[llm-prompts/README.md](llm-prompts/README.md).
+
 | Member | Owns | Deliverables | Suggested branch |
 | --- | --- | --- | --- |
 | Om Yadav | Data verification and preprocessing | Independently review uncertain duplicate pairs; verify manifest and source hashes; implement EXIF correction, RGB conversion, aspect-preserving 128×128 letterboxing; test orientation, padding, and corrupt-input behavior | `feat/preprocessing` |
