@@ -1,15 +1,41 @@
 # Contributions
 
-Assign actual names together before implementation. Ownership does not replace
-the individual understanding required for the viva.
+The six members below were supplied by the user. GitHub usernames are pending,
+except Shourya Bafna’s connected account `shourya2006`. Each member must configure
+their own Git author details. The course team-size requirement is documented in
+[the implementation assignments](team-assignments.md).
+
+Ownership does not replace the individual understanding required for the viva.
+Detailed deliverables and dependencies are in [team-assignments.md](team-assignments.md).
 
 | Owner | Primary responsibility | Evidence |
 | --- | --- | --- |
-| Unassigned | Dataset audit, duplicate review, splits, EDA | Commits and reviewed artifacts |
-| Unassigned | Preprocessing and handcrafted features | Commits and descriptor analysis |
-| Unassigned | ML baselines and tuning | Commits and experiment records |
-| Unassigned | Calibration and evaluation | Commits and metric/error reports |
-| Unassigned | Demo and submission integration | Commits, report, presentation |
+| Om Yadav | Independent data verification and image preprocessing | Data review, preprocessing code, tests |
+| Aditya Bharadwaj | HSV, HOG, LBP, and feature caching | Descriptor code, dimension checks, visualizations |
+| Shourya Bafna | Shared training protocol, dummy baseline, SVM | Group-aware folds, SVM runs, theory |
+| Daksh Batra | Random Forest and feature comparisons | RF runs, feature experiments, comparison tables |
+| Prajjwal Tripathi | Calibration, abstention, and final evaluation | Metrics, reliability plots, failure analysis |
+| Saksham Mighlani | Photo upload demo and submission integration | Demo code, integration checks, report assembly |
+
+## Existing repository history
+
+The initial implementation was prepared with the Codex assistant under the
+repository owner's configured Git identity. This work predates the six-person
+assignment and must not be retrospectively claimed as another student's work.
+
+| Commit | Work already completed |
+| --- | --- |
+| `1b4b6d2` | Repository foundation and Phase 1 roadmap |
+| `eba1fdb` | TrashNet acquisition, audit, duplicate review, fixed splits, EDA, 19 tests |
+
+## Individual work ledger
+
+Add a row only after the work exists. Use each member's real name and link to
+their own commit or pull request; do not count this assignment as completed work.
+
+| Contributor | Date | Implemented or reviewed work | Commit or pull request |
+| --- | --- | --- | --- |
 
 Record completed work with the contributor's name, a short description, date,
 and commit or pull-request link. Each member should review another component.
+All report sections should identify the actual contributors.

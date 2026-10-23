@@ -15,6 +15,10 @@ belongs to Phase 2 under the course's evaluation structure.
 
 ## Recommended implementation milestones
 
+The requested six-person implementation assignments are maintained in
+[team-assignments.md](team-assignments.md). The course's five-person requirement
+above remains a separate constraint to resolve with faculty.
+
 The split ratios, feature settings, and sequence below are implementation
 choices. They are not additional faculty requirements.
 
