@@ -31,7 +31,9 @@ choices. They are not additional faculty requirements.
 - [x] Explore training class balance, samples, dimensions, brightness, and ambiguity.
 - [x] Implement consistent orientation correction, RGB conversion, and letterboxing.
 - [x] Extract HSV histograms, HOG, and uniform LBP with documented dimensions.
-- [ ] Train a dummy baseline, linear SVM, RBF SVM, and Random Forest.
+- [x] Implement shared training-input validation and five frozen group-aware CV folds.
+- [x] Implement dummy, linear SVM and RBF SVM training with fold-local scaling and logging.
+- [ ] Complete Random Forest training and compare all model families.
 - [ ] Compare feature families and tune using training-only cross-validation.
 - [ ] Calibrate probabilities using held-out training folds.
 - [ ] Select an abstention threshold using validation data and inspect coverage.

@@ -15,8 +15,12 @@ images assigned to fixed group-aware splits. Training contains 1,764 images,
 validation 380, and test 377. Training-only EDA is available in
 [the dataset report](docs/dataset/README.md).
 
-Feature extraction, training, model evaluation, and the upload demo are next.
-No accuracy or other model results are claimed.
+Shared preprocessing and the 1,806-dimensional HSV/HOG/LBP extractor are implemented.
+The training protocol provides five fixed group-aware folds, a dummy baseline,
+and linear/RBF SVM searches with fold-local scaling. See the
+[training guide](docs/training/README.md) for reproduction and teammate interfaces.
+Random Forest/feature studies, calibration, final evaluation and the demo follow.
+Training-CV selection scores must not be interpreted as final-test performance.
 
 ## Local setup
 
@@ -74,7 +78,21 @@ The [tracked manifest](docs/dataset/manifest.csv) includes every source image,
 exclusion reason, hashes, duplicate group, and assigned split. Perceptual hashing
 does not establish exhaustive same-item detection; this limitation is documented.
 
-Next milestone: implement consistent preprocessing and HSV/HOG/LBP features.
+## Reproduce training
+
+After the pinned environment is installed and raw images are downloaded:
+
+```sh
+waste-data features
+waste-train folds
+waste-train svm --output artifacts/my-svm-run
+```
+
+The loader returns only the outer training split. Both model owners use the
+committed [fold assignments](docs/training/folds.json) and shared experiment
+runner. Models/caches stay local; choose a new output directory for each run.
+The [training guide](docs/training/README.md) explains descriptor subsets,
+fingerprints, result files and the Random Forest handoff.
 
 ## Evaluation commitments
 

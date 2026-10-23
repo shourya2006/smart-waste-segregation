@@ -40,6 +40,15 @@ cv_folds = 5
 selection_metric = "f1_macro"
 models = ["dummy", "linear_svm", "rbf_svm", "random_forest"]
 
+[training.linear_svm]
+C = [0.1, 1.0, 10.0]
+class_weight = ["none", "balanced"]
+
+[training.rbf_svm]
+C = [0.1, 1.0, 10.0]
+class_weight = ["none", "balanced"]
+gamma = ["scale", 0.001, 0.01]
+
 [confidence]
 calibration_method = "sigmoid"
 select_threshold_on_validation = true
