@@ -49,6 +49,12 @@ C = [0.1, 1.0, 10.0]
 class_weight = ["none", "balanced"]
 gamma = ["scale", 0.001, 0.01]
 
+[training.random_forest]
+n_estimators = [100, 200]
+max_depth = ["none", 10, 20]
+min_samples_split = [2, 5]
+class_weight = ["none", "balanced"]
+
 [confidence]
 calibration_method = "sigmoid"
 select_threshold_on_validation = true

@@ -131,17 +131,21 @@ generated. The single-worker command also set `OPENBLAS_NUM_THREADS=1` and
 | Most-frequent dummy | 0.0636 | 0.0002 | Most frequent class | 0.05 |
 | Linear SVM | 0.6007 | 0.0284 | C=0.1, no class weighting | 173.81 |
 | RBF SVM | 0.6731 | 0.0339 | C=10, gamma=scale, no class weighting | 143.82 |
+| Random Forest (HSV) | 0.7366 | 0.0260 | n_estimators=200, max_depth=20, min_split=2, no class weighting | 13.44 |
+| Random Forest (HOG) | 0.6252 | 0.0350 | n_estimators=200, max_depth=None, min_split=2, balanced weights | 81.04 |
+| Random Forest (LBP) | 0.5069 | 0.0108 | n_estimators=100, max_depth=20, min_split=2, balanced weights | 10.60 |
+| Random Forest (HSV+HOG) | 0.7022 | 0.0389 | n_estimators=200, max_depth=20, min_split=2, balanced weights | 76.81 |
+| Random Forest (Combined) | 0.7090 | 0.0522 | n_estimators=200, max_depth=None, min_split=2, balanced weights | 77.72 |
 
-RBF is strongest among these three initial baselines; Random Forest and the
-planned feature-family studies are still pending. Runtime is machine-specific.
-The standard deviations are fold variation, not confidence intervals.
+Across all evaluated models and descriptor families, Random Forest on HSV color
+histograms achieved the highest mean CV macro F1 score (0.7366). Runtime is
+machine-specific. The standard deviations are fold variation, not confidence intervals.
 
-The [run summaries](svm-cv-summary.json) preserve full precision, provenance and
-winning parameters; the [candidate table](svm-cv-results.csv) contains all 25
-candidates and their individual fold scores. All saved models were reloaded,
-their class/input dimensions checked, and both SVM scalers' fitted means/sample
-counts matched all outer-training rows. Source snapshots matched the current
-implementation. Local package consistency and all 68 tests passed.
+The SVM [run summaries](svm-cv-summary.json) and [candidate table](svm-cv-results.csv)
+document Shourya's 25 initial baseline candidates. The Random Forest
+[run summaries](rf-cv-summary.json) and [candidate table](rf-cv-results.csv) document
+all 120 evaluated candidates across the 5 feature families. All saved models were
+reloaded, verified against full 1,806-dimensional inputs, and all 72 tests passed.
 
 ## Checks
 

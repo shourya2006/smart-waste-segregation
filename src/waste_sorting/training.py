@@ -375,6 +375,33 @@ def main(argv=None):
     )
     svm.add_argument("--output", type=Path, default=None)
     svm.add_argument("--n-jobs", type=int, default=1)
+
+    rf_cmd = sub.add_parser(
+        "rf", help="Search Random Forest pipelines and feature studies on shared folds"
+    )
+    rf_cmd.add_argument(
+        "--feature-sets",
+        nargs="+",
+        choices=["color", "hog", "lbp", "color_hog", "combined"],
+        default=["color", "hog", "lbp", "color_hog", "combined"],
+        help="Feature families to evaluate: color, hog, lbp, color_hog, combined",
+    )
+    rf_cmd.add_argument(
+        "--descriptors",
+        nargs="+",
+        choices=["color", "hog", "lbp"],
+        default=None,
+        help="Explicit descriptor subset (overrides --feature-sets if provided)",
+    )
+    rf_cmd.add_argument("--output", type=Path, default=None)
+    rf_cmd.add_argument("--n-jobs", type=int, default=1, help="Grid search worker count")
+    rf_cmd.add_argument(
+        "--estimator-n-jobs",
+        type=int,
+        default=1,
+        help="Estimator-level worker count for RandomForestClassifier",
+    )
+
     args = parser.parse_args(argv)
     root = args.root.resolve()
 
@@ -390,37 +417,96 @@ def main(argv=None):
     print(f"Verified {len(data.y)} training rows and {len(folds)} shared folds: {fold_file}")
     if args.command == "folds":
         return
-    from waste_sorting.models.svm import make_pipeline, parameter_grid
 
-    output = (
-        relative(args.output)
-        if args.output
-        else root / "artifacts" / ("svm-" + datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ"))
-    )
-    # Validate all requested grids before beginning any fitting.
-    grids = {name: parameter_grid(name, config) for name in args.models}
-    output.mkdir(parents=True, exist_ok=False)
-    for model_name in dict.fromkeys(args.models):
-        print(f"Training {model_name} on shared training folds...", flush=True)
-        summary = run_experiment(
-            data,
-            folds,
-            make_pipeline(model_name, feature_columns(data, args.descriptors), config["seed"]),
-            grids[model_name],
-            model_name=model_name,
-            descriptors=args.descriptors,
-            output_dir=output / model_name,
-            root=root,
-            fold_path=fold_file,
-            seed=config["seed"],
-            n_jobs=args.n_jobs,
+    if args.command == "svm":
+        from waste_sorting.models.svm import make_pipeline, parameter_grid
+
+        output = (
+            relative(args.output)
+            if args.output
+            else root / "artifacts" / ("svm-" + datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ"))
         )
-        print(
-            f"{model_name}: CV macro F1 {summary['mean_cv_macro_f1']:.4f} "
-            f"+/- {summary['std_cv_macro_f1']:.4f}",
-            flush=True,
+        # Validate all requested grids before beginning any fitting.
+        grids = {name: parameter_grid(name, config) for name in args.models}
+        output.mkdir(parents=True, exist_ok=False)
+        for model_name in dict.fromkeys(args.models):
+            print(f"Training {model_name} on shared training folds...", flush=True)
+            summary = run_experiment(
+                data,
+                folds,
+                make_pipeline(model_name, feature_columns(data, args.descriptors), config["seed"]),
+                grids[model_name],
+                model_name=model_name,
+                descriptors=args.descriptors,
+                output_dir=output / model_name,
+                root=root,
+                fold_path=fold_file,
+                seed=config["seed"],
+                n_jobs=args.n_jobs,
+            )
+            print(
+                f"{model_name}: CV macro F1 {summary['mean_cv_macro_f1']:.4f} "
+                f"+/- {summary['std_cv_macro_f1']:.4f}",
+                flush=True,
+            )
+        print(f"Training-only results written to {output}")
+        return
+
+    if args.command == "rf":
+        from waste_sorting.models.random_forest import make_pipeline, parameter_grid
+
+        output = (
+            relative(args.output)
+            if args.output
+            else root / "artifacts" / ("rf-" + datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ"))
         )
-    print(f"Training-only results written to {output}")
+        grid = parameter_grid(config)
+
+        feature_set_map = {
+            "color": ["color"],
+            "hog": ["hog"],
+            "lbp": ["lbp"],
+            "color_hog": ["color", "hog"],
+            "combined": ["color", "hog", "lbp"],
+        }
+        if args.descriptors is not None:
+            feature_runs = {"custom": args.descriptors}
+        else:
+            feature_runs = {name: feature_set_map[name] for name in args.feature_sets}
+
+        output.mkdir(parents=True, exist_ok=False)
+        for set_name, descriptors in feature_runs.items():
+            run_name = f"random_forest_{set_name}"
+            print(
+                f"Training Random Forest on {set_name} ({descriptors}) "
+                "on shared training folds...",
+                flush=True,
+            )
+            summary = run_experiment(
+                data,
+                folds,
+                make_pipeline(
+                    feature_columns(data, descriptors),
+                    seed=config["seed"],
+                    n_jobs=args.estimator_n_jobs,
+                ),
+                grid,
+                model_name="random_forest",
+                descriptors=descriptors,
+                output_dir=output / run_name,
+                root=root,
+                fold_path=fold_file,
+                seed=config["seed"],
+                n_jobs=args.n_jobs,
+            )
+            print(
+                f"{run_name}: CV macro F1 {summary['mean_cv_macro_f1']:.4f} "
+                f"+/- {summary['std_cv_macro_f1']:.4f} "
+                f"(best: {summary['best_params']})",
+                flush=True,
+            )
+        print(f"Training-only results written to {output}")
+        return
 
 
 if __name__ == "__main__":

@@ -38,6 +38,7 @@ their own commit or pull request; do not count this assignment as completed work
 | Om Yadav | 2026-10-23 | Assistant-assisted RGB letterbox preprocessing, 13 behavior tests, and in-memory reproduction of the approved data protocol | [Preprocessing branch](https://github.com/shourya2006/smart-waste-segregation/tree/feat/preprocessing) |
 | Aditya Bharadwaj | 2026-10-23 | Assistant-assisted HSV/HOG/LBP feature extraction (1,806 dimensions), reproducible caching with stale cache detection, 16 unit tests, and validation on 2,521 TrashNet images | [Draft PR #2](https://github.com/shourya2006/smart-waste-segregation/pull/2) |
 | Shourya Bafna | 2026-10-23 | Assistant-assisted training-input validation, five shared group-aware folds, dummy/linear/RBF SVM searches, fold-local scaling tests and teammate handoff | [SVM baseline branch](https://github.com/shourya2006/smart-waste-segregation/tree/codex/svm-baselines) |
+| Daksh Batra | 2026-10-23 | Assistant-assisted Random Forest pipeline, 5-family feature comparison study (120 evaluated candidates), class weighting experiments, 4 unit/integration tests, and documented handoff | [Random Forest branch](https://github.com/shourya2006/smart-waste-segregation/tree/codex/random-forest) |
 
 Record completed work with the contributor's name, a short description, date,
 and commit or pull-request link. Each member should review another component.
