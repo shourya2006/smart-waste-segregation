@@ -7,7 +7,9 @@ Descriptors implemented:
    2x2 cells per block, L2-Hys normalization over standard grayscale luminance
    (1,764 features for 128x128 images).
 3. Uniform Local Binary Patterns (LBP): 8 neighbors, radius 1, normalized 10-bin
-   histogram (P + 2 bins for uniform patterns) computed on integer grayscale (10 features).
+   histogram (P + 2 bins: labels 0 through P represent the number of set bits in
+   uniform patterns having at most two circular transitions, while non-uniform patterns
+   share the remaining bin) computed on integer grayscale (10 features).
 
 Descriptors are concatenated in the fixed order: HSV, HOG, LBP, yielding a 1,806-dim
 float32 vector under default project settings. Individual descriptors and subsets
@@ -182,6 +184,18 @@ def extract_hog_features(image: Image.Image, config: Mapping) -> np.ndarray:
     """
     settings = _validate_features_config(config)["hog"]
     rgb = image.convert("RGB") if image.mode != "RGB" else image
+    ppc_row, ppc_col = settings["pixels_per_cell"]
+    cpb_row, cpb_col = settings["cells_per_block"]
+    cells_row = rgb.height // ppc_row
+    cells_col = rgb.width // ppc_col
+    blocks_row = cells_row - cpb_row + 1
+    blocks_col = cells_col - cpb_col + 1
+    if blocks_row <= 0 or blocks_col <= 0:
+        raise ValueError(
+            f"Image size ({rgb.width}x{rgb.height}, width x height) is too small "
+            f"for HOG pixels_per_cell={settings['pixels_per_cell']} (row, col) and "
+            f"cells_per_block={settings['cells_per_block']} (row, col)"
+        )
     gray = rgb2gray(np.asarray(rgb))
 
     feat = hog(
@@ -203,9 +217,11 @@ def extract_lbp_features(image: Image.Image, config: Mapping) -> np.ndarray:
 
     Converts RGB to standard 8-bit integer grayscale (ITU-R 601-2 luma in [0, 255]),
     avoiding floating point precision artifacts in neighbor comparisons. Evaluates circular
-    uniform LBP with 8 neighbors at radius 1. Uniform patterns have at most 2 bitwise transitions;
-    with P=8 neighbors there are P+1=9 uniform patterns (0 to 8 bit transitions) and 1 aggregate
-    bin for non-uniform patterns, totaling 10 bins. The histogram is L1-normalized to sum to 1.0.
+    uniform LBP with 8 neighbors at radius 1. A binary pattern is uniform if it contains
+    at most 2 circular bit transitions (0-to-1 or 1-to-0). For P=8 neighbors, labels 0
+    through P represent the number of set bits (0 through 8 ones) in uniform patterns,
+    while non-uniform patterns share label P+1 (9), totaling 10 bins. The histogram is
+    L1-normalized to sum to 1.0.
     """
     settings = _validate_features_config(config)["lbp"]
     neighbors = settings["neighbors"]
@@ -283,18 +299,24 @@ def get_descriptor_boundaries(
         if name == "color":
             dim = sum(settings["color"]["bins"])
         elif name == "hog":
-            # For 128x128 with cell (16,16) and block (2,2) with 9 orientations:
-            # cells_x = 128 // 16 = 8, blocks_x = 8 - 2 + 1 = 7. 7*7*2*2*9 = 1764.
             prep = config.get("preprocessing", {})
             w = prep.get("width", 128)
             h = prep.get("height", 128)
-            ppc_w, ppc_h = settings["hog"]["pixels_per_cell"]
-            cpb_w, cpb_h = settings["hog"]["cells_per_block"]
-            cells_x = w // ppc_w
-            cells_y = h // ppc_h
-            blocks_x = cells_x - cpb_w + 1
-            blocks_y = cells_y - cpb_h + 1
-            dim = blocks_x * blocks_y * cpb_w * cpb_h * settings["hog"]["orientations"]
+            # Scikit-image interprets pixels_per_cell and cells_per_block as
+            # (row, col) = (height, width)
+            ppc_row, ppc_col = settings["hog"]["pixels_per_cell"]
+            cpb_row, cpb_col = settings["hog"]["cells_per_block"]
+            cells_row = h // ppc_row
+            cells_col = w // ppc_col
+            blocks_row = cells_row - cpb_row + 1
+            blocks_col = cells_col - cpb_col + 1
+            if blocks_row <= 0 or blocks_col <= 0:
+                raise ValueError(
+                    f"Canvas size ({w}x{h}, width x height) is too small for HOG "
+                    f"pixels_per_cell={settings['hog']['pixels_per_cell']} (row, col) and "
+                    f"cells_per_block={settings['hog']['cells_per_block']} (row, col)"
+                )
+            dim = blocks_row * blocks_col * cpb_row * cpb_col * settings["hog"]["orientations"]
         elif name == "lbp":
             dim = settings["lbp"]["neighbors"] + 2
         boundaries[name] = (cursor, cursor + dim)
@@ -337,8 +359,10 @@ def get_source_fingerprint() -> str:
 
 
 def compute_config_hash(config: Mapping) -> str:
-    """Compute deterministic SHA-256 hash of relevant preprocessing and feature config."""
+    """Compute deterministic SHA-256 hash of relevant classes, preprocessing and feature config."""
+    classes = config.get("classes", ["cardboard", "glass", "metal", "paper", "plastic", "trash"])
     relevant = {
+        "classes": list(str(c) for c in classes),
         "preprocessing": {
             "width": config.get("preprocessing", {}).get("width", 128),
             "height": config.get("preprocessing", {}).get("height", 128),
@@ -359,6 +383,7 @@ def is_cache_stale(
     cache_path: Path,
     root: Path,
     config: Mapping | None = None,
+    check_source: bool = True,
 ) -> tuple[bool, str]:
     """Check if an existing feature cache file is stale.
 
@@ -385,17 +410,38 @@ def is_cache_stale(
     if cached_manifest_sha != current_manifest_sha256:
         reason = (
             f"Manifest SHA-256 mismatch "
-            f"(cache: {cached_manifest_sha[:8]}..., current: {current_manifest_sha256[:8]}...)"
+            f"(cache: {cached_manifest_sha[:8] if cached_manifest_sha else 'missing'}..., "
+            f"current: {current_manifest_sha256[:8]}...)"
         )
         return True, reason
 
-    if config is not None:
-        expected_config_hash = compute_config_hash(config)
+    if check_source:
+        cached_source = metadata.get("source_fingerprint")
+        current_source = get_source_fingerprint()
+        if not cached_source:
+            return True, "Cache missing source_fingerprint in metadata"
+        if cached_source != current_source:
+            reason = (
+                f"Source fingerprint mismatch "
+                f"(cache: {cached_source[:8]}..., current: {current_source[:8]}...)"
+            )
+            return True, reason
+
+    resolved_config = config
+    if resolved_config is None and (root / "configs/phase1.toml").is_file():
+        try:
+            resolved_config = tomllib.loads((root / "configs/phase1.toml").read_text())
+        except Exception:
+            resolved_config = None
+
+    if resolved_config is not None:
+        expected_config_hash = compute_config_hash(resolved_config)
         cached_config_hash = metadata.get("config_hash")
         if cached_config_hash != expected_config_hash:
             reason = (
                 f"Configuration hash mismatch "
-                f"(cache: {cached_config_hash[:8]}..., current: {expected_config_hash[:8]}...)"
+                f"(cache: {cached_config_hash[:8] if cached_config_hash else 'missing'}..., "
+                f"current: {expected_config_hash[:8]}...)"
             )
             return True, reason
 
@@ -579,10 +625,43 @@ def load_features(
     if not path.is_file():
         raise FileNotFoundError(f"Feature cache not found: {path}")
 
-    if check_stale and root is not None:
-        stale, reason = is_cache_stale(path, root, expected_config)
-        if stale:
-            raise ValueError(f"Cannot load stale feature cache: {reason}")
+    resolved_config = expected_config
+    if resolved_config is None and root is not None:
+        cfg_path = root / "configs/phase1.toml"
+        if cfg_path.is_file():
+            try:
+                resolved_config = tomllib.loads(cfg_path.read_text())
+            except Exception:
+                resolved_config = None
+
+    if check_stale:
+        if root is not None:
+            stale, reason = is_cache_stale(path, root, config=resolved_config)
+            if stale:
+                raise ValueError(f"Cannot load stale feature cache: {reason}")
+        elif resolved_config is not None:
+            with np.load(path, allow_pickle=False) as data:
+                if "metadata" not in data:
+                    raise ValueError("Cannot load stale feature cache: missing metadata")
+                meta = json.loads(str(data["metadata"]))
+            expected_hash = compute_config_hash(resolved_config)
+            cached_hash = meta.get("config_hash")
+            if cached_hash != expected_hash:
+                reason = (
+                    f"Configuration hash mismatch "
+                    f"(cache: {cached_hash[:8] if cached_hash else 'missing'}..., "
+                    f"current: {expected_hash[:8]}...)"
+                )
+                raise ValueError(f"Cannot load stale feature cache: {reason}")
+            cached_source = meta.get("source_fingerprint")
+            current_source = get_source_fingerprint()
+            if not cached_source or cached_source != current_source:
+                reason = (
+                    f"Source fingerprint mismatch "
+                    f"(cache: {cached_source[:8] if cached_source else 'missing'}..., "
+                    f"current: {current_source[:8]}...)"
+                )
+                raise ValueError(f"Cannot load stale feature cache: {reason}")
 
     with np.load(path, allow_pickle=False) as data:
         metadata_raw = str(data["metadata"])

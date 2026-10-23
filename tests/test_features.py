@@ -200,6 +200,44 @@ class FeatureExtractionTests(unittest.TestCase):
             with self.subTest(override=override), self.assertRaisesRegex(err_type, regex):
                 extract_features(img, cfg)
 
+    def test_rectangular_hog_dimensions_and_boundaries(self):
+        # Reproduction case: Width: 160, Height: 96, ppc: [8, 16], cpb: [2, 3]
+        cfg = default_config(width=160, height=96)
+        cfg["features"]["hog"]["pixels_per_cell"] = [8, 16]
+        cfg["features"]["hog"]["cells_per_block"] = [2, 3]
+        cfg["features"]["hog"]["orientations"] = 9
+
+        img = Image.new("RGB", (160, 96), (120, 150, 180))
+        hog_feat = extract_hog_features(img, cfg)
+        self.assertEqual(hog_feat.shape, (4752,))
+
+        full_vec = extract_features(img, cfg)
+        # 32 (HSV) + 4752 (HOG) + 10 (LBP) = 4794
+        self.assertEqual(full_vec.shape, (4794,))
+
+        boundaries = get_descriptor_boundaries(cfg)
+        self.assertEqual(boundaries["color"], (0, 32))
+        self.assertEqual(boundaries["hog"], (32, 4784))
+        self.assertEqual(boundaries["lbp"], (4784, 4794))
+
+        names = get_feature_names(cfg)
+        self.assertEqual(len(names), 4794)
+        self.assertEqual(names[32], "hog_0000")
+        self.assertEqual(names[4783], "hog_4751")
+
+    def test_hog_canvas_too_small_rejected(self):
+        # Canvas too small for requested blocks
+        cfg = default_config(width=16, height=16)
+        cfg["features"]["hog"]["pixels_per_cell"] = [16, 16]
+        cfg["features"]["hog"]["cells_per_block"] = [2, 2]
+
+        with self.assertRaisesRegex(ValueError, "too small for HOG"):
+            get_descriptor_boundaries(cfg)
+
+        img = Image.new("RGB", (16, 16))
+        with self.assertRaisesRegex(ValueError, "too small for HOG"):
+            extract_hog_features(img, cfg)
+
 
 class FeatureCacheTests(unittest.TestCase):
     def setUp(self):
@@ -376,6 +414,83 @@ class FeatureCacheTests(unittest.TestCase):
             with contextlib.redirect_stdout(buf):
                 data_cli_main()
             self.assertIn("Feature cache written", buf.getvalue())
+
+    def test_source_fingerprint_mismatch_detected_and_regenerated(self):
+        output_path = self.root / "data/processed/features.npz"
+        build_feature_cache(self.root, output_path=output_path)
+        # Mock get_source_fingerprint to return a different fingerprint
+        with patch(
+            "waste_sorting.features.get_source_fingerprint",
+            return_value="dummy_fake_fingerprint",
+        ):
+            stale, reason = is_cache_stale(output_path, self.root, self.config)
+            self.assertTrue(stale)
+            self.assertIn("Source fingerprint mismatch", reason)
+
+            with self.assertRaisesRegex(ValueError, "Source fingerprint mismatch"):
+                load_features(output_path, root=self.root, check_stale=True)
+
+            # build_feature_cache should detect staleness and regenerate
+            meta = build_feature_cache(self.root, output_path=output_path)
+            self.assertEqual(meta["source_fingerprint"], "dummy_fake_fingerprint")
+
+    def test_loader_resolves_root_config_and_honours_explicit_config(self):
+        output_path = self.root / "data/processed/features.npz"
+        build_feature_cache(self.root, output_path=output_path)
+
+        # Alter the on-disk config in self.root
+        disk_cfg_path = self.root / "configs/phase1.toml"
+        cfg_text = disk_cfg_path.read_text().replace("orientations = 9", "orientations = 12")
+        disk_cfg_path.write_text(cfg_text)
+
+        # 1. Calling load_features with root resolves modified on-disk config
+        with self.assertRaisesRegex(ValueError, "Configuration hash mismatch"):
+            load_features(output_path, root=self.root, check_stale=True)
+
+        # 2. Calling load_features with root=None and explicit altered config is not ignored
+        altered_cfg = tomllib.loads(cfg_text)
+        with self.assertRaisesRegex(ValueError, "Configuration hash mismatch"):
+            load_features(output_path, root=None, check_stale=True, expected_config=altered_cfg)
+
+        # 3. Calling load_features with explicit matching config succeeds
+        cache = load_features(
+            output_path, root=None, check_stale=True, expected_config=self.config
+        )
+        self.assertEqual(cache["features"].shape[1], 1806)
+
+    def test_classes_order_change_invalidates_cache_and_updates_targets(self):
+        output_path = self.root / "data/processed/features.npz"
+        build_feature_cache(self.root, output_path=output_path)
+
+        # Verify initial targets: cardboard=0, paper=3
+        init_cache = load_features(output_path, root=self.root)
+        cardboard_idx = list(init_cache["image_ids"]).index("cardboard/cardboard1.jpg")
+        paper_idx = list(init_cache["image_ids"]).index("paper/paper1.jpg")
+        self.assertEqual(init_cache["targets"][cardboard_idx], 0)
+        self.assertEqual(init_cache["targets"][paper_idx], 3)
+
+        # Reverse classes in on-disk config
+        reversed_classes = ["trash", "plastic", "paper", "metal", "glass", "cardboard"]
+        disk_cfg_path = self.root / "configs/phase1.toml"
+        content = disk_cfg_path.read_text()
+        old_classes_line = 'classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]'
+        new_classes_line = 'classes = ["trash", "plastic", "paper", "metal", "glass", "cardboard"]'
+        disk_cfg_path.write_text(content.replace(old_classes_line, new_classes_line))
+
+        # Stale cache detected due to classes order change
+        stale, reason = is_cache_stale(output_path, self.root)
+        self.assertTrue(stale)
+        self.assertIn("Configuration hash mismatch", reason)
+
+        # Regenerate cache
+        build_feature_cache(self.root, output_path=output_path)
+
+        # Load regenerated cache and verify targets updated to match new class mapping
+        new_cache = load_features(output_path, root=self.root)
+        self.assertEqual(list(new_cache["classes"]), reversed_classes)
+        # In reversed classes: cardboard is index 5, paper is index 2
+        self.assertEqual(new_cache["targets"][cardboard_idx], 5)
+        self.assertEqual(new_cache["targets"][paper_idx], 2)
 
 
 if __name__ == "__main__":

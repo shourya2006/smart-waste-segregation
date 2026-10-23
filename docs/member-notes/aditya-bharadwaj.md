@@ -61,12 +61,19 @@ X_train, y_train, groups_train = X[train_mask], y[train_mask], groups[train_mask
 ### 2. Histogram of Oriented Gradients (HOG) (1,764 features)
 - **Grayscale conversion**: RGB converted to luminance grayscale in $[0.0, 1.0]$ using standard Rec. 709 luma weights
   ($Y = 0.2125R + 0.7154G + 0.0721B$) via `skimage.color.rgb2gray`.
-- **Parameters**: 9 orientation bins in $[0, \pi)$, $16 \times 16$ pixels per cell, $2 \times 2$ cells per block.
-- **Dimension calculation**: For a $128 \times 128$ input canvas:
-  $$\text{Cells across} = 128 / 16 = 8, \quad \text{Blocks across} = 8 - 2 + 1 = 7$$
+- **Parameters and Axis Ordering**: Scikit-image interprets `pixels_per_cell` and `cells_per_block` in
+  `(rows, columns)` = `(height, width)` order. 9 orientation bins in $[0, \pi)$, default $16 \times 16$ pixels per cell,
+  $2 \times 2$ cells per block.
+- **Dimension calculation**: For the default $128 \times 128$ square canvas:
+  $$\text{Cells across (row, col)} = (128 / 16, 128 / 16) = (8, 8)$$
+  $$\text{Blocks across (row, col)} = (8 - 2 + 1, 8 - 2 + 1) = (7, 7)$$
   $$\text{Total blocks} = 7 \times 7 = 49$$
   $$\text{Features per block} = 2 \times 2 \times 9 = 36$$
   $$\text{Total HOG features} = 49 \times 36 = 1,764$$
+  For rectangular configurations (e.g. width 160, height 96 with `pixels_per_cell=[8, 16]` and `cells_per_block=[2, 3]`),
+  $\text{blocks}_{\text{row}} = (96 // 8) - 2 + 1 = 11$, $\text{blocks}_{\text{col}} = (160 // 16) - 3 + 1 = 8$,
+  yielding $11 \times 8 \times (2 \times 3 \times 9) = 4,752$ HOG features ($4,794$ combined).
+  Configurations too small for the requested HOG blocks are rejected with an explicit `ValueError`.
 - **Normalization**: Standard Dalal-Triggs `L2-Hys` block normalization (L2-norm followed by clipping values at 0.2
   and renormalizing by L2-norm). This suppresses gradient burst artifacts from specular reflections (common on glass/metal)
   and illumination variations across image backgrounds.
@@ -76,9 +83,9 @@ X_train, y_train, groups_train = X[train_mask], y[train_mask], groups[train_mask
   Using integer grayscale is critical: floating-point representations introduce machine-epsilon jitter in neighbor
   comparisons that produce spurious pattern transitions.
 - **Parameters**: Circular uniform LBP with $P = 8$ neighbors at radius $R = 1.0$ (`method="uniform"`).
-- **Binning**: Uniform patterns have at most 2 bit transitions (0-to-1 or 1-to-0). For $P = 8$, there are exactly
-  $P + 1 = 9$ uniform patterns (corresponding to 0 through 8 bit transitions) and 1 aggregate bin for all non-uniform
-  patterns, totaling $P + 2 = 10$ bins.
+- **Binning**: A binary pattern is uniform if it has at most 2 circular bitwise transitions (0-to-1 or 1-to-0).
+  For $P = 8$, labels $0$ through $P$ represent the number of set bits (0 through 8 ones) in uniform patterns,
+  and label $P + 1 = 9$ aggregates all non-uniform patterns, totaling $P + 2 = 10$ bins.
 - **Normalization**: The 10-bin histogram is L1-normalized to sum to 1.0, representing the empirical distribution of
   local surface texture across the image.
 
@@ -115,11 +122,13 @@ waste-data features --force
 4. **Deterministic Ordering**: Rows are sorted deterministically by `image_id`, ensuring consistent alignment across runs.
 5. **Stale Cache Detection**:
    The cache records:
-   - `manifest_sha256`: SHA-256 of `docs/dataset/manifest.csv`
-   - `config_hash`: Deterministic SHA-256 of the preprocessing and features configuration sections
-   - `source_fingerprint`: SHA-256 hash of `features.py` and `preprocessing.py`
-   If the manifest, configuration, or extractor source changes, `is_cache_stale()` marks the cache stale and
-   `load_features(..., check_stale=True)` refuses to load it, preventing downstream models from training on desynchronized features.
+   - `manifest_sha256`: SHA-256 of `docs/dataset/manifest.csv`.
+   - `config_hash`: Deterministic SHA-256 including the ordered `classes` list, preprocessing, and features settings.
+     Reversing or changing class ordering invalidates the cache and regenerates aligned integer targets.
+   - `source_fingerprint`: SHA-256 hash of `features.py` and `preprocessing.py`.
+   - Validation in `is_cache_stale()` and `load_features()` verifies all three: manifest SHA, config hash, and
+     source fingerprint. `load_features(..., root=root)` automatically resolves on-disk configuration if omitted,
+     and honours explicitly supplied configurations even when `root=None`.
 6. **Safe Storage**: Saved with native NumPy string arrays so loading with `allow_pickle=False` works safely and securely.
    Stored under `data/processed/` which is ignored by Git.
 
@@ -127,7 +136,7 @@ waste-data features --force
 
 ## Verified Results
 
-### 1. Synthetic Unit Tests (48 passing tests in ~1.5s)
+### 1. Synthetic Unit Tests (53 passing tests in ~1.5s)
 Run with:
 ```sh
 ruff check .
@@ -135,6 +144,7 @@ python -m unittest discover -s tests -v
 ```
 Test coverage includes:
 - Exact dimensions: HSV (32), HOG (1,764), LBP (10), Combined (1,806).
+- Rectangular HOG dimensions ($160 \times 96 \to 4,794$ features) and rejection of canvases smaller than blocks.
 - Strict descriptor ordering and boundary slice matching.
 - Dtype `float32`, all finite, no NaNs or Infinities.
 - Histogram probability distribution normalization (HSV channel sums and LBP sum to 1.0).
@@ -142,7 +152,8 @@ Test coverage includes:
 - Robust handling of RGB, grayscale, RGBA transparency, palette transparency, and EXIF orientations via shared preprocessing.
 - Configuration validation and rejection of invalid parameters.
 - Cache row alignment, exclusion filtering, and split preservation.
-- Stale cache detection on manifest and configuration changes.
+- Stale cache detection on manifest, configuration, class-ordering, and source-code fingerprint changes.
+- Automatic configuration resolution in `load_features(path, root=root)` and non-silent explicit config checks.
 - CLI idempotency and `--force` regeneration.
 
 ### 2. Real Dataset Validation (TrashNet)
