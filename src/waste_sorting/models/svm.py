@@ -1,9 +1,13 @@
-"""Training-only baselines with feature selection and fold-local SVM scaling."""
+"""Training-only SVMs with internal selection, scaling and strict convergence."""
 
+import warnings
+
+import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.dummy import DummyClassifier
+from sklearn.exceptions import ConvergenceWarning
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import FunctionTransformer, Normalizer, StandardScaler
 from sklearn.svm import SVC, LinearSVC
 
 
@@ -13,7 +17,24 @@ def _positive_number(value):
     )
 
 
-def make_pipeline(model_name, columns, seed=42):
+class StrictLinearSVC(LinearSVC):
+    """Reject unconverged fits inside joblib workers as well as in serial searches."""
+
+    def fit(self, X, y, sample_weight=None):
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", ConvergenceWarning)
+            return super().fit(X, y, sample_weight=sample_weight)
+
+
+def sqrt_features(X):
+    """Per-image histogram root transform; never learns across images."""
+    values = np.asarray(X)
+    if not np.isfinite(values).all() or (values < 0).any():
+        raise ValueError("Root normalization requires finite nonnegative features")
+    return np.sqrt(values)
+
+
+def make_pipeline(model_name, columns, seed=42, normalization="standard", linear_max_iter=20000):
     """Accept full cached vectors, selecting the same columns at fit and prediction."""
     selection = ColumnTransformer([("selected", "passthrough", list(columns))])
     if model_name == "dummy":
@@ -23,8 +44,19 @@ def make_pipeline(model_name, columns, seed=42):
                 ("classifier", DummyClassifier(strategy="most_frequent", random_state=seed)),
             ]
         )
+    if normalization == "standard":
+        scale = StandardScaler()
+    elif normalization == "root_l2":
+        scale = Pipeline(
+            [
+                ("root", FunctionTransformer(sqrt_features, validate=True)),
+                ("normalize", Normalizer(norm="l2")),
+            ]
+        )
+    else:
+        raise ValueError("normalization must be 'standard' or 'root_l2'")
     if model_name == "linear_svm":
-        classifier = LinearSVC(dual="auto", max_iter=20000, random_state=seed)
+        classifier = StrictLinearSVC(dual="auto", max_iter=linear_max_iter, random_state=seed)
     elif model_name == "rbf_svm":
         classifier = SVC(kernel="rbf", cache_size=256, random_state=seed)
     else:
@@ -32,7 +64,7 @@ def make_pipeline(model_name, columns, seed=42):
     return Pipeline(
         [
             ("features", selection),
-            ("scale", StandardScaler()),
+            ("scale", scale),
             ("classifier", classifier),
         ]
     )

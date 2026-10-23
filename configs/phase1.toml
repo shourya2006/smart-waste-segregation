@@ -58,3 +58,13 @@ class_weight = ["none", "balanced"]
 [confidence]
 calibration_method = "sigmoid"
 select_threshold_on_validation = true
+
+# Declared before the follow-up study; shared feature extraction/folds are unchanged.
+[svm_study]
+feature_sets = ["color", "lbp", "color_lbp", "hog", "color_hog", "combined"]
+linear_max_iter = 100000
+refinement_top_k = 2
+refined_C = [1.0, 10.0, 30.0, 100.0]
+standard_gamma_dimension_multipliers = [0.25, 4.0]
+root_l2_gamma = ["scale", 1.0, 10.0, 50.0]
+class_weight = ["none", "balanced"]

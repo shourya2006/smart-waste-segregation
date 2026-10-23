@@ -1,0 +1,2157 @@
+{
+  "candidate_evaluations": 256,
+  "cv_fits": 1280,
+  "diagnostic_cv_fits": 15,
+  "diagnostics": {
+    "linear_svm": {
+      "accuracy": 0.6456916099773242,
+      "class_order": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "confusion_matrix": [
+        [
+          229,
+          10,
+          10,
+          19,
+          11,
+          3
+        ],
+        [
+          8,
+          156,
+          38,
+          37,
+          64,
+          45
+        ],
+        [
+          4,
+          48,
+          129,
+          29,
+          37,
+          39
+        ],
+        [
+          9,
+          19,
+          17,
+          323,
+          14,
+          34
+        ],
+        [
+          7,
+          24,
+          9,
+          36,
+          233,
+          27
+        ],
+        [
+          9,
+          5,
+          5,
+          7,
+          1,
+          69
+        ]
+      ],
+      "fold_accuracy": [
+        0.672316384180791,
+        0.615819209039548,
+        0.6477272727272727,
+        0.6505681818181818,
+        0.6420454545454546
+      ],
+      "fold_macro_f1": [
+        0.6522852513429327,
+        0.5879197200497571,
+        0.6255333905561395,
+        0.6292186058852726,
+        0.6065188122389513
+      ],
+      "mean_fold_macro_f1": 0.6202951560146106,
+      "outer_holdout_predictions_generated": false,
+      "per_class": {
+        "cardboard": {
+          "f1-score": 0.8357664233576643,
+          "precision": 0.8609022556390977,
+          "recall": 0.8120567375886525,
+          "support": 282.0
+        },
+        "glass": {
+          "f1-score": 0.5114754098360655,
+          "precision": 0.5954198473282443,
+          "recall": 0.4482758620689655,
+          "support": 348.0
+        },
+        "metal": {
+          "f1-score": 0.5222672064777328,
+          "precision": 0.6201923076923077,
+          "recall": 0.45104895104895104,
+          "support": 286.0
+        },
+        "paper": {
+          "f1-score": 0.7450980392156863,
+          "precision": 0.7161862527716186,
+          "recall": 0.7764423076923077,
+          "support": 416.0
+        },
+        "plastic": {
+          "f1-score": 0.6695402298850575,
+          "precision": 0.6472222222222223,
+          "recall": 0.6934523809523809,
+          "support": 336.0
+        },
+        "trash": {
+          "f1-score": 0.44089456869009586,
+          "precision": 0.31797235023041476,
+          "recall": 0.71875,
+          "support": 96.0
+        }
+      },
+      "pooled_macro_f1": 0.6208403129103838,
+      "scope": "outer-training OOF; parameters selected using these folds; exploratory",
+      "selected_run": "screen/linear_svm-color_lbp-standard",
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    "random_forest_color": {
+      "accuracy": 0.753968253968254,
+      "class_order": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "confusion_matrix": [
+        [
+          224,
+          9,
+          13,
+          22,
+          10,
+          4
+        ],
+        [
+          4,
+          257,
+          30,
+          25,
+          30,
+          2
+        ],
+        [
+          9,
+          44,
+          181,
+          30,
+          17,
+          5
+        ],
+        [
+          6,
+          15,
+          16,
+          367,
+          7,
+          5
+        ],
+        [
+          7,
+          27,
+          9,
+          45,
+          247,
+          1
+        ],
+        [
+          8,
+          14,
+          6,
+          12,
+          2,
+          54
+        ]
+      ],
+      "fold_accuracy": [
+        0.7457627118644068,
+        0.7175141242937854,
+        0.7670454545454546,
+        0.7585227272727273,
+        0.78125
+      ],
+      "fold_macro_f1": [
+        0.7408076512222476,
+        0.6862975453265768,
+        0.7487245506291252,
+        0.7465108018583454,
+        0.7607703799961963
+      ],
+      "mean_fold_macro_f1": 0.7366221858064982,
+      "outer_holdout_predictions_generated": false,
+      "per_class": {
+        "cardboard": {
+          "f1-score": 0.8296296296296296,
+          "precision": 0.8682170542635659,
+          "recall": 0.7943262411347518,
+          "support": 282.0
+        },
+        "glass": {
+          "f1-score": 0.7198879551820728,
+          "precision": 0.7021857923497268,
+          "recall": 0.7385057471264368,
+          "support": 348.0
+        },
+        "metal": {
+          "f1-score": 0.6691312384473198,
+          "precision": 0.7098039215686275,
+          "recall": 0.6328671328671329,
+          "support": 286.0
+        },
+        "paper": {
+          "f1-score": 0.8004362050163577,
+          "precision": 0.7325349301397206,
+          "recall": 0.8822115384615384,
+          "support": 416.0
+        },
+        "plastic": {
+          "f1-score": 0.7611710323574731,
+          "precision": 0.7891373801916933,
+          "recall": 0.7351190476190477,
+          "support": 336.0
+        },
+        "trash": {
+          "f1-score": 0.6467065868263473,
+          "precision": 0.7605633802816901,
+          "recall": 0.5625,
+          "support": 96.0
+        }
+      },
+      "pooled_macro_f1": 0.7378271079098667,
+      "scope": "outer-training OOF; parameters selected using these folds; exploratory",
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    "rbf_svm": {
+      "accuracy": 0.8197278911564626,
+      "class_order": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "confusion_matrix": [
+        [
+          247,
+          7,
+          11,
+          11,
+          3,
+          3
+        ],
+        [
+          5,
+          285,
+          22,
+          10,
+          22,
+          4
+        ],
+        [
+          8,
+          32,
+          215,
+          6,
+          17,
+          8
+        ],
+        [
+          5,
+          13,
+          11,
+          373,
+          11,
+          3
+        ],
+        [
+          6,
+          32,
+          16,
+          18,
+          260,
+          4
+        ],
+        [
+          5,
+          2,
+          13,
+          6,
+          4,
+          66
+        ]
+      ],
+      "fold_accuracy": [
+        0.8135593220338984,
+        0.8022598870056498,
+        0.8380681818181818,
+        0.8181818181818182,
+        0.8267045454545454
+      ],
+      "fold_macro_f1": [
+        0.7996252777666165,
+        0.7825920656014484,
+        0.8366822766181027,
+        0.8115777601880607,
+        0.7903923381883641
+      ],
+      "mean_fold_macro_f1": 0.8041739436725186,
+      "outer_holdout_predictions_generated": false,
+      "per_class": {
+        "cardboard": {
+          "f1-score": 0.8853046594982079,
+          "precision": 0.894927536231884,
+          "recall": 0.875886524822695,
+          "support": 282.0
+        },
+        "glass": {
+          "f1-score": 0.7927677329624478,
+          "precision": 0.7681940700808625,
+          "recall": 0.8189655172413793,
+          "support": 348.0
+        },
+        "metal": {
+          "f1-score": 0.7491289198606271,
+          "precision": 0.7465277777777778,
+          "recall": 0.7517482517482518,
+          "support": 286.0
+        },
+        "paper": {
+          "f1-score": 0.888095238095238,
+          "precision": 0.8797169811320755,
+          "recall": 0.8966346153846154,
+          "support": 416.0
+        },
+        "plastic": {
+          "f1-score": 0.7963246554364471,
+          "precision": 0.8201892744479495,
+          "recall": 0.7738095238095238,
+          "support": 336.0
+        },
+        "trash": {
+          "f1-score": 0.717391304347826,
+          "precision": 0.75,
+          "recall": 0.6875,
+          "support": 96.0
+        }
+      },
+      "pooled_macro_f1": 0.8048354183667991,
+      "scope": "outer-training OOF; parameters selected using these folds; exploratory",
+      "selected_run": "refine/rbf_svm-color_lbp-root_l2",
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    }
+  },
+  "final_training_refits": 16,
+  "outer_holdout_predictions_generated": false,
+  "plan": {
+    "config": {
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "confidence": {
+        "calibration_method": "sigmoid",
+        "select_threshold_on_validation": true
+      },
+      "features": {
+        "color": {
+          "bins": [
+            16,
+            8,
+            8
+          ],
+          "space": "HSV"
+        },
+        "hog": {
+          "block_norm": "L2-Hys",
+          "cells_per_block": [
+            2,
+            2
+          ],
+          "orientations": 9,
+          "pixels_per_cell": [
+            16,
+            16
+          ]
+        },
+        "lbp": {
+          "method": "uniform",
+          "neighbors": 8,
+          "radius": 1
+        }
+      },
+      "paths": {
+        "artifacts": "artifacts",
+        "processed": "data/processed",
+        "raw": "data/raw"
+      },
+      "preprocessing": {
+        "height": 128,
+        "padding_rgb": [
+          255,
+          255,
+          255
+        ],
+        "preserve_aspect_ratio": true,
+        "width": 128
+      },
+      "seed": 42,
+      "splits": {
+        "group_related_images": true,
+        "test": 0.15,
+        "train": 0.7,
+        "validation": 0.15
+      },
+      "svm_study": {
+        "class_weight": [
+          "none",
+          "balanced"
+        ],
+        "feature_sets": [
+          "color",
+          "lbp",
+          "color_lbp",
+          "hog",
+          "color_hog",
+          "combined"
+        ],
+        "linear_max_iter": 100000,
+        "refined_C": [
+          1.0,
+          10.0,
+          30.0,
+          100.0
+        ],
+        "refinement_top_k": 2,
+        "root_l2_gamma": [
+          "scale",
+          1.0,
+          10.0,
+          50.0
+        ],
+        "standard_gamma_dimension_multipliers": [
+          0.25,
+          4.0
+        ]
+      },
+      "training": {
+        "cv_folds": 5,
+        "linear_svm": {
+          "C": [
+            0.1,
+            1.0,
+            10.0
+          ],
+          "class_weight": [
+            "none",
+            "balanced"
+          ]
+        },
+        "models": [
+          "dummy",
+          "linear_svm",
+          "rbf_svm",
+          "random_forest"
+        ],
+        "random_forest": {
+          "class_weight": [
+            "none",
+            "balanced"
+          ],
+          "max_depth": [
+            "none",
+            10,
+            20
+          ],
+          "min_samples_split": [
+            2,
+            5
+          ],
+          "n_estimators": [
+            100,
+            200
+          ]
+        },
+        "rbf_svm": {
+          "C": [
+            0.1,
+            1.0,
+            10.0
+          ],
+          "class_weight": [
+            "none",
+            "balanced"
+          ],
+          "gamma": [
+            "scale",
+            0.001,
+            0.01
+          ]
+        },
+        "selection_metric": "f1_macro"
+      }
+    },
+    "diagnostic_models": [
+      "best_linear_svm",
+      "best_rbf_svm",
+      "reference_hsv_random_forest"
+    ],
+    "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+    "held_out_predictions_generated": false,
+    "n_jobs": 3,
+    "refinement_normalizations": [
+      "standard",
+      "root_l2"
+    ],
+    "refinement_rule": "Top K RBF feature families; ties broken by feature-set name",
+    "schema_version": 1,
+    "screening_grids": {
+      "linear_svm": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "rbf_svm": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.001,
+          0.01
+        ]
+      }
+    },
+    "screening_models": [
+      "linear_svm",
+      "rbf_svm"
+    ],
+    "source": {
+      "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+      "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+      "packages": {
+        "joblib": "1.6.0",
+        "numpy": "2.5.4",
+        "pandas": "3.0.6",
+        "scikit-image": "0.26.0",
+        "scikit-learn": "1.9.1",
+        "scipy": "1.18.1"
+      },
+      "platform": "macOS-27.0.1-arm64-arm-64bit",
+      "python": "3.12.5",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "working_tree_dirty": true
+    },
+    "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5"
+  },
+  "refined_feature_sets": [
+    "color_lbp",
+    "color"
+  ],
+  "runs": [
+    {
+      "artifact_directory": "screen/linear_svm-color-standard",
+      "best_mean_fit_seconds": 0.013786220550537109,
+      "best_mean_score_seconds": 0.00125579833984375,
+      "best_params": {
+        "classifier__C": 0.1,
+        "classifier__class_weight": "balanced"
+      },
+      "calibrated": false,
+      "candidate_count": 6,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T16:59:48.851714+00:00",
+      "descriptors": [
+        "color"
+      ],
+      "feature_set": "color",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.53977217568883,
+        0.5212206892329783,
+        0.511206525137994,
+        0.5593057750394282,
+        0.5256489822786381
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": 100000,
+      "mean_cv_macro_f1": 0.5314308294755736,
+      "model": "linear_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 32,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.016693051569790836,
+      "total_seconds": 1.3030208749696612,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/rbf_svm-color-standard",
+      "best_mean_fit_seconds": 0.035298633575439456,
+      "best_mean_score_seconds": 0.01960148811340332,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": "scale"
+      },
+      "calibrated": false,
+      "candidate_count": 18,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T16:59:51.130426+00:00",
+      "descriptors": [
+        "color"
+      ],
+      "feature_set": "color",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.6921949484692952,
+        0.6871817483024037,
+        0.721403599641953,
+        0.7596192183722937,
+        0.721886100475465
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.7164571230522822,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.001,
+          0.01
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 32,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.02593302366161151,
+      "total_seconds": 2.1018694159574807,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/linear_svm-lbp-standard",
+      "best_mean_fit_seconds": 0.006439590454101562,
+      "best_mean_score_seconds": 0.0010961532592773438,
+      "best_params": {
+        "classifier__C": 1.0,
+        "classifier__class_weight": "balanced"
+      },
+      "calibrated": false,
+      "candidate_count": 6,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T16:59:51.499855+00:00",
+      "descriptors": [
+        "lbp"
+      ],
+      "feature_set": "lbp",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.4608700186090469,
+        0.4135002089893684,
+        0.4568400137933049,
+        0.44956350395348027,
+        0.4705844153273518
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": 100000,
+      "mean_cv_macro_f1": 0.4502716321345105,
+      "model": "linear_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 10,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.019599579588136375,
+      "total_seconds": 0.2144315000041388,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/rbf_svm-lbp-standard",
+      "best_mean_fit_seconds": 0.03408651351928711,
+      "best_mean_score_seconds": 0.012880611419677734,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": "scale"
+      },
+      "calibrated": false,
+      "candidate_count": 18,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T16:59:53.324270+00:00",
+      "descriptors": [
+        "lbp"
+      ],
+      "feature_set": "lbp",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.5537336452577953,
+        0.4804941170529718,
+        0.5573274730976606,
+        0.5242383154026259,
+        0.5632443532305987
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.5358075808083305,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.001,
+          0.01
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 10,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.030759236682288103,
+      "total_seconds": 1.6747017500456423,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/linear_svm-color_lbp-standard",
+      "best_mean_fit_seconds": 0.02117300033569336,
+      "best_mean_score_seconds": 0.0011026382446289063,
+      "best_params": {
+        "classifier__C": 0.1,
+        "classifier__class_weight": "balanced"
+      },
+      "calibrated": false,
+      "candidate_count": 6,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T16:59:53.877870+00:00",
+      "descriptors": [
+        "color",
+        "lbp"
+      ],
+      "feature_set": "color_lbp",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.6522852513429327,
+        0.5879197200497571,
+        0.6255333905561395,
+        0.6292186058852726,
+        0.6065188122389513
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": 100000,
+      "mean_cv_macro_f1": 0.6202951560146106,
+      "model": "linear_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 42,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.021764143721088102,
+      "total_seconds": 0.40288954199058935,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/rbf_svm-color_lbp-standard",
+      "best_mean_fit_seconds": 0.03510971069335937,
+      "best_mean_score_seconds": 0.019216108322143554,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": "scale"
+      },
+      "calibrated": false,
+      "candidate_count": 18,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T16:59:56.156352+00:00",
+      "descriptors": [
+        "color",
+        "lbp"
+      ],
+      "feature_set": "color_lbp",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.761626646928279,
+        0.7251322844533169,
+        0.803950834731851,
+        0.7962397919093892,
+        0.757531629491702
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.7688962375029076,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.001,
+          0.01
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 42,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.028543929664156382,
+      "total_seconds": 2.130564042017795,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/linear_svm-hog-standard",
+      "best_mean_fit_seconds": 7.0825035572052,
+      "best_mean_score_seconds": 0.004474639892578125,
+      "best_params": {
+        "classifier__C": 0.1,
+        "classifier__class_weight": null
+      },
+      "calibrated": false,
+      "candidate_count": 6,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:01:28.222932+00:00",
+      "descriptors": [
+        "hog"
+      ],
+      "feature_set": "hog",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.4482868140606729,
+        0.4867858524015394,
+        0.44836697047031165,
+        0.49203411132976677,
+        0.45571668445541297
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": 100000,
+      "mean_cv_macro_f1": 0.46623808654354076,
+      "model": "linear_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 1764,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.01918317206242897,
+      "total_seconds": 91.90474337502383,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/rbf_svm-hog-standard",
+      "best_mean_fit_seconds": 1.2832614421844482,
+      "best_mean_score_seconds": 0.39264440536499023,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": null,
+        "classifier__gamma": "scale"
+      },
+      "calibrated": false,
+      "candidate_count": 18,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:02:24.177324+00:00",
+      "descriptors": [
+        "hog"
+      ],
+      "feature_set": "hog",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.6109271847076679,
+        0.6445838494681476,
+        0.6096983375132735,
+        0.6498171549252771,
+        0.5774217349618576
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.6184896523152448,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.001,
+          0.01
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 1764,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.026394588509176645,
+      "total_seconds": 55.79935208300594,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/linear_svm-color_hog-standard",
+      "best_mean_fit_seconds": 5.407122039794922,
+      "best_mean_score_seconds": 0.004829978942871094,
+      "best_params": {
+        "classifier__C": 0.1,
+        "classifier__class_weight": "balanced"
+      },
+      "calibrated": false,
+      "candidate_count": 6,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:03:38.729088+00:00",
+      "descriptors": [
+        "color",
+        "hog"
+      ],
+      "feature_set": "color_hog",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.5242735458338476,
+        0.5779385076330771,
+        0.5755605345079029,
+        0.6376962779039368,
+        0.5567590447854899
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": 100000,
+      "mean_cv_macro_f1": 0.5744455821328509,
+      "model": "linear_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 1796,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.036997678285544705,
+      "total_seconds": 74.37373183399905,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/rbf_svm-color_hog-standard",
+      "best_mean_fit_seconds": 1.3250442504882813,
+      "best_mean_score_seconds": 0.40308413505554197,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": null,
+        "classifier__gamma": "scale"
+      },
+      "calibrated": false,
+      "candidate_count": 18,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:04:39.363896+00:00",
+      "descriptors": [
+        "color",
+        "hog"
+      ],
+      "feature_set": "color_hog",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.6972622044962695,
+        0.6796190417693021,
+        0.6459807436816979,
+        0.7041625877133916,
+        0.6051692601692601
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.6664387675659842,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.001,
+          0.01
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 1796,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.03665889735567922,
+      "total_seconds": 60.461676500039175,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/linear_svm-combined-standard",
+      "best_mean_fit_seconds": 5.245000791549683,
+      "best_mean_score_seconds": 0.007195043563842774,
+      "best_params": {
+        "classifier__C": 0.1,
+        "classifier__class_weight": null
+      },
+      "calibrated": false,
+      "candidate_count": 6,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:05:53.104066+00:00",
+      "descriptors": [
+        "color",
+        "hog",
+        "lbp"
+      ],
+      "feature_set": "combined",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.56526046775504,
+        0.5926575058627013,
+        0.6055009619488705,
+        0.6511198926725603,
+        0.5889200822376198
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": 100000,
+      "mean_cv_macro_f1": 0.6006917820953583,
+      "model": "linear_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 1806,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.028371193472449135,
+      "total_seconds": 73.57108816696564,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "screen/rbf_svm-combined-standard",
+      "best_mean_fit_seconds": 1.2177199363708495,
+      "best_mean_score_seconds": 0.4163236618041992,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": null,
+        "classifier__gamma": "scale"
+      },
+      "calibrated": false,
+      "candidate_count": 18,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:06:47.714192+00:00",
+      "descriptors": [
+        "color",
+        "hog",
+        "lbp"
+      ],
+      "feature_set": "combined",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.6912847341979943,
+        0.6897171184149689,
+        0.657523387110406,
+        0.7118542528503683,
+        0.6149370772287438
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.6730633139604962,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.001,
+          0.01
+        ]
+      },
+      "phase": "screen",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 1806,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.033865188679052076,
+      "total_seconds": 54.444175874989014,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "refine/rbf_svm-color_lbp-standard",
+      "best_mean_fit_seconds": 0.035972213745117186,
+      "best_mean_score_seconds": 0.018987703323364257,
+      "best_params": {
+        "classifier__C": 30.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": "scale"
+      },
+      "calibrated": false,
+      "candidate_count": 24,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:06:50.730418+00:00",
+      "descriptors": [
+        "color",
+        "lbp"
+      ],
+      "feature_set": "color_lbp",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.7643615797068007,
+        0.7359322938600484,
+        0.8081440633636854,
+        0.801561568805664,
+        0.7507478138437174
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.7721494639159832,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          1.0,
+          10.0,
+          30.0,
+          100.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.005952380952380952,
+          0.09523809523809523
+        ]
+      },
+      "phase": "refine",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 42,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.028252604398794647,
+      "total_seconds": 2.861327832972165,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "refine/rbf_svm-color_lbp-root_l2",
+      "best_mean_fit_seconds": 0.03572602272033691,
+      "best_mean_score_seconds": 0.0182492733001709,
+      "best_params": {
+        "classifier__C": 30.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": 10.0
+      },
+      "calibrated": false,
+      "candidate_count": 32,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:06:54.492057+00:00",
+      "descriptors": [
+        "color",
+        "lbp"
+      ],
+      "feature_set": "color_lbp",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.7996252777666165,
+        0.7825920656014484,
+        0.8366822766181027,
+        0.8115777601880607,
+        0.7903923381883641
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.8041739436725186,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "root_l2",
+      "parameter_grid": {
+        "classifier__C": [
+          1.0,
+          10.0,
+          30.0,
+          100.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          1.0,
+          10.0,
+          50.0
+        ]
+      },
+      "phase": "refine",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 42,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.018910360558253216,
+      "total_seconds": 3.61296375002712,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "refine/rbf_svm-color-standard",
+      "best_mean_fit_seconds": 0.056542825698852536,
+      "best_mean_score_seconds": 0.021727848052978515,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": 0.125
+      },
+      "calibrated": false,
+      "candidate_count": 24,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:06:57.478417+00:00",
+      "descriptors": [
+        "color"
+      ],
+      "feature_set": "color",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.7296998457262572,
+        0.6797235110429214,
+        0.7428306096637023,
+        0.727981540737988,
+        0.7179201093082951
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.7196311232958328,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "standard",
+      "parameter_grid": {
+        "classifier__C": [
+          1.0,
+          10.0,
+          30.0,
+          100.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          0.0078125,
+          0.125
+        ]
+      },
+      "phase": "refine",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 32,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.02147030458641153,
+      "total_seconds": 2.8383169999578968,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    },
+    {
+      "artifact_directory": "refine/rbf_svm-color-root_l2",
+      "best_mean_fit_seconds": 0.03556838035583496,
+      "best_mean_score_seconds": 0.018468141555786133,
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": null,
+        "classifier__gamma": 10.0
+      },
+      "calibrated": false,
+      "candidate_count": 32,
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ],
+      "created_at_utc": "2026-10-23T17:07:01.251841+00:00",
+      "descriptors": [
+        "color"
+      ],
+      "feature_set": "color",
+      "fit_scope": "outer train only; selection by training CV; refit on all outer train",
+      "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+      "fold_macro_f1": [
+        0.7818380968634867,
+        0.7602207109539845,
+        0.8170504916307907,
+        0.7919800789801954,
+        0.7484427248418806
+      ],
+      "held_out_predictions_generated": false,
+      "input_feature_dimension": 1806,
+      "linear_max_iter": null,
+      "mean_cv_macro_f1": 0.7799064206540676,
+      "model": "rbf_svm",
+      "n_splits": 5,
+      "normalization": "root_l2",
+      "parameter_grid": {
+        "classifier__C": [
+          1.0,
+          10.0,
+          30.0,
+          100.0
+        ],
+        "classifier__class_weight": [
+          null,
+          "balanced"
+        ],
+        "classifier__gamma": [
+          "scale",
+          1.0,
+          10.0,
+          50.0
+        ]
+      },
+      "phase": "refine",
+      "provenance": {
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+        "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+        "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+        "training_features_sha256": "7f0e32f32c9f6ce14874b291ba3f896d7ecf1268d7b76648c903abd5a9f3e4c8",
+        "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7"
+      },
+      "schema_version": 1,
+      "score_interpretation": "Selection CV score; not an unbiased final-test estimate",
+      "seed": 42,
+      "selected_feature_dimension": 32,
+      "selection_metric": "f1_macro",
+      "source": {
+        "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+        "package_source_sha256": "8d7d03ecbfdde172291e51228b58497dd81c31a0530e7a6ceb00583e5d36350c",
+        "packages": {
+          "joblib": "1.6.0",
+          "numpy": "2.5.4",
+          "pandas": "3.0.6",
+          "scikit-image": "0.26.0",
+          "scikit-learn": "1.9.1",
+          "scipy": "1.18.1"
+        },
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.12.5",
+        "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+        "working_tree_dirty": true
+      },
+      "splitter": "StratifiedGroupKFold",
+      "std_cv_macro_f1": 0.024110901798297533,
+      "total_seconds": 3.623132666980382,
+      "training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+      "training_samples": 1764
+    }
+  ],
+  "schema_version": 1,
+  "score_interpretation": "Exploratory training-CV selection; not nested CV or final test"
+}

@@ -1,0 +1,403 @@
+{
+  "plan": {
+    "scope": "Exploratory selection CV; no outer validation/test predictions",
+    "baseline_training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+    "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+    "source": {
+      "git_revision": "6733eb47699e95be568e54ddade1f2050472325e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "4f752c14004286ce359e046088dbdced4bd2e68448923dbed470b506a9cbdab1",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.5",
+      "platform": "macOS-27.0.1-arm64-arm-64bit",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    },
+    "settings": {
+      "preprocessing": {
+        "width": 256,
+        "height": 256,
+        "preserve_aspect_ratio": true,
+        "padding_rgb": [
+          255,
+          255,
+          255
+        ]
+      },
+      "hsv_bins": [
+        32,
+        16,
+        16
+      ],
+      "rgb_bins": 16,
+      "lab_bins": 16,
+      "joint_hs_bins": [
+        16,
+        8
+      ],
+      "lbp_uniform": [
+        [
+          8,
+          1
+        ],
+        [
+          16,
+          2
+        ],
+        [
+          24,
+          3
+        ]
+      ],
+      "lbp_nonuniform_rotation_sensitive": [
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          2
+        ]
+      ],
+      "foreground_rule": "HSV saturation > 0.12 OR value < 0.92",
+      "regions": [
+        "global",
+        "foreground",
+        "top_left",
+        "top_right",
+        "bottom_left",
+        "bottom_right"
+      ]
+    },
+    "families": [
+      "global_color",
+      "global_color_texture",
+      "global_color_spatial_texture",
+      "spatial_color_texture"
+    ],
+    "grid": {
+      "classifier__C": [
+        10.0,
+        30.0,
+        100.0
+      ],
+      "classifier__gamma": [
+        1.0,
+        5.0,
+        10.0
+      ],
+      "classifier__class_weight": [
+        null,
+        "balanced"
+      ]
+    },
+    "normalization": "elementwise square root then per-row L2",
+    "n_jobs": 3,
+    "candidate_count": 72,
+    "cv_fits": 360,
+    "adaptation": "Follow-up declared after original SVM study reached 0.8042"
+  },
+  "runs": [
+    {
+      "family": "global_color",
+      "mean_cv_macro_f1": 0.8337782598868658,
+      "std_cv_macro_f1": 0.02284205935602988,
+      "fold_macro_f1": [
+        0.8549454737353077,
+        0.8099347183932807,
+        0.850524800623179,
+        0.8513683527334842,
+        0.802117953949078
+      ],
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": null,
+        "classifier__gamma": 5.0
+      },
+      "candidates": 18,
+      "dimension": 576,
+      "seconds": 9.685565166990273
+    },
+    {
+      "family": "global_color_texture",
+      "mean_cv_macro_f1": 0.8695827563298077,
+      "std_cv_macro_f1": 0.01883407382149892,
+      "fold_macro_f1": [
+        0.8714386888881177,
+        0.8499314798318985,
+        0.8948412463396873,
+        0.8848005096375449,
+        0.8469018569517903
+      ],
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": 10.0
+      },
+      "candidates": 18,
+      "dimension": 920,
+      "seconds": 15.852103375014849
+    },
+    {
+      "family": "global_color_spatial_texture",
+      "mean_cv_macro_f1": 0.8802629387653151,
+      "std_cv_macro_f1": 0.021545434576092995,
+      "fold_macro_f1": [
+        0.8788801034764608,
+        0.8587527579627804,
+        0.9070145903479236,
+        0.9021383815461776,
+        0.8545288604932337
+      ],
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": null,
+        "classifier__gamma": 10.0
+      },
+      "candidates": 18,
+      "dimension": 1608,
+      "seconds": 25.351907125033904
+    },
+    {
+      "family": "spatial_color_texture",
+      "mean_cv_macro_f1": 0.869644418400975,
+      "std_cv_macro_f1": 0.02073149295478335,
+      "fold_macro_f1": [
+        0.8601306508151084,
+        0.8532551173062232,
+        0.8853618522753256,
+        0.9020405481564676,
+        0.8474339234517502
+      ],
+      "best_params": {
+        "classifier__C": 10.0,
+        "classifier__class_weight": null,
+        "classifier__gamma": 5.0
+      },
+      "candidates": 18,
+      "dimension": 2760,
+      "seconds": 52.18918362498516
+    }
+  ],
+  "winner": {
+    "family": "global_color_spatial_texture",
+    "mean_cv_macro_f1": 0.8802629387653151,
+    "std_cv_macro_f1": 0.021545434576092995,
+    "fold_macro_f1": [
+      0.8788801034764608,
+      0.8587527579627804,
+      0.9070145903479236,
+      0.9021383815461776,
+      0.8545288604932337
+    ],
+    "best_params": {
+      "classifier__C": 10.0,
+      "classifier__class_weight": null,
+      "classifier__gamma": 10.0
+    },
+    "candidates": 18,
+    "dimension": 1608,
+    "seconds": 25.351907125033904
+  },
+  "diagnostics": {
+    "scope": "outer-training OOF; parameters selected using these folds; exploratory",
+    "training_samples": 1764,
+    "training_fingerprint": "01b2deed507e7f5c808a3b249b29165ba41e59687b689b42c05cbe276756bbab",
+    "class_order": [
+      "cardboard",
+      "glass",
+      "metal",
+      "paper",
+      "plastic",
+      "trash"
+    ],
+    "accuracy": 0.8900226757369615,
+    "pooled_macro_f1": 0.8811851206709029,
+    "fold_macro_f1": [
+      0.8788801034764608,
+      0.8587527579627804,
+      0.9070145903479236,
+      0.9021383815461776,
+      0.8545288604932337
+    ],
+    "mean_fold_macro_f1": 0.8802629387653151,
+    "fold_accuracy": [
+      0.8898305084745762,
+      0.867231638418079,
+      0.9034090909090909,
+      0.90625,
+      0.8835227272727273
+    ],
+    "per_class": {
+      "cardboard": {
+        "precision": 0.9560439560439561,
+        "recall": 0.925531914893617,
+        "f1-score": 0.9405405405405406,
+        "support": 282.0
+      },
+      "glass": {
+        "precision": 0.8543956043956044,
+        "recall": 0.8936781609195402,
+        "f1-score": 0.8735955056179775,
+        "support": 348.0
+      },
+      "metal": {
+        "precision": 0.8373702422145328,
+        "recall": 0.8461538461538461,
+        "f1-score": 0.8417391304347827,
+        "support": 286.0
+      },
+      "paper": {
+        "precision": 0.9245283018867925,
+        "recall": 0.9423076923076923,
+        "f1-score": 0.9333333333333333,
+        "support": 416.0
+      },
+      "plastic": {
+        "precision": 0.878419452887538,
+        "recall": 0.8601190476190477,
+        "f1-score": 0.869172932330827,
+        "support": 336.0
+      },
+      "trash": {
+        "precision": 0.8823529411764706,
+        "recall": 0.78125,
+        "f1-score": 0.8287292817679558,
+        "support": 96.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        261,
+        3,
+        4,
+        9,
+        4,
+        1
+      ],
+      [
+        2,
+        311,
+        17,
+        4,
+        12,
+        2
+      ],
+      [
+        2,
+        24,
+        242,
+        5,
+        10,
+        3
+      ],
+      [
+        4,
+        4,
+        7,
+        392,
+        8,
+        1
+      ],
+      [
+        1,
+        20,
+        13,
+        10,
+        289,
+        3
+      ],
+      [
+        3,
+        2,
+        6,
+        4,
+        6,
+        75
+      ]
+    ],
+    "outer_holdout_predictions_generated": false
+  },
+  "provenance": {
+    "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+    "feature_config_sha256": "235856f00e070dbbb75142af81e1c464062855d50ff6be9d1297425b9267aa39",
+    "feature_source_fingerprint": "ab188cf3dd5e7616e8abf83e02837226c9a07a6b8233eb806a3e91d39f6ec3b8",
+    "training_features_sha256": "b7b6b247ac388d7c82dc2d7fad6d883d584b7b4e4284e67bb51d660b668aeccb",
+    "training_rows_sha256": "ec00d9d16a73cda7245943ef4d38fe8f1fd5dacefefb4516b8dc90a55c47efd7",
+    "classes": [
+      "cardboard",
+      "glass",
+      "metal",
+      "paper",
+      "plastic",
+      "trash"
+    ],
+    "baseline_training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+    "extended_feature_settings": {
+      "preprocessing": {
+        "width": 256,
+        "height": 256,
+        "preserve_aspect_ratio": true,
+        "padding_rgb": [
+          255,
+          255,
+          255
+        ]
+      },
+      "hsv_bins": [
+        32,
+        16,
+        16
+      ],
+      "rgb_bins": 16,
+      "lab_bins": 16,
+      "joint_hs_bins": [
+        16,
+        8
+      ],
+      "lbp_uniform": [
+        [
+          8,
+          1
+        ],
+        [
+          16,
+          2
+        ],
+        [
+          24,
+          3
+        ]
+      ],
+      "lbp_nonuniform_rotation_sensitive": [
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          2
+        ]
+      ],
+      "foreground_rule": "HSV saturation > 0.12 OR value < 0.92",
+      "regions": [
+        "global",
+        "foreground",
+        "top_left",
+        "top_right",
+        "bottom_left",
+        "bottom_right"
+      ]
+    },
+    "extended_extractor_sha256": "2a4b4d2f8943c3d588c4ee0f28a879e062708244bc0e063df31185e5a67a1c67"
+  },
+  "training_fingerprint": "01b2deed507e7f5c808a3b249b29165ba41e59687b689b42c05cbe276756bbab",
+  "extraction_seconds": 31.20963416696759,
+  "outer_holdout_predictions_generated": false
+}
