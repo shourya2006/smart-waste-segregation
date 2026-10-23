@@ -427,23 +427,36 @@ def is_cache_stale(
             )
             return True, reason
 
-    resolved_config = config
-    if resolved_config is None and (root / "configs/phase1.toml").is_file():
+    if config is not None:
+        if not isinstance(config, Mapping):
+            return True, "Invalid configuration: config must be a mapping"
         try:
-            resolved_config = tomllib.loads((root / "configs/phase1.toml").read_text())
-        except Exception:
-            resolved_config = None
+            expected_config_hash = compute_config_hash(config)
+        except (TypeError, ValueError) as exc:
+            return True, f"Invalid configuration: {exc}"
+    else:
+        cfg_path = root / "configs/phase1.toml"
+        if not cfg_path.is_file():
+            return True, f"Configuration file not found: {cfg_path}"
+        try:
+            resolved_config = tomllib.loads(cfg_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            return True, f"Failed to read configuration from {cfg_path}: {exc}"
+        if not isinstance(resolved_config, Mapping):
+            return True, f"Invalid configuration in {cfg_path}: root must be a mapping"
+        try:
+            expected_config_hash = compute_config_hash(resolved_config)
+        except (TypeError, ValueError) as exc:
+            return True, f"Invalid configuration in {cfg_path}: {exc}"
 
-    if resolved_config is not None:
-        expected_config_hash = compute_config_hash(resolved_config)
-        cached_config_hash = metadata.get("config_hash")
-        if cached_config_hash != expected_config_hash:
-            reason = (
-                f"Configuration hash mismatch "
-                f"(cache: {cached_config_hash[:8] if cached_config_hash else 'missing'}..., "
-                f"current: {expected_config_hash[:8]}...)"
-            )
-            return True, reason
+    cached_config_hash = metadata.get("config_hash")
+    if cached_config_hash != expected_config_hash:
+        reason = (
+            f"Configuration hash mismatch "
+            f"(cache: {cached_config_hash[:8] if cached_config_hash else 'missing'}..., "
+            f"current: {expected_config_hash[:8]}...)"
+        )
+        return True, reason
 
     return False, "Cache is up to date"
 
@@ -625,26 +638,27 @@ def load_features(
     if not path.is_file():
         raise FileNotFoundError(f"Feature cache not found: {path}")
 
-    resolved_config = expected_config
-    if resolved_config is None and root is not None:
-        cfg_path = root / "configs/phase1.toml"
-        if cfg_path.is_file():
-            try:
-                resolved_config = tomllib.loads(cfg_path.read_text())
-            except Exception:
-                resolved_config = None
-
     if check_stale:
         if root is not None:
-            stale, reason = is_cache_stale(path, root, config=resolved_config)
+            stale, reason = is_cache_stale(path, root, config=expected_config)
             if stale:
                 raise ValueError(f"Cannot load stale feature cache: {reason}")
-        elif resolved_config is not None:
+        elif expected_config is not None:
+            if not isinstance(expected_config, Mapping):
+                raise ValueError(
+                    "Cannot load stale feature cache: "
+                    "Invalid configuration: expected_config must be a mapping"
+                )
+            try:
+                expected_hash = compute_config_hash(expected_config)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(
+                    f"Cannot load stale feature cache: Invalid configuration: {exc}"
+                ) from exc
             with np.load(path, allow_pickle=False) as data:
                 if "metadata" not in data:
                     raise ValueError("Cannot load stale feature cache: missing metadata")
                 meta = json.loads(str(data["metadata"]))
-            expected_hash = compute_config_hash(resolved_config)
             cached_hash = meta.get("config_hash")
             if cached_hash != expected_hash:
                 reason = (

@@ -127,8 +127,9 @@ waste-data features --force
      Reversing or changing class ordering invalidates the cache and regenerates aligned integer targets.
    - `source_fingerprint`: SHA-256 hash of `features.py` and `preprocessing.py`.
    - Validation in `is_cache_stale()` and `load_features()` verifies all three: manifest SHA, config hash, and
-     source fingerprint. `load_features(..., root=root)` automatically resolves on-disk configuration if omitted,
-     and honours explicitly supplied configurations even when `root=None`.
+     source fingerprint. When `root` is supplied and no explicit configuration is provided, `is_cache_stale()`
+     and `load_features()` strictly require `configs/phase1.toml` to be present, readable, and valid (reporting
+     a clear failure and rejecting the cache otherwise), while preserving support for explicitly supplied valid configs.
 6. **Safe Storage**: Saved with native NumPy string arrays so loading with `allow_pickle=False` works safely and securely.
    Stored under `data/processed/` which is ignored by Git.
 
@@ -136,7 +137,7 @@ waste-data features --force
 
 ## Verified Results
 
-### 1. Synthetic Unit Tests (53 passing tests in ~1.5s)
+### 1. Synthetic Unit Tests (56 passing tests in ~1.5s)
 Run with:
 ```sh
 ruff check .
@@ -154,6 +155,7 @@ Test coverage includes:
 - Cache row alignment, exclusion filtering, and split preservation.
 - Stale cache detection on manifest, configuration, class-ordering, and source-code fingerprint changes.
 - Automatic configuration resolution in `load_features(path, root=root)` and non-silent explicit config checks.
+- Explicit failure reporting on missing, malformed, or invalid configuration files.
 - CLI idempotency and `--force` regeneration.
 
 ### 2. Real Dataset Validation (TrashNet)

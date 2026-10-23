@@ -492,6 +492,94 @@ class FeatureCacheTests(unittest.TestCase):
         self.assertEqual(new_cache["targets"][cardboard_idx], 5)
         self.assertEqual(new_cache["targets"][paper_idx], 2)
 
+    def test_missing_config_file_fails_stale_check_and_loader(self):
+        output_path = self.root / "data/processed/features.npz"
+        build_feature_cache(self.root, output_path=output_path)
+
+        # Remove config file
+        disk_cfg_path = self.root / "configs/phase1.toml"
+        disk_cfg_path.unlink()
+
+        # is_cache_stale reports clear failure
+        stale, reason = is_cache_stale(output_path, self.root)
+        self.assertTrue(stale)
+        self.assertIn("Configuration file not found", reason)
+
+        # load_features rejects cache
+        with self.assertRaisesRegex(ValueError, "Configuration file not found"):
+            load_features(output_path, root=self.root, check_stale=True)
+
+        # Explicitly supplied valid config succeeds
+        stale_explicit, reason_explicit = is_cache_stale(output_path, self.root, config=self.config)
+        self.assertFalse(stale_explicit)
+        self.assertEqual(reason_explicit, "Cache is up to date")
+
+        cache = load_features(
+            output_path, root=self.root, expected_config=self.config, check_stale=True
+        )
+        self.assertEqual(cache["features"].shape[1], 1806)
+
+    def test_malformed_config_file_fails_stale_check_and_loader(self):
+        output_path = self.root / "data/processed/features.npz"
+        build_feature_cache(self.root, output_path=output_path)
+
+        # Write malformed TOML
+        disk_cfg_path = self.root / "configs/phase1.toml"
+        disk_cfg_path.write_text("[features\ninvalid toml [[[")
+
+        # is_cache_stale reports clear failure
+        stale, reason = is_cache_stale(output_path, self.root)
+        self.assertTrue(stale)
+        self.assertIn("Failed to read configuration", reason)
+
+        # load_features rejects cache
+        with self.assertRaisesRegex(ValueError, "Failed to read configuration"):
+            load_features(output_path, root=self.root, check_stale=True)
+
+        # Explicitly supplied valid config succeeds
+        stale_explicit, reason_explicit = is_cache_stale(output_path, self.root, config=self.config)
+        self.assertFalse(stale_explicit)
+        self.assertEqual(reason_explicit, "Cache is up to date")
+
+        cache = load_features(
+            output_path, root=self.root, expected_config=self.config, check_stale=True
+        )
+        self.assertEqual(cache["features"].shape[1], 1806)
+
+    def test_invalid_config_contents_fails_stale_check_and_loader(self):
+        output_path = self.root / "data/processed/features.npz"
+        build_feature_cache(self.root, output_path=output_path)
+
+        # Write syntactically valid TOML but invalid feature configuration
+        disk_cfg_path = self.root / "configs/phase1.toml"
+        disk_cfg_path.write_text(
+            '[preprocessing]\nwidth = 128\nheight = 128\n\n'
+            '[features.color]\nspace = "HSV"\nbins = [16, 8, 8]\n\n'
+            '[features.hog]\norientations = -9\npixels_per_cell = [16, 16]\n'
+            'cells_per_block = [2, 2]\n\n'
+            '[features.lbp]\nneighbors = 8\nradius = 1\nmethod = "uniform"\n'
+        )
+
+        # is_cache_stale reports clear failure
+        stale, reason = is_cache_stale(output_path, self.root)
+        self.assertTrue(stale)
+        self.assertIn("Invalid configuration", reason)
+
+        # load_features rejects cache
+        with self.assertRaisesRegex(ValueError, "Invalid configuration"):
+            load_features(output_path, root=self.root, check_stale=True)
+
+        # Explicitly supplied valid config succeeds
+        stale_explicit, reason_explicit = is_cache_stale(output_path, self.root, config=self.config)
+        self.assertFalse(stale_explicit)
+        self.assertEqual(reason_explicit, "Cache is up to date")
+
+        cache = load_features(
+            output_path, root=self.root, expected_config=self.config, check_stale=True
+        )
+        self.assertEqual(cache["features"].shape[1], 1806)
+
 
 if __name__ == "__main__":
     unittest.main()
+
