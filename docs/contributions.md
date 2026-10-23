@@ -1,8 +1,8 @@
 # Contributions
 
-The six members below were supplied by the user. GitHub usernames are pending,
-except Shourya Bafna’s connected account `shourya2006`. Each member must configure
-their own Git author details. The course team-size requirement is documented in
+The six members below were supplied by the user. Verified accounts are Shourya
+Bafna (`shourya2006`) and Om Yadav (`yadavom7345`). Other GitHub usernames are
+pending. Each member must configure their own Git author details. The course team-size requirement is documented in
 [the implementation assignments](team-assignments.md).
 
 Ownership does not replace the individual understanding required for the viva.
@@ -35,6 +35,7 @@ their own commit or pull request; do not count this assignment as completed work
 
 | Contributor | Date | Implemented or reviewed work | Commit or pull request |
 | --- | --- | --- | --- |
+| Om Yadav | 2026-10-23 | Assistant-assisted RGB letterbox preprocessing, 13 behavior tests, and in-memory reproduction of the approved data protocol | [Preprocessing branch](https://github.com/shourya2006/smart-waste-segregation/tree/feat/preprocessing) |
 
 Record completed work with the contributor's name, a short description, date,
 and commit or pull-request link. Each member should review another component.
