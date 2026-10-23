@@ -43,3 +43,7 @@ their own commit or pull request; do not count this assignment as completed work
 Record completed work with the contributor's name, a short description, date,
 and commit or pull-request link. Each member should review another component.
 All report sections should identify the actual contributors.
+
+## SVM follow-up
+
+Shourya Bafna, with the coding assistant: SVM feature/normalization study (256 candidates), opt-in extended colour/texture SVM study (72 candidates), training-only diagnostics and reproducible reports; 0.8803 mean CV macro F1 and 82 passing tests. Shourya approved committing, pushing and opening the follow-up PR. Implementation and experiment records: [SVM feature study branch](https://github.com/shourya2006/smart-waste-segregation/tree/codex/svm-feature-study).

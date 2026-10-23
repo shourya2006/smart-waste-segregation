@@ -35,6 +35,7 @@ choices. They are not additional faculty requirements.
 - [x] Implement dummy, linear SVM and RBF SVM training with fold-local scaling and logging.
 - [x] Complete Random Forest training and compare the initial model families.
 - [x] Compare five Random Forest feature families and tune using training-only cross-validation.
+- [x] Complete SVM feature/normalization search and extended-descriptor study (0.8803 selection-CV macro F1).
 - [ ] Calibrate probabilities using held-out training folds.
 - [ ] Select an abstention threshold using validation data and inspect coverage.
 - [ ] Freeze and evaluate on the untouched test set.

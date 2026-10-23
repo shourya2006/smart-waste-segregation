@@ -1,0 +1,17 @@
+phase,model,feature_set,normalization,dimensions,mean_cv_macro_f1,fold_std,candidate_count,parameters,seconds
+screen,linear_svm,color,standard,32,0.5314308294755736,0.016693051569790836,6,"{""classifier__C"": 0.1, ""classifier__class_weight"": ""balanced""}",1.3030208749696612
+screen,rbf_svm,color,standard,32,0.7164571230522822,0.02593302366161151,18,"{""classifier__C"": 10.0, ""classifier__class_weight"": ""balanced"", ""classifier__gamma"": ""scale""}",2.1018694159574807
+screen,linear_svm,lbp,standard,10,0.4502716321345105,0.019599579588136375,6,"{""classifier__C"": 1.0, ""classifier__class_weight"": ""balanced""}",0.2144315000041388
+screen,rbf_svm,lbp,standard,10,0.5358075808083305,0.030759236682288103,18,"{""classifier__C"": 10.0, ""classifier__class_weight"": ""balanced"", ""classifier__gamma"": ""scale""}",1.6747017500456423
+screen,linear_svm,color_lbp,standard,42,0.6202951560146106,0.021764143721088102,6,"{""classifier__C"": 0.1, ""classifier__class_weight"": ""balanced""}",0.40288954199058935
+screen,rbf_svm,color_lbp,standard,42,0.7688962375029076,0.028543929664156382,18,"{""classifier__C"": 10.0, ""classifier__class_weight"": ""balanced"", ""classifier__gamma"": ""scale""}",2.130564042017795
+screen,linear_svm,hog,standard,1764,0.46623808654354076,0.01918317206242897,6,"{""classifier__C"": 0.1, ""classifier__class_weight"": null}",91.90474337502383
+screen,rbf_svm,hog,standard,1764,0.6184896523152448,0.026394588509176645,18,"{""classifier__C"": 10.0, ""classifier__class_weight"": null, ""classifier__gamma"": ""scale""}",55.79935208300594
+screen,linear_svm,color_hog,standard,1796,0.5744455821328509,0.036997678285544705,6,"{""classifier__C"": 0.1, ""classifier__class_weight"": ""balanced""}",74.37373183399905
+screen,rbf_svm,color_hog,standard,1796,0.6664387675659842,0.03665889735567922,18,"{""classifier__C"": 10.0, ""classifier__class_weight"": null, ""classifier__gamma"": ""scale""}",60.461676500039175
+screen,linear_svm,combined,standard,1806,0.6006917820953583,0.028371193472449135,6,"{""classifier__C"": 0.1, ""classifier__class_weight"": null}",73.57108816696564
+screen,rbf_svm,combined,standard,1806,0.6730633139604962,0.033865188679052076,18,"{""classifier__C"": 10.0, ""classifier__class_weight"": null, ""classifier__gamma"": ""scale""}",54.444175874989014
+refine,rbf_svm,color_lbp,standard,42,0.7721494639159832,0.028252604398794647,24,"{""classifier__C"": 30.0, ""classifier__class_weight"": ""balanced"", ""classifier__gamma"": ""scale""}",2.861327832972165
+refine,rbf_svm,color_lbp,root_l2,42,0.8041739436725186,0.018910360558253216,32,"{""classifier__C"": 30.0, ""classifier__class_weight"": ""balanced"", ""classifier__gamma"": 10.0}",3.61296375002712
+refine,rbf_svm,color,standard,32,0.7196311232958328,0.02147030458641153,24,"{""classifier__C"": 10.0, ""classifier__class_weight"": ""balanced"", ""classifier__gamma"": 0.125}",2.8383169999578968
+refine,rbf_svm,color,root_l2,32,0.7799064206540676,0.024110901798297533,32,"{""classifier__C"": 10.0, ""classifier__class_weight"": null, ""classifier__gamma"": 10.0}",3.623132666980382

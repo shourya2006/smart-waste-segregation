@@ -121,3 +121,31 @@ real CLI fold generation/reuse, full dummy/linear/RBF searches, saved-model
 reloading, full candidate-score consistency, and both SVM scalers' sample counts
 and means against outer-training rows. No validation/test predictions were made.
 All source checksums in the recorded runs matched the completed implementation.
+
+## Follow-up SVM feature study
+
+The [declared follow-up protocol](../training/svm-study.md) completes the SVM
+feature-family comparison before choosing a model for calibration. It screens
+both SVMs on the original five feature sets plus compact HSV+LBP, then refines
+the top two RBF families with broader C/gamma choices and a root/L2 histogram
+representation. Shared images, groups, raw feature vectors and saved folds stay
+unchanged. The root transform is per image; StandardScaler, where used, remains
+inside each fold's pipeline.
+
+The follow-up adds `svm_study.py`, the `waste-svm-study` entry point and dedicated
+tests for deterministic family selection, root normalization, worker-local
+convergence rejection, training-only diagnostics and resumable experiment plans.
+It records the plan before fitting, preserves original baseline records and
+produces per-class out-of-fold training diagnostics for selected models. These
+diagnostics use the same folds as parameter selection, so they carry selection
+optimism and must not be presented as untouched-test results.
+
+### Follow-up outcome and teammate interface
+
+The original-feature search reaches 0.804174 mean CV macro F1. A separate adaptive extended-descriptor study reaches **0.880263** (fold std 0.021545) and **89.00% training-OOF accuracy**, exceeding the requested 0.86 CV target. Both retain the fixed training IDs/groups/folds and leave validation/test predictions untouched. These scores carry model-selection optimism.
+
+The new winner uses 256×256 image preprocessing, global colour and spatial multiscale LBP histograms, square-root/L2 normalization and an RBF SVM (C=10, gamma=10, no class weighting). Its extractor returns 2,760 entries; the pipeline internally selects 1,608. This is an opt-in extension, not a replacement of Aditya's original descriptor/cache contract.
+
+Prajjwal must use `extract_extended_features(image)` with this winner, clone the full selected pipeline for group-aware calibration, then choose abstention on validation and evaluate the frozen model on test. Do not feed it the original 1,806-feature cache. [Protocol, artifact and reproduction](../training/extended-svm-study.md).
+
+All 82 tests pass, along with lint/dependency checks and real-data verification of candidates, saved models, OOF identities/scores and image-extraction parity. Shourya approved committing, pushing and opening a PR for the follow-up on `codex/svm-feature-study`.

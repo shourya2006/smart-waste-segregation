@@ -158,3 +158,9 @@ Training tests include deliberately extreme held-out vectors, misaligned cache
 identities/targets, excluded rows, non-finite/wrong-sized matrices, outer-group
 leakage, exhaustive group-aware folds, stale/edited fold files, and observed
 scaler fitting inputs in every CV fold plus the final outer-training refit.
+
+## Stronger SVM follow-up candidate
+
+The completed [original-feature study](svm-study.md) reaches 0.8042 macro F1. The [extended-descriptor study](extended-svm-study.md) reaches **0.8803 mean training-CV macro F1** and **0.8900 pooled training-OOF accuracy** on the same five frozen folds. These are selection results, not final-test estimates.
+
+For the new candidate, use the separate `extract_extended_features` interface (2,760 input dimensions, 1,608 selected internally) and its saved full pipeline. The original feature cache remains available for baselines. The extended study guide contains the exact settings, artifact path, reproduction command and calibration handoff.
