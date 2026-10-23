@@ -33,8 +33,8 @@ choices. They are not additional faculty requirements.
 - [x] Extract HSV histograms, HOG, and uniform LBP with documented dimensions.
 - [x] Implement shared training-input validation and five frozen group-aware CV folds.
 - [x] Implement dummy, linear SVM and RBF SVM training with fold-local scaling and logging.
-- [ ] Complete Random Forest training and compare all model families.
-- [ ] Compare feature families and tune using training-only cross-validation.
+- [x] Complete Random Forest training and compare the initial model families.
+- [x] Compare five Random Forest feature families and tune using training-only cross-validation.
 - [ ] Calibrate probabilities using held-out training folds.
 - [ ] Select an abstention threshold using validation data and inspect coverage.
 - [ ] Freeze and evaluate on the untouched test set.

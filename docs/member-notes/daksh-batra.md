@@ -89,7 +89,7 @@ Reference baselines from Shourya's verified runs (`docs/training/svm-cv-summary.
      - Combined: 0.6683 (None) → 0.7090 (Balanced), an increase of +0.0407.
      - LBP: 0.5007 (None) → 0.5069 (Balanced), an increase of +0.0063.
      - HSV Color: 0.7366 (None) → 0.7340 (Balanced), a minor difference of -0.0027.
-   - *Hypothesis on Minority-Class Sensitivity*: The outer training set contains moderate imbalance (e.g., 417 paper images vs. 96 trash images). Because macro F1 weights all 6 classes equally, unweighted trees in high-dimensional, less separable spaces may prioritize majority classes at the expense of minority-class recall. Balanced weighting penalizes errors inversely proportional to class frequencies, which appears beneficial where feature separability is lower, while having little impact when color separation is already strong. We report these as observed empirical differences across the CV folds rather than claiming formal statistical significance, which was not tested.
+   - *Hypothesis on Minority-Class Sensitivity*: The outer training set contains moderate imbalance (e.g., 416 paper images vs. 96 trash images). Because macro F1 weights all 6 classes equally, unweighted trees in high-dimensional, less separable spaces may prioritize majority classes at the expense of minority-class recall. Balanced weighting penalizes errors inversely proportional to class frequencies, which appears beneficial where feature separability is lower, while having little impact when color separation is already strong. We report these as observed empirical differences across the CV folds rather than claiming formal statistical significance, which was not tested.
 
 ## Reproduction Commands
 

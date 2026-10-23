@@ -17,9 +17,11 @@ validation 380, and test 377. Training-only EDA is available in
 
 Shared preprocessing and the 1,806-dimensional HSV/HOG/LBP extractor are implemented.
 The training protocol provides five fixed group-aware folds, a dummy baseline,
-and linear/RBF SVM searches with fold-local scaling. See the
+and linear/RBF SVM searches with fold-local scaling. Random Forest studies compare
+five descriptor families and class weighting on the same folds. See the
 [training guide](docs/training/README.md) for reproduction and teammate interfaces.
-Random Forest/feature studies, calibration, final evaluation and the demo follow.
+Calibration, final evaluation and the demo follow; further SVM feature studies
+can refine the current model-selection results.
 Training-CV selection scores must not be interpreted as final-test performance.
 
 ## Local setup
