@@ -28,6 +28,14 @@ def main():
     audit.add_argument("--phash-distance", type=int, default=6)
     sub.add_parser("split", help="Apply completed reviews and create fixed group-aware splits")
     sub.add_parser("eda", help="Create train-only exploratory charts and sample grids")
+    feat = sub.add_parser(
+        "features", help="Extract and cache handcrafted features from manifest"
+    )
+    feat.add_argument("--config", type=Path, default=None, help="Path to config TOML")
+    feat.add_argument("--output", type=Path, default=None, help="Output .npz path")
+    feat.add_argument(
+        "--force", action="store_true", help="Force regeneration even if cache is up to date"
+    )
     args = parser.parse_args()
     root = args.root.resolve()
     reports = root / "docs/dataset"
@@ -109,6 +117,15 @@ def main():
         from waste_sorting.eda import create_eda
 
         create_eda(root)
+    elif args.command == "features":
+        from waste_sorting.features import build_feature_cache
+
+        build_feature_cache(
+            root=root,
+            config_path=args.config,
+            output_path=args.output,
+            force=args.force,
+        )
 
 
 if __name__ == "__main__":

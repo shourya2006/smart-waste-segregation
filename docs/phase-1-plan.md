@@ -29,8 +29,8 @@ choices. They are not additional faculty requirements.
 - [x] Create an audited manifest and preserve duplicate decisions.
 - [x] Create approximately 70/15/15 stratified splits, respecting detected groups.
 - [x] Explore training class balance, samples, dimensions, brightness, and ambiguity.
-- [ ] Implement consistent orientation correction, RGB conversion, and letterboxing.
-- [ ] Extract HSV histograms, HOG, and uniform LBP with documented dimensions.
+- [x] Implement consistent orientation correction, RGB conversion, and letterboxing.
+- [x] Extract HSV histograms, HOG, and uniform LBP with documented dimensions.
 - [ ] Train a dummy baseline, linear SVM, RBF SVM, and Random Forest.
 - [ ] Compare feature families and tune using training-only cross-validation.
 - [ ] Calibrate probabilities using held-out training folds.

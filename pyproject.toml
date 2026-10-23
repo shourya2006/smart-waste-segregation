@@ -27,6 +27,7 @@ demo = ["gradio>=5"]
 
 [project.scripts]
 waste-data = "waste_sorting.data_cli:main"
+waste-features = "waste_sorting.features:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
