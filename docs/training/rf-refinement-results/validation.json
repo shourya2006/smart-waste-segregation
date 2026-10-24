@@ -1,0 +1,56 @@
+{
+  "candidates_verified": 96,
+  "correct_predictions": 1490,
+  "family_winner_candidate_indices": {
+    "extended_global_color_spatial_texture": 22,
+    "extended_global_color_texture": 22,
+    "extended_spatial_color_texture": 7,
+    "original_hsv": 11
+  },
+  "fitting_performed": false,
+  "fold_evidence": "Recorded plan hash, shared runner folds, manifest identities/groups, and winner OOF assignments agree. Nonwinning candidate predictions/indices were not saved; their fold use is supported by the shared task construction, not a separate trace.",
+  "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+  "fold_sizes": [
+    354,
+    354,
+    352,
+    352,
+    352
+  ],
+  "historical_accuracy_from_confusion_counts": {
+    "extended_rbf_svm": 0.8900226757369615,
+    "linear_svm": 0.6456916099773242,
+    "random_forest_color": 0.753968253968254,
+    "rbf_svm": 0.8197278911564626
+  },
+  "identical_sampled_configurations_per_family": 24,
+  "local_artifacts_cross_checked": true,
+  "max_candidate_mean_std_absolute_error": 9.71445146547012e-17,
+  "oof_rows": 1764,
+  "recorded_fold_scores_verified": 480,
+  "source_sha256": {
+    "docs/dataset/manifest.csv": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+    "docs/training/extended-svm-results/summary.json": "4b56421bb99eec351c4ae9e705e79a7344a51db736a51f8272d99c01c7204ce3",
+    "docs/training/folds.json": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+    "docs/training/rf-cv-summary.json": "e5ca4f9aebd5374c6b974bf92cdb94a8805cfeea9a390bc65371f3dd982296ae",
+    "docs/training/rf-refinement-results/candidate-results.csv": "b3d75f4bee2057af64ec427b719206e5df6a42fe8439602b9bb3ef1b65c72329",
+    "docs/training/rf-refinement-results/summary.json": "18590d0513763757c72de556a7aef14db5370f46025976b585392f01a3daebce",
+    "docs/training/rf-refinement-results/training-oof-predictions.csv": "cece891c81fb76b22988c5cfa0fd4accf9654357d133ad5adc81b4b882605442",
+    "docs/training/svm-cv-summary.json": "3da151f9ef455d27ccf228bfc7415e4af2a02c8501080789da26b4a9ed9ea008",
+    "docs/training/svm-study-results/summary.json": "0aa4251e3eaff56713c184b4263add18f9b3353c6e3faf4cd21b7b269feffe33",
+    "src/waste_sorting/rf_refinement.py": "cff9e95dc307570b022e0d87b599f0af591b598f9d157814e38531b55131e0d0"
+  },
+  "status": "passed",
+  "std_ddof": 0,
+  "timing_definition": "Family CV search wall time measures all 24 candidates \u00d7 5 folds (120 fits), including parallel scheduling, fitting, prediction and scoring. It excludes feature extraction, the final winning estimator refit, serialization and OOF diagnostics. Final-refit time was not recorded. The preserved raw `seconds` field has this meaning.",
+  "tolerance_absolute": 1e-12,
+  "winner_accuracy": 0.844671201814059,
+  "winner_fold_macro_f1": [
+    0.8336108303148674,
+    0.8466452726017942,
+    0.8622642553542916,
+    0.8500010472588052,
+    0.7922544828126225
+  ],
+  "winner_pooled_macro_f1": 0.8377107269285956
+}

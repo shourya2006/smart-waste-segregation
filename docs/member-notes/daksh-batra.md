@@ -63,16 +63,8 @@ and explaining all methods for the individual viva.
 
 Reference baselines from Shourya's verified runs (`docs/training/svm-cv-summary.json`) are included alongside the 5 Random Forest feature studies:
 
-| Model / Family | Descriptors | Dims | Mean CV Macro F1 | Fold Std | Selected Settings | Search/Refit Time (s) |
-| --- | --- | ---: | ---: | ---: | --- | ---: |
-| Baseline: Dummy (Most Frequent) | COLOR+HOG+LBP | 1,806 | 0.0636 | 0.0002 | Most frequent class | 0.1 |
-| Baseline: Linear SVM | COLOR+HOG+LBP | 1,806 | 0.6007 | 0.0284 | C=0.1, class_weight=None | 173.8 |
-| Baseline: RBF SVM | COLOR+HOG+LBP | 1,806 | 0.6731 | 0.0339 | C=10.0, gamma=scale, class_weight=None | 143.8 |
-| **Random Forest (HSV Color)** | COLOR | 32 | **0.7366** | 0.0260 | n_est=200, depth=20, min_split=2, weight=None | 13.4 |
-| Random Forest (HOG) | HOG | 1,764 | 0.6252 | 0.0350 | n_est=200, depth=None, min_split=2, weight="balanced" | 81.0 |
-| Random Forest (LBP) | LBP | 10 | 0.5069 | 0.0108 | n_est=100, depth=20, min_split=2, weight="balanced" | 10.6 |
-| Random Forest (HSV+HOG) | COLOR+HOG | 1,796 | 0.7022 | 0.0389 | n_est=200, depth=20, min_split=2, weight="balanced" | 76.8 |
-| Random Forest (Combined) | COLOR+HOG+LBP | 1,806 | 0.7090 | 0.0522 | n_est=200, depth=None, min_split=2, weight="balanced" | 77.7 |
+<!-- generated:baselines:start -->
+<!-- generated:baselines:end -->
 
 ### Observations & Hypotheses
 
@@ -91,6 +83,55 @@ Reference baselines from Shourya's verified runs (`docs/training/svm-cv-summary.
      - HSV Color: 0.7366 (None) → 0.7340 (Balanced), a minor difference of -0.0027.
    - *Hypothesis on Minority-Class Sensitivity*: The outer training set contains moderate imbalance (e.g., 416 paper images vs. 96 trash images). Because macro F1 weights all 6 classes equally, unweighted trees in high-dimensional, less separable spaces may prioritize majority classes at the expense of minority-class recall. Balanced weighting penalizes errors inversely proportional to class frequencies, which appears beneficial where feature separability is lower, while having little impact when color separation is already strong. We report these as observed empirical differences across the CV folds rather than claiming formal statistical significance, which was not tested.
 
+## Random Forest Refinement Study (Extended Features)
+
+Following Shourya's PR #5 extended feature representation (2,760 dimensions across 6 image regions), Daksh conducted a bounded Random Forest refinement study across 4 feature families to test whether richer representations and tuned `max_features` could overcome the earlier feature-subspace dilution.
+
+### Evaluated Configurations & Setup
+- **Scope**: 4 families × 24 sampled candidates = 96 candidate evaluations = 480 selection CV fits across the 5 frozen outer-training folds (`folds.json`), plus four final refits and five winner diagnostic CV fits.
+- **Feature families**:
+  1. `original_hsv`: 32 selected features.
+  2. `extended_global_color_texture`: 920 selected features.
+  3. `extended_global_color_spatial_texture`: 1,608 selected features.
+  4. `extended_spatial_color_texture`: 2,760 features (complete vector).
+- **Candidate Grid Sampled (Seed 42)**:
+  - `n_estimators`: `[300, 600]`
+  - `max_depth`: `[None, 20, 40]`
+  - `min_samples_leaf`: `[1, 2, 4]`
+  - `max_features`: `['sqrt', 0.25, 0.5, 1.0]`
+  - `class_weight`: `[None, 'balanced', 'balanced_subsample']`
+  - `min_samples_split`: fixed at `2`, `bootstrap`: fixed at `True`.
+
+### Verified Outcomes
+
+<!-- generated:families:start -->
+| Family | Input dims | Selected dims | Mean CV macro F1 | Fold std | Pooled OOF accuracy | Family CV search wall time (s) | Best parameters |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `original_hsv` | 1806 | 32 | 0.741915 | 0.017718 | Not recorded | 93.3 | `{"classifier__bootstrap": true, "classifier__class_weight": null, "classifier__max_depth": 20, "classifier__max_features": 0.25, "classifier__min_samples_leaf": 1, "classifier__min_samples_split": 2, "classifier__n_estimators": 300}` |
+| `extended_global_color_texture` | 2760 | 920 | 0.831143 | 0.013520 | Not recorded | 1986.5 | `{"classifier__bootstrap": true, "classifier__class_weight": "balanced", "classifier__max_depth": null, "classifier__max_features": 0.25, "classifier__min_samples_leaf": 1, "classifier__min_samples_split": 2, "classifier__n_estimators": 600}` |
+| `extended_global_color_spatial_texture` | 2760 | 1608 | 0.826281 | 0.015241 | Not recorded | 3825.5 | `{"classifier__bootstrap": true, "classifier__class_weight": "balanced", "classifier__max_depth": null, "classifier__max_features": 0.25, "classifier__min_samples_leaf": 1, "classifier__min_samples_split": 2, "classifier__n_estimators": 600}` |
+| `extended_spatial_color_texture` | 2760 | 2760 | 0.836955 | 0.024141 | 0.844671 | 5471.6 | `{"classifier__bootstrap": true, "classifier__class_weight": "balanced", "classifier__max_depth": null, "classifier__max_features": "sqrt", "classifier__min_samples_leaf": 1, "classifier__min_samples_split": 2, "classifier__n_estimators": 600}` |
+
+Family CV search wall time measures all 24 candidates × 5 folds (120 fits), including parallel scheduling, fitting, prediction and scoring. It excludes feature extraction, the final winning estimator refit, serialization and OOF diagnostics. Final-refit time was not recorded. The preserved raw `seconds` field has this meaning.
+<!-- generated:families:end -->
+
+Only the overall winning family has saved OOF accuracy. See the [verified cross-study comparison and audit](../training/rf-refinement-results/README.md).
+
+- **Winning Model**: `extended_spatial_color_texture` (2,760 features)
+  - Mean 5-fold CV macro F1: **0.8370 ± 0.0241** (winning folds: `[0.8336, 0.8466, 0.8623, 0.8500, 0.7923]`).
+  - Pooled Out-of-Fold Accuracy: **0.8447** (1,490 / 1,764 correct).
+  - Improvement over initial HSV baseline: **+10.04 macro F1 points** (0.7366 → 0.8370).
+  - Per-class OOF F1: cardboard 0.8974, glass 0.8121, metal 0.7873, paper 0.9127, plastic 0.8080, trash 0.8087.
+  - Trash recall rose from **0.5625** (54 / 96 correct; original HSV RF diagnostic) to **0.7708** (74 / 96 correct) with the changed representation and tuned estimator; the improvement cannot be attributed to weighting alone.
+
+### Refinement Discussion & Model Recommendation
+1. **Subspace Dilution Observations**:
+   - In Families 2 and 3, setting `max_features=0.25` outperformed `sqrt` feature sampling, which is consistent with the feature-subspace hypothesis; varying other hyperparameters prevents a causal conclusion about `max_features` alone. In Family 4 (2,760 features), `sqrt` sampling (52 features) with 600 estimators provided the best ensemble diversity.
+2. **Team Model Selection Recommendation**:
+   - Random Forest refined performance improved to **0.8370 macro F1** (0.8447 accuracy), confirming Random Forest is highly viable on rich tabular representations.
+   - However, Shourya's Extended RBF SVM achieved **0.8803 macro F1** (0.8900 accuracy) on the exact same outer-training CV folds.
+   - **Recommendation**: The team should proceed with Shourya's **Extended RBF SVM (0.8803)** for Prajjwal's Phase 1 calibration, abstention, and final test evaluation. Daksh's refined Random Forest is documented as a competitive non-linear baseline and prime candidate for future model ensembling.
+
 ## Reproduction Commands
 
 From the repository root with the activated environment:
@@ -99,31 +140,37 @@ From the repository root with the activated environment:
 # 1. Verify code formatting and linting
 ruff check .
 
-# 2. Run the complete test suite (72 unit tests)
+# 2. Run the complete test suite
 python -m unittest discover -s tests -v
 
-# 3. Reproduce Random Forest feature studies
+# 3. Verify saved refinement records and regenerate reports without fitting
+python -m scripts.verify_rf_refinement --update-docs --artifacts artifacts/daksh-rf-refinement
+
+# Optional: reproduce original Random Forest feature studies
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 waste-train rf --output artifacts/daksh-rf-runs --n-jobs 4 --estimator-n-jobs 1
+
+# Optional: run a new Random Forest refinement experiment
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m waste_sorting.rf_refinement --output artifacts/new-rf-refinement-run --n-jobs 4 --seed 42
 ```
 
 ## Handoff to Teammates
 
 - **For Prajjwal Tripathi (Calibration & Evaluation)**:
-  - Saved estimators are located in `artifacts/daksh-rf-runs/` and expect full 1,806-dim feature vectors.
-  - The pipeline internally applies `ColumnTransformer` to select active features.
-  - The saved estimators are uncalibrated (`calibrated=False`). Prajjwal will clone the selected pipeline architecture, perform group-aware calibration on outer training folds, choose the abstention threshold on outer validation data, and perform final frozen evaluation on the test split.
+  - Refined RF estimator is saved at `artifacts/daksh-rf-refinement/extended_spatial_color_texture/estimator.joblib`.
+  - Takes 2,760-dim feature vectors from `extract_extended_features(image)` and internally handles column indexing.
+  - The model is fitted on outer-training rows only and is uncalibrated.
 - **For Saksham Mighlani (Demo & Integration)**:
-  - The trained `estimator.joblib` pipeline takes raw 1,806-dimensional feature arrays directly produced by `extract_features(image, config)` and handles column indexing automatically.
+  - The pipeline interface accepts full extended feature matrices directly without external manual scaling.
 
 ## Limitations & Viva Discussion Points
 
 1. **Why Random Forest does not require StandardScaler**:
    - Decision trees evaluate split criteria using monotonic inequalities ($x_j \leq \theta$). Any strictly monotonic transformation $f(x)$ preserves the order of data points, leaving the Gini impurity / entropy calculation and chosen split thresholds functionally equivalent.
 2. **Why HSV Color performs well on TrashNet but has deployment caveats**:
-   - In laboratory / benchmark datasets, background illumination and object colors can be consistent. In practical real-world deployment, colored bins, lighting shifts, and transparent plastics against varying backgrounds can degrade color-only performance. HOG shape features provide geometric robustness even if raw benchmark CV favors color.
-3. **The impact of feature subspace sampling ($m = \sqrt{p}$)**:
-   - When concatenating 32 color features with 1,764 HOG features, the color features are heavily diluted during random candidate selection at each node. Feature weighting or hierarchical feature combinations represent potential improvements.
+   - In laboratory / benchmark datasets, background illumination and object colors can be consistent. In practical real-world deployment, colored bins, lighting shifts, and transparent plastics against varying backgrounds can degrade color-only performance. Spatial and texture features provide geometric robustness even if raw benchmark CV favors color.
+3. **The impact of feature subspace sampling ($m = \sqrt{p}$ vs $0.25$)**:
+   - When concatenating hundreds of texture features with color features, random feature sampling can dilute color features at tree nodes. Evaluating `max_features=0.25` demonstrated that allowing trees to evaluate a wider subset of features at each node helps preserve discriminative color channels.
 4. **Group-aware cross-validation necessity**:
    - Duplicate images (same physical object photographed from different angles) would cause severe data leakage if randomly distributed between train and test/validation folds. Stratified group K-fold ensures no duplicate group spans across train and validation splits.
 5. **Macro F1 vs. Accuracy under Class Imbalance**:
-   - Macro F1 averages the F1 scores across all 6 classes independently. If a classifier ignores the minority trash class, its macro F1 drops severely even if overall classification accuracy remains high.
+   - Macro F1 averages the F1 scores across all 6 classes independently. If a classifier ignores the minority trash class, its macro F1 drops severely even if overall classification accuracy remains high. Balanced class weighting penalizes minority errors proportionally to restore class balance.

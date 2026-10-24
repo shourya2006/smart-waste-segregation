@@ -1,0 +1,7 @@
+true_label,cardboard,glass,metal,paper,plastic,trash
+cardboard,245,5,13,13,5,1
+glass,3,281,25,8,30,1
+metal,3,31,235,4,10,3
+paper,3,1,11,392,5,4
+plastic,5,21,22,21,263,4
+trash,5,5,5,5,2,74

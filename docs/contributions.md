@@ -47,3 +47,7 @@ All report sections should identify the actual contributors.
 ## SVM follow-up
 
 Shourya Bafna, with the coding assistant: SVM feature/normalization study (256 candidates), opt-in extended colour/texture SVM study (72 candidates), training-only diagnostics and reproducible reports; 0.8803 mean CV macro F1 and 82 passing tests. Shourya approved committing, pushing and opening the follow-up PR. Implementation and experiment records: [SVM feature study branch](https://github.com/shourya2006/smart-waste-segregation/tree/codex/svm-feature-study).
+
+## Random Forest refinement
+
+Daksh Batra, with the coding assistant: Random Forest refinement study evaluating 4 feature families (original HSV, extended global color+texture, extended global color+spatial texture, extended spatial color+texture) across 24 predeclared parameter configurations sampled deterministically with seed 42 (96 candidate evaluations, 480 selection CV fits, 4 final refits, 5 winner diagnostic CV fits). Mean CV macro F1 reached **0.8370 ± 0.0241** (pooled OOF accuracy **0.8447**), representing a +10.04 point gain over the initial HSV baseline. Recorded results were audited without refitting: all 96 candidate means/stds and winner OOF scores reproduce; historical accuracies and timing labels are corrected. Generated comparisons, source hashes, and verification results are recorded in [Random Forest refinement documentation](training/rf-refinement-study.md). Implementation branch: `codex/rf-refinement`.
