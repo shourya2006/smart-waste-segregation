@@ -1,0 +1,8 @@
+model,representation,selected_dimensions,mean_cv_macro_f1,std_cv_macro_f1,pooled_oof_accuracy,metrics_source,accuracy_source
+Dummy baseline,HSV+HOG+LBP,1806,0.06360839767571154,0.00019513267461816695,,svm-cv-summary.json → runs.dummy,Not recorded: no saved OOF predictions or diagnostic summary
+Original linear SVM,HSV+HOG+LBP,1806,0.6006917820953583,0.028371193472449135,,svm-cv-summary.json → runs.linear_svm,Not recorded: no saved OOF predictions or diagnostic summary
+Original RBF SVM,HSV+HOG+LBP,1806,0.6730633139604962,0.033865188679052076,,svm-cv-summary.json → runs.rbf_svm,Not recorded: no saved OOF predictions or diagnostic summary
+Original HSV RF,HSV,32,0.7366221858064982,0.025990285895018377,0.753968253968254,rf-cv-summary.json → runs[0],svm-study-results/summary.json → diagnostics.random_forest_color.accuracy
+Compact RBF SVM,HSV+LBP,42,0.8041739436725186,0.018910360558253216,0.8197278911564626,svm-study-results/summary.json → best RBF run,svm-study-results/summary.json → diagnostics.rbf_svm.accuracy
+Refined RF,Extended spatial color+texture,2760,0.836955177668476,0.02414116337838327,0.844671201814059,rf-refinement-results/summary.json → winner,rf-refinement-results/training-oof-predictions.csv; summary.json → diagnostics.accuracy
+Extended RBF SVM,Extended global color+spatial texture,1608,0.8802629387653151,0.021545434576092995,0.8900226757369615,extended-svm-results/summary.json → winner,extended-svm-results/summary.json → diagnostics.accuracy
