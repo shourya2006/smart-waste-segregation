@@ -30,6 +30,7 @@ waste-data = "waste_sorting.data_cli:main"
 waste-features = "waste_sorting.features:main"
 waste-train = "waste_sorting.training:main"
 waste-svm-study = "waste_sorting.svm_study:main"
+waste-evaluate = "waste_sorting.evaluation:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
