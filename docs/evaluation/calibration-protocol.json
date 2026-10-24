@@ -1,0 +1,37 @@
+{
+  "base_training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+  "calibration_method": "sigmoid (Platt scaling)",
+  "ensemble": true,
+  "feature_family": "global_color_spatial_texture",
+  "fold_count": 5,
+  "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+  "hyperparameters": {
+    "C": 10.0,
+    "class_weight": null,
+    "gamma": 10.0,
+    "seed": 42
+  },
+  "input_feature_dimension": 2760,
+  "limitation_note": "Hyperparameters C=10, gamma=10 were previously selected using these training folds; calibration diagnostics on these rows are not independent performance estimates. Abstention does not establish reliable detection of unknown object categories.",
+  "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+  "normalization": "elementwise square root then per-row L2 (root_l2)",
+  "scope": "Phase 1 Calibration and Evaluation",
+  "selected_feature_dimension": 1608,
+  "selected_model": "extended_rbf_svm",
+  "source": {
+    "git_revision": "8c6f035f21a5e83c21270b897f5c449a023bf0aa",
+    "package_source_sha256": "26e7e076578c4646b63052a82f79f06916f2d0acb3eecf1c3a93c65da9de5e24",
+    "packages": {
+      "joblib": "1.6.0",
+      "numpy": "2.5.4",
+      "pandas": "3.0.6",
+      "scikit-image": "0.26.0",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1"
+    },
+    "platform": "macOS-26.6.1-arm64-arm-64bit",
+    "python": "3.12.5",
+    "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+    "working_tree_dirty": true
+  }
+}
