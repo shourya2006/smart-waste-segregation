@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pandas as pd
 
-from scripts.verify_rf_refinement import audit, comparison_rows
+from scripts.verify_rf_refinement import audit, comparison_rows, write_report
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -37,6 +37,28 @@ class RFReportingTests(unittest.TestCase):
         self.assertEqual(rows["Compact RBF SVM"]["pooled_oof_accuracy"], 0.8197278911564626)
         for model in ["Dummy baseline", "Original linear SVM", "Original RBF SVM"]:
             self.assertIsNone(rows[model]["pooled_oof_accuracy"])
+
+    def test_report_update_fills_all_sections_and_is_reproducible(self):
+        notes = self.root / "docs/member-notes/daksh-batra.md"
+        notes.parent.mkdir(parents=True, exist_ok=True)
+        notes.write_text(
+            "\n".join(
+                f"<!-- generated:{name}:{edge} -->"
+                for name in ["baselines", "families"]
+                for edge in ["start", "end"]
+            )
+        )
+        write_report(self.root, self.study, self.study, update_docs=True)
+        text = notes.read_text()
+        for name in ["baselines", "families"]:
+            section = text.split(f"<!-- generated:{name}:start -->")[1].split(
+                f"<!-- generated:{name}:end -->"
+            )[0]
+            self.assertIn("|", section)
+            self.assertIn("0.736622" if name == "baselines" else "0.836955", section)
+        first = {p: p.read_bytes() for p in [notes, self.study / "README.md"]}
+        write_report(self.root, self.study, self.study, update_docs=True)
+        self.assertEqual(first, {p: p.read_bytes() for p in first})
 
     def test_rejects_candidate_score_drift(self):
         path = self.study / "candidate-results.csv"

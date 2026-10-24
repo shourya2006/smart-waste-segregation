@@ -593,7 +593,7 @@ def write_report(root, study, output, *, artifacts=None, update_docs=False):
                 Path(root) / "docs/training/rf-refinement-study.md",
                 ["families", "comparison", "validation"],
             ),
-            (Path(root) / "docs/member-notes/daksh-batra.md", ["families"]),
+            (Path(root) / "docs/member-notes/daksh-batra.md", ["baselines", "families"]),
         ]:
             text = path.read_text()
             for name in names:

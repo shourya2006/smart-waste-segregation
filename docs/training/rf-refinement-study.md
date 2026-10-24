@@ -116,10 +116,10 @@ trash                    5      5      5      5        2     74
 
 1. **Subspace Dilution & Representation Richness**:
    - In the earlier 1,806-dim space, combining HOG with HSV and LBP yielded 0.7090 versus 0.7366 for HSV alone.
-   - However, with the richer extended descriptors (288 colour bins across 6 regions + multi-scale LBP), Random Forest jumped by **+10.04 macro F1 points** (from 0.7366 to 0.8370).
+   - However, with the richer extended descriptors (288 colour bins across 6 regions + multi-scale LBP), Random Forest jumped by **+10.03 macro F1 points** (from 0.7366 to 0.8370).
    - In Families 2 and 3, `max_features=0.25` (sampling 25% of features per split) outperformed `max_features='sqrt'` (~1.8%), which is consistent with the feature-subspace hypothesis. Other hyperparameters vary across sampled configurations, so this is not an isolated causal test of `max_features`. In Family 4 (2,760 features), `sqrt(2760) = 52.5` provided sufficient feature diversity when combined with 600 estimators.
 2. **Model Selection Recommendation for Phase 1**:
-   - While the refined Random Forest model represents a major advancement over the original baseline (+10.04 macro F1 points, 0.8370 vs 0.7366), it remains below Shourya's Extended RBF SVM (**0.8803 macro F1**, 0.8900 accuracy).
+   - While the refined Random Forest model represents a major advancement over the original baseline (+10.03 macro F1 points, 0.8370 vs 0.7366), it remains below Shourya's Extended RBF SVM (**0.8803 macro F1**, 0.8900 accuracy).
    - **Recommendation**: For Prajjwal's Phase 1 calibration, abstention, and final test evaluation, the team should proceed with Shourya's **Extended RBF SVM (0.8803)** as the primary champion classifier. Daksh's refined Random Forest (0.8370) serves as a competitive non-linear ensemble benchmark and potential candidate for post-selection model ensembling.
 
 ---

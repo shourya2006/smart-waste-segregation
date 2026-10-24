@@ -64,6 +64,18 @@ and explaining all methods for the individual viva.
 Reference baselines from Shourya's verified runs (`docs/training/svm-cv-summary.json`) are included alongside the 5 Random Forest feature studies:
 
 <!-- generated:baselines:start -->
+| Model | Descriptors | Selected dims | Mean CV macro F1 | Fold std | Selected parameters | Search + final refit wall time (s) |
+| --- | --- | --- | --- | --- | --- | --- |
+| dummy | color+hog+lbp | 1806 | 0.063608 | 0.000195 | `{}` | 0.1 |
+| linear_svm | color+hog+lbp | 1806 | 0.600692 | 0.028371 | `{"classifier__C": 0.1, "classifier__class_weight": null}` | 173.8 |
+| rbf_svm | color+hog+lbp | 1806 | 0.673063 | 0.033865 | `{"classifier__C": 10.0, "classifier__class_weight": null, "classifier__gamma": "scale"}` | 143.8 |
+| random_forest | color | 32 | 0.736622 | 0.025990 | `{"classifier__class_weight": null, "classifier__max_depth": 20, "classifier__min_samples_split": 2, "classifier__n_estimators": 200}` | 13.4 |
+| random_forest | hog | 1764 | 0.625190 | 0.035031 | `{"classifier__class_weight": "balanced", "classifier__max_depth": null, "classifier__min_samples_split": 2, "classifier__n_estimators": 200}` | 81.0 |
+| random_forest | lbp | 10 | 0.506936 | 0.010765 | `{"classifier__class_weight": "balanced", "classifier__max_depth": 20, "classifier__min_samples_split": 2, "classifier__n_estimators": 100}` | 10.6 |
+| random_forest | color+hog | 1796 | 0.702207 | 0.038927 | `{"classifier__class_weight": "balanced", "classifier__max_depth": 20, "classifier__min_samples_split": 2, "classifier__n_estimators": 200}` | 76.8 |
+| random_forest | color+hog+lbp | 1806 | 0.709007 | 0.052170 | `{"classifier__class_weight": "balanced", "classifier__max_depth": null, "classifier__min_samples_split": 2, "classifier__n_estimators": 200}` | 77.7 |
+
+Generated from `svm-cv-summary.json` and `rf-cv-summary.json`. These historical `total_seconds` measurements include GridSearchCV search and final refit; they differ from the refinement runner's CV-search-only `seconds` field.
 <!-- generated:baselines:end -->
 
 ### Observations & Hypotheses
@@ -120,7 +132,7 @@ Only the overall winning family has saved OOF accuracy. See the [verified cross-
 - **Winning Model**: `extended_spatial_color_texture` (2,760 features)
   - Mean 5-fold CV macro F1: **0.8370 ± 0.0241** (winning folds: `[0.8336, 0.8466, 0.8623, 0.8500, 0.7923]`).
   - Pooled Out-of-Fold Accuracy: **0.8447** (1,490 / 1,764 correct).
-  - Improvement over initial HSV baseline: **+10.04 macro F1 points** (0.7366 → 0.8370).
+  - Improvement over initial HSV baseline: **+10.03 macro F1 points** (0.7366 → 0.8370).
   - Per-class OOF F1: cardboard 0.8974, glass 0.8121, metal 0.7873, paper 0.9127, plastic 0.8080, trash 0.8087.
   - Trash recall rose from **0.5625** (54 / 96 correct; original HSV RF diagnostic) to **0.7708** (74 / 96 correct) with the changed representation and tuned estimator; the improvement cannot be attributed to weighting alone.
 
