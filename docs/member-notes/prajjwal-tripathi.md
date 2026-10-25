@@ -204,7 +204,7 @@ print(res)
    in `calibration-protocol.json` and `summary.json` as historical ground truth. It is not replaced with a contemporary fingerprint,
    nor is retroactive verification claimed without an independent historical commit snapshot.
 
-## 8. Handoff for Saksham Mighlani (Demo Integration)
+## 8. Handoff for Saksham Miglani (Demo Integration)
 
 For implementing the Gradio demo (`app.py`), UI tests, and report assembly on `feat/demo-integration`:
 

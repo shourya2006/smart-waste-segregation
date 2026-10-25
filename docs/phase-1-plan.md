@@ -40,10 +40,10 @@ choices. They are not additional faculty requirements.
 - [x] Select an abstention threshold using validation data and inspect coverage.
 - [x] Freeze and evaluate on the untouched test set.
 - [x] Report macro F1, per-class metrics, confusion matrix, and calibration.
-- [ ] Analyze mistakes and optionally evaluate independent everyday photos.
-- [ ] Integrate a Gradio photo upload prototype with a limitations note.
-- [ ] Complete literature review, LaTeX/IEEE report, slides, and viva practice.
-- [ ] Have a teammate reproduce the final results from a clean checkout.
+- [ ] Analyze mistakes and optionally evaluate independent everyday photos (mistake analysis completed from saved test predictions; external everyday photos deferred to Phase 2).
+- [x] Integrate a Gradio photo upload prototype with an uncertainty response and limitations note (real-model integration remains pending artifact handoff).
+- [x] Complete literature review, LaTeX/IEEE report sources, slides, and viva preparation (final PDF compilation and verification remain pending).
+- [ ] Have a teammate reproduce the final results from a clean checkout (reproduction guide documented; teammate execution pending).
 
 ## Experiment protocol
 

@@ -20,9 +20,16 @@ The training protocol provides five fixed group-aware folds, a dummy baseline,
 and linear/RBF SVM searches with fold-local scaling. Random Forest studies compare
 five descriptor families and class weighting on the same folds. See the
 [training guide](docs/training/README.md) for reproduction and teammate interfaces.
-Calibration, final evaluation and the demo follow; further SVM feature studies
-can refine the current model-selection results.
-Training-CV selection scores must not be interpreted as final-test performance.
+
+The extended RBF SVM model (0.8803 training-CV macro F1) was selected and calibrated
+using group-aware Platt scaling. Abstention was selected on validation data (threshold 0.52).
+Frozen test evaluation on 377 images achieved 0.8999 macro F1 and 90.19% unconditional
+accuracy (91.37% accepted accuracy at 98.41% coverage).
+
+The interactive Gradio demo (`app.py`), integration tests, reproducible demo lockfile,
+IEEE technical report sources (`report/`), and presentation sources (`presentation/`) are prepared.
+A standalone HTML preview (`report/report.html`) is provided for reading convenience;
+direct PDF compilation from `report/main.tex` remains an explicit outstanding check pending a local TeX distribution.
 
 ## Local setup
 
@@ -32,17 +39,80 @@ Use Python 3.12. From the repository root:
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
+
+# To install base and development tools:
 python -m pip install -r requirements.lock
 python -m pip install --no-deps -e .
+
+# OR to install the full environment including the Gradio demo:
+python -m pip install -r requirements-demo.lock
+python -m pip install --no-deps -e .
+
 ruff check .
 python -m unittest discover -s tests -v
-python -c "import waste_sorting; print(waste_sorting.__version__)"
 ```
 
-The upload demo will use the optional dependencies installed with
-`python -m pip install -e '.[dev,demo]'` once it is implemented.
-Dependency ranges are declared in `pyproject.toml`. `requirements.lock` pins the
-resolved Python 3.12 development environment, excluding the optional demo.
+`requirements.lock` pins the base model-runtime environment. `requirements-demo.lock` locks the reproducible demo environment (Gradio 6.30.0 and dependencies) while preserving the exact base package pins.
+
+## Running the Photo Upload Demo
+
+The demo runs locally using Gradio and reuses the shared prediction interface (`predict_image`).
+
+### 1. Model Artifact Placement & Verification
+
+The evaluated model binary is excluded from Git to keep the repository lightweight:
+- **Expected location:** `artifacts/calibrated_svm/model.joblib`
+- **Expected SHA-256:** `83b0658d5180c02d6f03dce835bb8e269d6a89a493b6298a2bb00fd594f3b112`
+- **Expected file size:** `66,270,283` bytes (~66.3 MB)
+
+Verify the binary integrity before running:
+```sh
+python -c "
+import hashlib, pathlib
+p = pathlib.Path('artifacts/calibrated_svm/model.joblib')
+assert p.exists(), 'Model artifact missing'
+assert hashlib.sha256(p.read_bytes()).hexdigest() == '83b0658d5180c02d6f03dce835bb8e269d6a89a493b6298a2bb00fd594f3b112', 'Checksum mismatch'
+print('Model artifact verified.')
+"
+```
+
+### 2. Launching the Demo
+
+```sh
+# Launch with the preserved evaluated model:
+python app.py --port 7860
+
+# Or launch with synthetic fixtures (if model binary is unavailable):
+python app.py --synthetic-fixture --port 7860
+```
+Open `http://127.0.0.1:7860` in your browser.
+
+### 3. Demo Features & Safety Behavior
+- **In-Memory Model Reuse:** The 66 MB model binary is validated and loaded once per process and reused across requests.
+- **Supported Inputs:** JPEG, PNG, or standard still-image formats showing a single waste item. Images exceeding 8,192 pixels on any side or 16 megapixels total are rejected before processing.
+- **Uncertainty & Abstention:** Predictions with calibrated maximum probability below the frozen threshold (**0.52**) prominently display **"Uncertain — manual inspection recommended"**. A tentative category is displayed separately without endorsement.
+- **Stale State Clearing:** Predictions are instantly wiped whenever an uploaded photo is cleared or replaced.
+- **Privacy & Security:** Public sharing is disabled (`--share` is rejected). Photos are processed strictly in RAM and are never stored in project directories or persistent application storage; the underlying Gradio framework creates transient transport files in system temporary storage.
+
+## Reproducing Reported Metrics vs. Running the Demo
+
+Neither task requires refitting models or rerunning final test evaluation:
+
+1. **Reproduce reported evaluation metrics (no model refitting):**
+   Committed records in `docs/evaluation/` serve as the source of truth:
+   ```sh
+   # Verify test set metrics from saved sample-by-sample predictions:
+   python -c "
+   import pandas as pd
+   df = pd.read_csv('docs/evaluation/test-predictions.csv')
+   print('Test samples:', len(df))
+   print('Unconditional accuracy:', f'{df[\"correct\"].mean()*100:.2f}%')
+   acc = df[~df['abstained']]
+   print(f'Selective accuracy: {acc[\"correct\"].mean()*100:.2f}% at {len(acc)/len(df)*100:.2f}% coverage')
+   "
+   ```
+2. **Run the local demo (requires model binary):**
+   Loads the preserved `artifacts/calibrated_svm/model.joblib` to classify new single-item uploads without retraining.
 
 ## Repository layout
 
@@ -54,7 +124,12 @@ data/                     Acquisition and provenance instructions
 src/waste_sorting/        Reusable Python package
 notebooks/                Exploratory analysis
 artifacts/                Local trained models and generated figures, ignored by Git
-docs/                     Phase 1 milestones and contribution records
+docs/                     Phase 1 milestones, evaluation records, and member notes
+report/                   LaTeX/IEEE report project, HTML export, and figures
+presentation/             Editable presentation sources and interactive slide viewer
+requirements.lock         Pinned base model-runtime environment
+requirements-demo.lock    Pinned demo environment (Gradio 6.30.0 + base dependencies)
+app.py                    Local photo upload demo entry point
 .github/workflows/        Automated repository checks
 ```
 

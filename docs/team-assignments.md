@@ -16,10 +16,10 @@ division is not evidence of approval for a six-person submission.
 | Shourya Bafna | Training protocol and SVM | Implement shared training-input validation and group-aware folds, dummy baseline, linear/RBF SVM with fold-local scaling, parameter search, and reproducible experiment logging | `feat/svm-baselines` |
 | Daksh Batra | Random Forest and feature studies | Implement Random Forest and parameter search using the shared folds; compare feature sets and class weighting with the same selection metric; produce a comparison table with fold variation | `feat/random-forest` |
 | Prajjwal Tripathi | Confidence and evaluation | Calibrate the selected full pipeline on held-out training folds; select abstention on validation data; implement per-class metrics, reliability plots, coverage analysis, final test evaluation, and failure review | `feat/model-evaluation` |
-| Saksham Mighlani | Demo and submission integration | Implement Gradio upload UI using the shared prediction pipeline, uncertainty response and limitations note; test saved-model integration; assemble shared report sections, slides, and reproduction guide | `feat/demo-integration` |
+| Saksham Miglani | Demo and submission integration | Implement Gradio upload UI using the shared prediction pipeline, uncertainty response and limitations note; test saved-model integration; assemble shared report sections, slides, and reproduction guide | `feat/demo-integration` |
 
 Everyone writes the report section and slides for their own technical work.
-Saksham Mighlani assembles these contributions rather than writing everyone's content.
+Saksham Miglani assembles these contributions rather than writing everyone's content.
 Every member must contribute substantive implementation commits and understand
 the full system for the individual viva.
 
@@ -36,7 +36,7 @@ data correction is necessary before model evaluation begins.
 | Shourya Bafna | `src/waste_sorting/training.py`, `src/waste_sorting/models/svm.py`, associated tests |
 | Daksh Batra | `src/waste_sorting/models/random_forest.py`, feature-study runner and associated tests |
 | Prajjwal Tripathi | `src/waste_sorting/evaluation.py`, `src/waste_sorting/prediction.py`, associated tests |
-| Saksham Mighlani | `app.py`, demo integration tests, report assembly and presentation sources |
+| Saksham Miglani | `app.py`, demo integration tests, report assembly and presentation sources |
 
 Shourya Bafna coordinates shared training entry points. Aditya Bharadwaj coordinates changes
 to descriptor configuration. Discuss shared configuration and dependency edits
@@ -59,7 +59,7 @@ in the pull request so two members do not silently overwrite each other's choice
 - Prajjwal Tripathi owns saved-model metadata and `predict_image(image, artifact)`.
   Its result includes class probabilities, predicted class, maximum probability,
   and an abstained flag. Calibration includes the complete scaling/model pipeline.
-- Saksham Mighlani calls that prediction function rather than reimplementing preprocessing
+- Saksham Miglani calls that prediction function rather than reimplementing preprocessing
   or descriptors in the app. Clearly marked fixtures can support early UI work;
   actual demo results must come from a trained model.
 
@@ -68,14 +68,14 @@ in the pull request so two members do not silently overwrite each other's choice
 1. Everyone clones and runs the current checks. Om Yadav independently verifies
    the prepared data; Aditya Bharadwaj agrees preprocessing/feature interfaces with them.
    Shourya Bafna and Daksh Batra agree the experiment schema. Prajjwal Tripathi defines evaluation
-   functions and tests. Saksham Mighlani prepares integration and report structure.
+   functions and tests. Saksham Miglani prepares integration and report structure.
 2. Merge preprocessing, then features. Shourya Bafna and Daksh Batra run model experiments
    against the same training fold assignments. Synthetic fixtures may support
    code development before the real feature cache exists.
 3. Choose the feature/model settings by training cross-validation. Prajjwal Tripathi
    calibrates with training-only held-out folds and selects the abstention
    threshold on validation data. Freeze the protocol before final test evaluation.
-4. Saksham Mighlani integrates the saved model. Complete final evaluation, error analysis,
+4. Saksham Miglani integrates the saved model. Complete final evaluation, error analysis,
    report sections, slides, reproduction, and viva practice together.
 
 ## Meaningful commit examples
@@ -90,14 +90,14 @@ working improvement and keep related tests with its implementation when practica
 | Shourya Bafna | `Add group-aware training folds and dummy baseline`; `Train and tune SVM pipelines with fold-local scaling` |
 | Daksh Batra | `Implement Random Forest training with shared folds`; `Compare feature families and balanced class weights` |
 | Prajjwal Tripathi | `Add calibration and validation abstention analysis`; `Evaluate frozen pipeline with class-wise errors` |
-| Saksham Mighlani | `Integrate image upload with saved-model predictions`; `Assemble shared report and reproduction guide` |
+| Saksham Miglani | `Integrate image upload with saved-model predictions`; `Assemble shared report and reproduction guide` |
 
 Do not copy unchanged files, reattribute existing commits, or split trivial edits
 to manufacture activity. No one should commit using another member's identity.
 
 ## Review partners and completion criteria
 
-Review pairings: Om Yadav ↔ Aditya Bharadwaj, Shourya Bafna ↔ Daksh Batra, Prajjwal Tripathi ↔ Saksham Mighlani.
+Review pairings: Om Yadav ↔ Aditya Bharadwaj, Shourya Bafna ↔ Daksh Batra, Prajjwal Tripathi ↔ Saksham Miglani.
 Each member reviews the partner's pull request and runs a relevant reproduction
 check. Review comments complement implementation commits; each member still owns
 their own deliverables.
