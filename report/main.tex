@@ -1,0 +1,303 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue
+}
+
+\begin{document}
+
+\title{Smart Waste Segregation: Handcrafted Feature Engineering, Group-Aware Cross-Validation, and Calibrated Selective Classification for Classical ML}
+
+\author{
+\IEEEauthorblockN{Om Yadav}
+\IEEEauthorblockA{\textit{Data Verification \& Preprocessing}}
+\and
+\IEEEauthorblockN{Aditya Bharadwaj}
+\IEEEauthorblockA{\textit{Feature Engineering \& Caching}}
+\and
+\IEEEauthorblockN{Shourya Bafna}
+\IEEEauthorblockA{\textit{Training Protocol \& SVM Baselines}}
+\and
+\IEEEauthorblockN{Daksh Batra}
+\IEEEauthorblockA{\textit{Random Forest \& Feature Studies}}
+\and
+\IEEEauthorblockN{Prajjwal Tripathi}
+\IEEEauthorblockA{\textit{Confidence Calibration \& Evaluation}}
+\and
+\IEEEauthorblockN{Saksham Miglani}
+\IEEEauthorblockA{\textit{Demo Integration \& Report Assembly}}
+}
+
+\maketitle
+
+\begin{abstract}
+Automated sorting of recyclable solid municipal waste requires robust, interpretable, and computationally lightweight classification models capable of identifying common material categories from visual imagery. In Phase~1 of the Smart Waste Segregation project, we investigate a strictly classical machine learning pipeline operating on the 6-class TrashNet dataset without transfer learning or deep neural networks. We conduct rigorous data auditing and near-duplicate grouping to eliminate data leakage before partitioning the dataset into group-aware stratified splits (1,764 training, 380 validation, 377 test images). We design and extract standardized handcrafted descriptors combining color histograms (HSV, RGB, LAB), gradient orientation profiles (Histogram of Oriented Gradients, HOG), and multi-scale texture features (Local Binary Patterns, LBP), totaling up to 2,760 dimensions across multiple image regions. Within a strictly isolated 5-fold group-aware cross-validation protocol, we evaluate Support Vector Machines (SVM) and Random Forests. An extended RBF SVM ($\mathbf{C=10}$, $\mathbf{\gamma=10}$ with elementwise square root and $L_2$ normalization) achieves a winning training cross-validation macro F1 score of $0.8803 \pm 0.0271$, outperforming refined Random Forest models ($0.8370 \pm 0.0241$). The winning pipeline is calibrated using out-of-fold Platt scaling, and an abstention threshold ($\tau = 0.52$) is selected exclusively on the validation split. On the untouched test set (377 images), the model delivers an unconditional macro F1 of $0.8999$ and an accuracy of $90.19\%$. Selective classification under abstention rejects 6 ambiguous images (5 of which were misclassifications), yielding an accepted test accuracy of $91.37\%$ and an accepted macro F1 of $0.9129$ at $98.41\%$ coverage. We package the validated model into a local Gradio photo upload demonstration that surfaces calibrated probabilities and uncertainty advisories while preserving local privacy.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Waste classification, handcrafted features, HOG, LBP, Support Vector Machines, Random Forest, probability calibration, selective classification, abstention.
+\end{IEEEkeywords}
+
+\section{Introduction}
+Effective municipal waste segregation is critical to sustainable materials recovery, circular economy adoption, and environmental conservation. Automated sorting facilities increasingly rely on computer vision systems to distinguish recyclable packaging materials at source and processing conveyor nodes. However, deploying computer vision models in resource-constrained municipal sorting environments demands rigorous guarantees regarding data leakage, training isolation, computational footprint, and prediction reliability.
+
+In accordance with Phase~1 project requirements, this study investigates classical machine learning techniques—specifically Support Vector Machines (SVM)~\cite{cortes1995svm} and Random Forests~\cite{breiman2001randomforest}—leveraging handcrafted visual representations. While contemporary research frequently adopts deep convolutional networks, classical methods offer deterministic feature provenance, lower training energy demands, transparency, and minimal hardware requirements for embedded sorting devices.
+
+The primary contributions of this collaborative investigation are:
+\begin{itemize}
+    \item \textbf{Data Integrity \& Leakage Prevention:} Independent perceptual hashing and duplicate auditing across the 2,527-image TrashNet repository~\cite{yang2016trashnet}, resolving duplicate groups and enforcing strict group-aware outer splits.
+    \item \textbf{Handcrafted Feature Extraction:} Implementation of standardized color histograms (HSV, RGB, LAB), Histogram of Oriented Gradients (HOG)~\cite{dalal2005hog}, and uniform Local Binary Patterns (LBP)~\cite{ojala2002lbp}, expanding from a 1,806-dimensional baseline to a 2,760-dimensional spatial descriptor.
+    \item \textbf{Training Protocol \& Model Selection:} Formulation of a 5-fold group-aware cross-validation harness ensuring fold-local standardization and strict training-complement isolation across 256 SVM and 96 Random Forest candidate configurations.
+    \item \textbf{Platt Calibration \& Validation Abstention:} Implementation of group-aware Platt sigmoid calibration~\cite{platt1999probabilistic,niculescu2005predicting} and validation-only threshold tuning ($\tau = 0.52$) under selective classification theory~\cite{elyaniv2010selective}.
+    \item \textbf{Frozen Evaluation \& Interactive Demo:} Unbiased evaluation on untouched test data producing $0.8999$ macro F1 and $90.19\%$ accuracy ($91.37\%$ at $98.41\%$ coverage under abstention), integrated into a local Gradio web demo with uncertainty signaling.
+\end{itemize}
+
+\section{Dataset Audit, Preprocessing, and Splits}
+
+\subsection{TrashNet Acquisition and Integrity Verification}
+The benchmark dataset comprises 2,527 digital images across six recyclable waste categories: \textit{cardboard}, \textit{glass}, \textit{metal}, \textit{paper}, \textit{plastic}, and \textit{trash}~\cite{yang2016trashnet}. The raw archive SHA-256 fingerprint was verified against repository specifications. Initial auditing confirmed all source images were valid 3-channel RGB digital photographs with dimensions of $512 \times 384$ pixels.
+
+\subsection{Perceptual Hashing and Near-Duplicate Resolution}
+To avoid catastrophic evaluation leakage resulting from identical physical items photographed from adjacent viewpoints, an independent perceptual hash ($p$-hash) audit was executed. Exact MD5 hashing identified conflicting class labels across identical image files, resulting in the quarantine of 6 image files across 3 conflicting-content groups.
+
+For the remaining 2,521 usable images, candidate duplicate pairs were generated using perceptual hashing with an inclusive Hamming distance threshold of $\le 6$. A total of 45 candidate pairs were subjected to multi-reviewer visual inspection. Six ambiguous pairs (e.g., \textit{cardboard15} / \textit{cardboard361}, \textit{metal149} / \textit{metal9}) exhibited identical brand packaging but indeterminate deformation; following conservative methodology, these pairs were assigned to unified duplicate groups to ensure they would never be split across train, validation, or test sets.
+
+\subsection{Group-Aware Stratified Splitting}
+The 2,521 audited images were partitioned into outer splits using a group-aware stratified allocation targeting a nominal 70/15/15 ratio. As summarized in Table~\ref{tab:dataset_splits}, duplicate groups were preserved atomically within their assigned splits. The final verified split contains 1,764 training images ($69.97\%$), 380 validation images ($15.07\%$), and 377 test images ($14.95\%$).
+
+\begin{table}[htbp]
+\caption{Audited Dataset Splits and Class Distributions}
+\label{tab:dataset_splits}
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Category} & \textbf{Train (70\%)} & \textbf{Validation (15\%)} & \textbf{Test (15\%)} & \textbf{Total} \\
+\midrule
+Cardboard & 282 & 61 & 60 & 403 \\
+Glass & 351 & 75 & 75 & 501 \\
+Metal & 288 & 61 & 61 & 410 \\
+Paper & 416 & 89 & 89 & 594 \\
+Plastic & 338 & 72 & 72 & 482 \\
+Trash & 89 & 22 & 20 & 131 \\
+\midrule
+\textbf{Total} & \textbf{1,764} & \textbf{380} & \textbf{377} & \textbf{2,521} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Standardized Preprocessing Pipeline}
+Image transformations must run identically during training and inference without introducing learned statistics. The preprocessing module implements:
+\begin{enumerate}
+    \item \textbf{EXIF Orientation Correction:} Normalization of camera orientation tags without altering source pixels.
+    \item \textbf{Alpha Channel Compositing:} Blending transparent and palette alpha channels onto pure white ($[255, 255, 255]$) padding to prevent background voids from appearing as dark objects.
+    \item \textbf{Aspect-Preserving Letterboxing:} Calculation of scaling factors via $\min(W_{\text{target}}/W_{\text{src}}, H_{\text{target}}/H_{\text{src}})$, resizing using Lanczos interpolation, and centering onto a white canvas. This prevents structural distortion of object silhouettes before gradient feature calculation.
+\end{enumerate}
+
+\section{Handcrafted Feature Extraction}
+
+\subsection{Baseline Descriptors (1,806 Dimensions)}
+The baseline feature representation combines three complementary visual modalities:
+\begin{itemize}
+    \item \textbf{HSV Color Histograms (32 dimensions):} RGB letterboxed images are converted to HSV. Separate 1D histograms are computed for Hue (16 bins), Saturation (8 bins), and Value (8 bins). Each channel is independently $L_1$-normalized ($\sum p_i = 1.0$), ensuring invariance to pixel resolution.
+    \item \textbf{Histogram of Oriented Gradients (1,764 dimensions):} Luminance grayscale representations are processed with 9 signed orientation bins over $[0, \pi)$, cell sizes of $16 \times 16$ pixels, and $2 \times 2$ cells per block. For a $128 \times 128$ canvas, $(8 - 2 + 1) \times (8 - 2 + 1) = 49$ blocks yield $49 \times (4 \times 9) = 1,764$ dimensions. Blocks are normalized using Dalal-Triggs $L_2\text{-Hys}$ clipping to mitigate specular highlights common on glass and metallic surfaces~\cite{dalal2005hog}.
+    \item \textbf{Uniform Local Binary Patterns (10 dimensions):} Circular uniform LBP with $P=8$ sampling points at radius $R=1.0$ is computed on uint8 grayscale images~\cite{ojala2002lbp}. Uniform patterns ($\le 2$ bitwise transitions) occupy 9 bins, with an additional bin aggregating non-uniform patterns. The resulting 10-bin histogram is $L_1$-normalized.
+\end{itemize}
+
+\subsection{Opt-In Extended Descriptors (2,760 Dimensions)}
+To capture fine-grained spatial and photometric variations, an extended feature extractor was formulated across a $256 \times 256$ letterbox canvas. Features are computed across six designated regions: global, foreground (segmented via $S > 0.12 \lor V < 0.92$), and four spatial quadrants ($2 \times 2$). Each region extracts:
+\begin{itemize}
+    \item Color: HSV (64 bins), RGB (48 bins), LAB (48 bins), and joint HS (128 bins), totaling 288 color features per region.
+    \item Texture: Multi-scale uniform LBP ($R \in \{1, 2, 3\}$ with $P \in \{8, 16, 24\}$) and non-uniform rotation-sensitive LBP, totaling 172 texture features per region.
+\end{itemize}
+This produces $6 \times (288 + 172) = 2,760$ raw dimensions. The winner pipeline selects 1,608 features corresponding to global color and spatial texture.
+
+\section{Model Comparisons and Training Protocol}
+
+\subsection{Group-Aware Cross-Validation Protocol}
+All model training, hyperparameter exploration, and feature ablations were conducted strictly on the 1,764 training samples using 5-fold \texttt{StratifiedGroupKFold} (seed 42). Outer validation and test data were strictly excluded. To eliminate feature scale leakage, feature scaling (\texttt{StandardScaler}) was instantiated inside the scikit-learn pipeline, fitting means and standard deviations exclusively on the 4/5 training complement of each fold.
+
+The primary optimization metric is the unweighted multiclass macro F1 score ($\text{macro F1} = \frac{1}{C}\sum_{c=1}^C F1_c$), ensuring equal weighting across class imbalances (e.g., paper vs.\ trash).
+
+\subsection{Baseline Comparisons and Observations}
+Table~\ref{tab:model_comparison} summarizes cross-validation results across the candidate model families on the 1,806-dimensional baseline.
+
+\begin{table}[htbp]
+\caption{5-Fold Cross-Validation Performance on Outer Training Set}
+\label{tab:model_comparison}
+\centering
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Model Family} & \textbf{Feature Set} & \textbf{Dims} & \textbf{Mean CV Macro F1} & \textbf{Fold Std} \\
+\midrule
+Dummy (Most Freq.) & All Descriptors & 1,806 & 0.0636 & 0.0002 \\
+Linear SVM & All Descriptors & 1,806 & 0.6007 & 0.0284 \\
+RBF SVM & All Descriptors & 1,806 & 0.6731 & 0.0339 \\
+Random Forest & Color (HSV) & 32 & 0.7366 & 0.0260 \\
+Random Forest & HOG Only & 1,764 & 0.6252 & 0.0350 \\
+Random Forest & LBP Only & 10 & 0.5069 & 0.0108 \\
+Random Forest & Color + HOG & 1,796 & 0.7022 & 0.0389 \\
+Random Forest & All Descriptors & 1,806 & 0.7090 & 0.0522 \\
+\midrule
+\textbf{RF Refinement} & Ext.\ Spatial & 2,760 & 0.8370 & 0.0241 \\
+\textbf{Extended RBF SVM} & Ext.\ Global/Spat & 1,608 & \textbf{0.8803} & \textbf{0.0271} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Empirical Analysis of Model Behaviors}
+Two critical empirical dynamics were identified during model evaluation:
+\begin{enumerate}
+    \item \textbf{Feature Subspace Dilution in Random Forest:} On the baseline 1,806-dimensional vector, Random Forest achieved higher CV macro F1 with 32 HSV color features ($0.7366$) than with all features combined ($0.7090$). Because standard Random Forest samples $m = \sqrt{p} \approx 42$ candidate features per split, the 32 discriminative color features constituted only $1.8\%$ of the candidate pool, frequently forcing tree splits to choose non-discriminative gradients. In Daksh Batra's refinement study, tuning \texttt{max\_features=0.25} and expanding to the 2,760 extended spatial representation restored Random Forest performance to $0.8370 \pm 0.0241$.
+    \item \textbf{Nonlinear Kernel Separation in RBF SVM:} In Shourya Bafna's extended study, the RBF kernel applied to elementwise square-root and $L_2$-normalized descriptors (\texttt{root\_l2}) achieved the global maximum CV macro F1 of \textbf{0.8803 $\pm$ 0.0271} ($C=10.0, \gamma=10.0$, 1,608 selected features). The RBF kernel maps features into an infinite-dimensional Hilbert space where complex spatial color-texture interactions become linearly separable.
+\end{enumerate}
+Based on these verified results, the team selected the \textbf{Extended RBF SVM (0.8803)} as the winning architecture for calibration and final test evaluation.
+
+\section{Confidence Calibration and Validation Abstention}
+
+\subsection{Platt Scaling via Group-Aware Calibration}
+Raw decision function outputs from multi-class SVMs represent geometric signed distances rather than true posterior probabilities. To obtain well-calibrated probabilities, Prajjwal Tripathi implemented Platt scaling~\cite{platt1999probabilistic} using \texttt{CalibratedClassifierCV(ensemble=True)} conditioned on the 5 frozen training folds. For each fold $k$, the base SVM was fitted on the 4/5 training complement ($\approx 1,411$ samples), and sigmoid parameters were optimized exclusively on the withheld 1/5 training fold ($\approx 353$ samples).
+
+\subsection{Abstention Threshold Selection (Validation Only)}
+In selective classification, an agent abstains when maximum predicted confidence falls below threshold $\tau$~\cite{elyaniv2010selective}:
+\begin{equation}
+\text{Accept}(x) = \mathbf{1}\left(\max_{c \in \{1,\dots,6\}} P(y=c|x) \ge \tau\right)
+\end{equation}
+The threshold was tuned across a 101-point grid ($\tau \in [0.00, 1.00]$) evaluated solely on the 380 validation images. The target criteria mandated accepted accuracy $\ge 90\%$ with coverage $\ge 80\%$. A threshold of $\mathbf{\tau = 0.52}$ satisfied both constraints, achieving $\mathbf{98.16\%}$ validation coverage (373/380 accepted) and $\mathbf{90.08\%}$ accepted accuracy.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\columnwidth]{figures/reliability-diagram.png}
+\caption{Reliability diagram of the calibrated SVM ensemble on the frozen test set across 10 fixed confidence bins, demonstrating close correspondence between confidence and empirical accuracy.}
+\label{fig:reliability}
+\end{figure}
+
+\section{Final Test Evaluation and Failure Analysis}
+
+\subsection{Untouched Test Set Performance}
+Final evaluation was executed exactly once on the untouched test partition (377 images) using the frozen calibrated pipeline and fixed threshold $\tau=0.52$.
+
+\subsubsection{Unconditional Performance}
+Prior to abstention, the model achieved:
+\begin{itemize}
+    \item \textbf{Macro F1:} $\mathbf{0.8999}$
+    \item \textbf{Accuracy:} $\mathbf{90.19\%}$ (340 / 377 correct)
+    \item \textbf{Multiclass Log Loss:} $\mathbf{0.4599}$
+    \item \textbf{Multiclass Brier Score:} $\mathbf{0.1828}$
+    \item \textbf{Expected Calibration Error (ECE):} $\mathbf{0.1325}$ (10 bins)
+\end{itemize}
+
+\subsubsection{Per-Class Metrics}
+Table~\ref{tab:test_per_class} records class-specific precision, recall, and F1 scores. The confusion matrix is depicted in Fig.~\ref{fig:confusion}.
+
+\begin{table}[htbp]
+\caption{Class-Wise Test Performance (377 Test Samples)}
+\label{tab:test_per_class}
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} \\
+\midrule
+Cardboard & 0.9344 & 0.9500 & 0.9421 & 60 \\
+Glass     & 0.8500 & 0.9067 & 0.8774 & 75 \\
+Metal     & 0.8852 & 0.8852 & 0.8852 & 61 \\
+Paper     & 0.9310 & 0.9101 & 0.9205 & 89 \\
+Plastic   & 0.9385 & 0.8472 & 0.8905 & 72 \\
+Trash     & 0.8261 & 0.9500 & 0.8837 & 20 \\
+\midrule
+\textbf{Macro Avg} & \textbf{0.8942} & \textbf{0.9082} & \textbf{0.8999} & \textbf{377} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.88\columnwidth]{figures/confusion-matrix.png}
+\caption{Confusion matrix on the untouched test split (377 images) showing high diagonal concentration with modest confusion between glass, metal, and plastic.}
+\label{fig:confusion}
+\end{figure}
+
+\subsection{Selective Classification Under Abstention}
+At the frozen threshold $\tau = 0.52$:
+\begin{itemize}
+    \item \textbf{Coverage:} $\mathbf{98.41\%}$ (371 accepted / 377 total)
+    \item \textbf{Abstained Images:} 6 samples ($1.59\%$ abstention rate)
+    \item \textbf{Accepted Accuracy:} $\mathbf{91.37\%}$ (339 / 371 correct, a gain of $+1.19$ percentage points over unconditional accuracy)
+    \item \textbf{Accepted Macro F1:} $\mathbf{0.9129}$ ($+1.30\%$ relative gain)
+\end{itemize}
+
+\subsection{Empirical Analysis of Abstained Predictions}
+Audit of the 6 abstained test images demonstrates the effectiveness of selective classification:
+\begin{itemize}
+    \item \texttt{cardboard100.jpg}: True \textit{cardboard}, predicted \textit{paper} ($\max P = 0.4957$) $\rightarrow$ \textbf{Error averted}.
+    \item \texttt{glass301.jpg}: True \textit{glass}, predicted \textit{metal} ($\max P = 0.4961$) $\rightarrow$ \textbf{Error averted}.
+    \item \texttt{paper348.jpg}: True \textit{paper}, predicted \textit{paper} ($\max P = 0.4784$) $\rightarrow$ Correct prediction withheld.
+    \item \texttt{paper538.jpg}: True \textit{paper}, predicted \textit{glass} ($\max P = 0.4929$) $\rightarrow$ \textbf{Error averted}.
+    \item \texttt{plastic116.jpg}: True \textit{plastic}, predicted \textit{metal} ($\max P = 0.3737$) $\rightarrow$ \textbf{Error averted}.
+    \item \texttt{plastic464.jpg}: True \textit{plastic}, predicted \textit{trash} ($\max P = 0.3926$) $\rightarrow$ \textbf{Error averted}.
+\end{itemize}
+Abstaining at threshold $0.52$ successfully eliminated 5 true classification errors while sacrificing only 1 correct prediction, validating the threshold design.
+
+\section{Interactive Demo and Integration}
+
+\subsection{Gradio Application Architecture}
+Saksham Miglani implemented the interactive photo demonstration in \texttt{app.py} and supporting modules in \texttt{src/waste\_sorting/demo.py}. To guarantee low latency and resource efficiency:
+\begin{itemize}
+    \item The 66.3~MB calibrated model artifact is loaded and verified once at process initialization and retained in memory across classification requests.
+    \item Inference strictly delegates to the shared \texttt{predict\_image(image, artifact)} contract owned by Prajjwal Tripathi, preventing code duplication.
+    \item Preprocessing, 2,760-dimension feature extraction, Platt scaling, and abstention checks execute deterministically in memory.
+    \item Application storage isolation: uploaded photos are processed in memory and are never stored in project directories or persistent storage, though the Gradio UI framework writes transient transport files to operating system temporary storage.
+\end{itemize}
+
+\subsection{Interface and Uncertainty Signaling}
+The demo provides a clean, responsive layout featuring:
+\begin{enumerate}
+    \item Drag-and-drop photo upload with client-side image preview.
+    \item Primary classification label and calibrated confidence score.
+    \item Complete six-class probability breakdown table.
+    \item Prominent amber uncertainty banner when $P_{\max} < 0.52$: \textit{``Uncertain — manual inspection recommended.''} A tentative secondary class is shown separately without endorsement.
+    \item Explicit limitations notice clarifying that confidence-based abstention cannot reliably detect unknown out-of-distribution objects.
+\end{enumerate}
+
+\subsection{Robustness and Test Suite}
+The demo integration is protected by 23 comprehensive automated tests covering:
+\begin{itemize}
+    \item Verification of SHA-256 and byte size before unpickling.
+    \item Synthetic fixture testing for accepted and abstained flows.
+    \item Rejection of corrupt image files, empty inputs, and decompression bomb attempts ($>16$ megapixels).
+    \item Automatic clearing of stale predictions upon input replacement.
+    \item Clean import guard preventing background server startup.
+\end{itemize}
+
+\section{Provenance, Reproducibility, and Limitations}
+
+\subsection{Reproducibility Guarantee}
+All numerical results reported herein derive from frozen, committed experiment logs (\texttt{summary.json}, \texttt{test-predictions.csv}, \texttt{folds.json}) without re-running final test evaluation. Dependencies are locked in \texttt{requirements.lock} and \texttt{requirements-demo.lock}.
+
+\subsection{Package Source Provenance Limitation}
+As documented in Prajjwal Tripathi's member notes, the original calibration run was executed on an uncommitted working tree prior to commit \texttt{b775f02}. According to the author's account, subsequent non-functional linter wrapping edits (\texttt{ruff check .} rule E501 line-length compliance across docstrings and comments) altered the repository SHA-256 from \texttt{26e7e076...} to \texttt{cab3b677...}. Because no intermediate git snapshot was preserved for that uncommitted state, the exact historical package source cannot be independently reconstructed from Git history; this explanation is recorded as the author's account rather than an independently verified fact. In strict adherence to experimental ethics, the evaluated model and test predictions were preserved without refitting.
+
+\subsection{Course Administrative Context}
+While the course specification envisions five-student teams, this Phase~1 project documents technical contributions across six members. Institutional approval for this division is pending faculty confirmation.
+
+\section{Conclusion}
+This investigation establishes that classical machine learning—combining multi-scale color, HOG, and LBP features with an RBF Support Vector Machine and Platt probability calibration—can achieve high accuracy ($90.19\%$ unconditional, $91.37\%$ selective) on municipal waste classification without deep neural networks. Validation-selected abstention effectively filters visual ambiguity, enhancing operational safety in automated sorting systems.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

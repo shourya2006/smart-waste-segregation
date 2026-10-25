@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Waste Segregation — Phase 1 Presentation</title>
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-light: #3b82f6;
+    --accent: #d97706;
+    --bg: #0f172a;
+    --slide-bg: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .slide-viewport {
+    width: 90vw;
+    max-width: 1100px;
+    aspect-ratio: 16 / 9;
+    background: var(--slide-bg);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide {
+    display: none;
+    flex: 1;
+    padding: 3rem 4rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  .slide.active {
+    display: flex;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .slide-header {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--primary-light);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  h1 {
+    font-size: 2.2rem;
+    color: var(--primary);
+    line-height: 1.2;
+    margin-bottom: 1.2rem;
+  }
+  h2 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    line-height: 1.25;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.4rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+  }
+  p, li {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  li {
+    margin-bottom: 0.5rem;
+  }
+  .highlight {
+    color: var(--primary-light);
+    font-weight: bold;
+  }
+  .amber {
+    color: var(--accent);
+    font-weight: bold;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .card {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8rem 0;
+    font-size: 0.95rem;
+  }
+  th, td {
+    padding: 6px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: #f1f5f9;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .winner-row {
+    background: #ecfdf5;
+    font-weight: bold;
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+  .btn {
+    background: #1e293b;
+    color: #fff;
+    border: 1px solid #334155;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .btn:hover {
+    background: #334155;
+  }
+  .slide-footer {
+    position: absolute;
+    bottom: 0.8rem;
+    left: 4rem;
+    right: 4rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 0.4rem;
+  }
+  @media print {
+    body { background: #fff; min-height: auto; }
+    .controls { display: none !important; }
+    .slide-viewport {
+      width: 100% !important;
+      max-width: 100% !important;
+      aspect-ratio: auto !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+      height: auto !important;
+    }
+    .slide {
+      display: flex !important;
+      page-break-after: always !important;
+      break-after: page !important;
+      padding: 2.5rem 3rem !important;
+      min-height: 90vh !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="slide-viewport">
+  <!-- Slide 1: Title -->
+  <div class="slide active" data-index="1">
+    <div class="slide-header">Phase 1 Final Technical Presentation</div>
+    <h1 style="font-size: 2.5rem; margin-top: 1rem;">Smart Waste Segregation</h1>
+    <h3 style="color: var(--primary-light); font-weight: normal; margin-bottom: 2rem;">
+      Classical Machine Learning, Handcrafted Feature Engineering, and Calibrated Selective Classification
+    </h3>
+    <div class="grid-2">
+      <div class="card">
+        <h4 style="margin-bottom: 0.4rem; color: var(--primary);">System Implementation</h4>
+        <p style="font-size: 0.95rem;">• Preprocessing & Data Verification: <b>Om Yadav</b></p>
+        <p style="font-size: 0.95rem;">• Handcrafted Features & Caching: <b>Aditya Bharadwaj</b></p>
+        <p style="font-size: 0.95rem;">• Training Protocol & SVM Baselines: <b>Shourya Bafna</b></p>
+      </div>
+      <div class="card">
+        <h4 style="margin-bottom: 0.4rem; color: var(--primary);">Evaluation & Deployment</h4>
+        <p style="font-size: 0.95rem;">• Random Forest & Feature Studies: <b>Daksh Batra</b></p>
+        <p style="font-size: 0.95rem;">• Confidence Calibration & Evaluation: <b>Prajjwal Tripathi</b></p>
+        <p style="font-size: 0.95rem;">• Demo Integration & Report Assembly: <b>Saksham Mighlani</b></p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 1 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 2: Problem Statement & Scope -->
+  <div class="slide" data-index="2">
+    <div class="slide-header">1. Scope & Formulation</div>
+    <h2>Problem Statement & Phase 1 Scope</h2>
+    <div class="grid-2">
+      <div>
+        <h3>Phase 1 Challenge</h3>
+        <ul>
+          <li>Accurate classification of recyclable waste into <b>6 material categories</b>: <i>cardboard, glass, metal, paper, plastic, trash</i>.</li>
+          <li><b>Strict Constraint:</b> Classical machine learning only (no deep transfer learning or neural networks).</li>
+          <li><b>High Material Ambiguity:</b> Transparent glass vs. plastic; metallic foil vs. cans; crumpled paper vs. cardboard.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--primary);">Key Architectural Principles</h3>
+        <p style="margin-bottom: 0.6rem;"><b>1. Strict Zero-Leakage:</b> Audited duplicate grouping across splits and cross-validation folds.</p>
+        <p style="margin-bottom: 0.6rem;"><b>2. Interpretable Descriptors:</b> Multi-color space histograms, gradient orientation (HOG), and local textures (LBP).</p>
+        <p><b>3. Calibrated Uncertainty:</b> Selective classification to abstain from ambiguous decisions before human inspection.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 2 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 3: Dataset Audit & Splits -->
+  <div class="slide" data-index="3">
+    <div class="slide-header">2. Data Integrity & Splits</div>
+    <h2>Dataset Audit & Group-Aware Partitioning</h2>
+    <div class="grid-2">
+      <div>
+        <h3>Data Audit & Cleaning</h3>
+        <ul>
+          <li><b>2,527 initial images</b> in the TrashNet repository.</li>
+          <li><b>6 conflicting images quarantined</b> across 3 identical-file groups with contradictory labels.</li>
+          <li><b>2,521 validated usable images</b> across 6 balanced classes.</li>
+          <li><b>Perceptual hash audit:</b> 45 candidates examined; 6 ambiguous pairs retained in conservative groups.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Stratified Group-Aware Splits</h3>
+        <table>
+          <thead>
+            <tr><th>Partition</th><th>Images</th><th>Percentage</th><th>Duplicate Isolation</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Train</b></td><td>1,764</td><td>69.97%</td><td>Atomically preserved</td></tr>
+            <tr><td><b>Validation</b></td><td>380</td><td>15.07%</td><td>Zero train overlap</td></tr>
+            <tr><td><b>Test</b></td><td>377</td><td>14.95%</td><td>Untouched & frozen</td></tr>
+            <tr style="font-weight:bold;"><td>Total</td><td>2,521</td><td>100.0%</td><td>Group verified</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem;">
+          <i>Guarantee: No duplicate item group ever crosses train, validation, or test boundaries.</i>
+        </p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 3 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 4: Feature Engineering -->
+  <div class="slide" data-index="4">
+    <div class="slide-header">3. Feature Engineering</div>
+    <h2>Handcrafted Visual Representations</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="color: var(--primary);">Baseline Descriptors (1,806 Dims)</h3>
+        <p><b>1. HSV Color Histograms (32 dims):</b> 16 Hue, 8 Saturation, 8 Value bins; per-channel L1-normalized.</p>
+        <p style="margin-top: 0.4rem;"><b>2. HOG (1,764 dims):</b> 9 signed orientation bins, 16×16 px/cell, 2×2 blocks, Dalal-Triggs L2-Hys block clipping.</p>
+        <p style="margin-top: 0.4rem;"><b>3. Uniform LBP (10 dims):</b> Circular P=8, R=1.0 uniform patterns, L1-normalized.</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--primary);">Extended Spatial Descriptors (2,760 Dims)</h3>
+        <p><b>Multi-Region Decomposition:</b> 6 regions (global, foreground, 4 spatial quadrants) on 256×256 canvas.</p>
+        <p style="margin-top: 0.4rem;"><b>Rich Color & Texture:</b> HSV, RGB, LAB, joint HS (288 dims) + multi-scale LBP (R&isin;{1,2,3}, 172 dims) per region.</p>
+        <p style="margin-top: 0.4rem;"><b>Winner Selection:</b> 1,608 dims (global color + spatial texture).</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 4 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 5: Model Selection Table -->
+  <div class="slide" data-index="5">
+    <div class="slide-header">4. Model Selection</div>
+    <h2>Training Cross-Validation Comparison</h2>
+    <p style="font-size: 0.95rem; margin-bottom: 0.6rem;">
+      Evaluated across 5 frozen group-aware training folds (seed 42). Scaling fitted strictly within fold training complements.
+    </p>
+    <table>
+      <thead>
+        <tr><th>Model Architecture</th><th>Feature Set</th><th>Dims</th><th>Mean CV Macro F1</th><th>Fold Std</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Dummy Baseline</td><td>Most Frequent Class</td><td>1,806</td><td>0.0636</td><td>0.0002</td></tr>
+        <tr><td>Linear SVM</td><td>Baseline (All)</td><td>1,806</td><td>0.6007</td><td>0.0284</td></tr>
+        <tr><td>RBF SVM</td><td>Baseline (All)</td><td>1,806</td><td>0.6731</td><td>0.0339</td></tr>
+        <tr><td>Random Forest</td><td>Color (HSV Only)</td><td>32</td><td>0.7366</td><td>0.0260</td></tr>
+        <tr><td>Random Forest</td><td>Baseline (All)</td><td>1,806</td><td>0.7090</td><td>0.0522</td></tr>
+        <tr><td>Random Forest Refinement</td><td>Extended Spatial</td><td>2,760</td><td>0.8370</td><td>0.0241</td></tr>
+        <tr class="winner-row"><td><b>Extended RBF SVM (Selected)</b></td><td><b>Ext. Global + Spatial</b></td><td><b>1,608</b></td><td><b>0.8803</b></td><td><b>0.0271</b></td></tr>
+      </tbody>
+    </table>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 5 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 6: ML Theory Insights -->
+  <div class="slide" data-index="6">
+    <div class="slide-header">5. Theoretical Insights</div>
+    <h2>Key Insights: SVM vs. Random Forest</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="color: var(--primary);">Random Forest Subspace Dilution</h3>
+        <p>• Baseline RF dropped from <b>0.7366</b> (color only) to <b>0.7090</b> (all features).</p>
+        <p>• <i>Cause:</i> Random feature sampling at split nodes ($m = \sqrt{1806} \approx 42$) diluted color candidates to only 1.8% of the pool.</p>
+        <p>• <i>Resolution:</i> Tuning <code>max_features=0.25</code> on extended spatial representations lifted RF to <b>0.8370 ± 0.0241</b>.</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--primary);">RBF SVM Nonlinear Separation</h3>
+        <p>• RBF kernel maps features into an infinite-dimensional Hilbert space.</p>
+        <p>• Elementwise square root + L2 normalization (<code>root_l2</code>) effectively linearizes Bhattacharyya histogram distances.</p>
+        <p>• Achieved global winner CV score: <b>0.8803 ± 0.0271</b> ($C=10.0, \gamma=10.0$).</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 6 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 7: Calibration & Abstention -->
+  <div class="slide" data-index="7">
+    <div class="slide-header">6. Calibration & Abstention</div>
+    <h2>Platt Scaling & Validation-Only Threshold</h2>
+    <div class="grid-2">
+      <div>
+        <h3>Group-Aware Sigmoid Calibration</h3>
+        <ul>
+          <li>Trained via <code>CalibratedClassifierCV(ensemble=True)</code> over the 5 training folds.</li>
+          <li>Base estimators fit on 4/5 training complement; Platt sigmoid fits on 1/5 withheld fold.</li>
+          <li><b>Guarantees:</b> Zero calibration on training data.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--primary);">Threshold Selection (&tau; = 0.52)</h3>
+        <p>• Swept 101 thresholds on <b>380 validation images</b>.</p>
+        <p>• Target: Accepted accuracy &ge; 90%, coverage &ge; 80%.</p>
+        <p>• <b>Selected Threshold: &tau; = 0.52</b></p>
+        <p>• Validation Coverage: <b>98.16%</b> (373/380)</p>
+        <p>• Validation Accepted Accuracy: <b>90.08%</b></p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 7 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 8: Final Frozen Results -->
+  <div class="slide" data-index="8">
+    <div class="slide-header">7. Final Test Evaluation</div>
+    <h2>Untouched Test Set Evaluation (377 Images)</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="color: var(--primary);">Unconditional Performance</h3>
+        <p>• <b>Macro F1:</b> <span class="highlight">0.8999</span> (Target: &ge; 0.86)</p>
+        <p>• <b>Accuracy:</b> <span class="highlight">90.19%</span> (340 / 377 correct)</p>
+        <p>• <b>Multiclass Log Loss:</b> 0.4599</p>
+        <p>• <b>Brier Score:</b> 0.1828</p>
+        <p>• <b>ECE (10 fixed bins):</b> 0.1325</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--primary);">Selective Performance (&tau; = 0.52)</h3>
+        <p>• <b>Coverage:</b> <span class="highlight">98.41%</span> (371 / 377 accepted)</p>
+        <p>• <b>Abstained Count:</b> 6 images (1.59% rate)</p>
+        <p>• <b>Accepted Accuracy:</b> <span class="highlight">91.37%</span> (+1.19 percentage pts)</p>
+        <p>• <b>Accepted Macro F1:</b> <span class="highlight">0.9129</span> (+1.30% relative)</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 8 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 9: Failure Analysis -->
+  <div class="slide" data-index="9">
+    <div class="slide-header">8. Failure Analysis</div>
+    <h2>Selective Error Elimination Audit</h2>
+    <p style="margin-bottom: 0.6rem;">Audit of all 6 test images flagged for abstention at &tau; = 0.52:</p>
+    <table>
+      <thead>
+        <tr><th>Image ID</th><th>True Class</th><th>Predicted Class</th><th>Confidence</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>cardboard100.jpg</td><td>Cardboard</td><td>Paper</td><td>0.4957</td><td style="color:#059669; font-weight:bold;">Error Averted</td></tr>
+        <tr><td>glass301.jpg</td><td>Glass</td><td>Metal</td><td>0.4961</td><td style="color:#059669; font-weight:bold;">Error Averted</td></tr>
+        <tr><td>paper348.jpg</td><td>Paper</td><td>Paper</td><td>0.4784</td><td style="color:#dc2626;">Correct Withheld</td></tr>
+        <tr><td>paper538.jpg</td><td>Paper</td><td>Glass</td><td>0.4929</td><td style="color:#059669; font-weight:bold;">Error Averted</td></tr>
+        <tr><td>plastic116.jpg</td><td>Plastic</td><td>Metal</td><td>0.3737</td><td style="color:#059669; font-weight:bold;">Error Averted</td></tr>
+        <tr><td>plastic464.jpg</td><td>Plastic</td><td>Trash</td><td>0.3926</td><td style="color:#059669; font-weight:bold;">Error Averted</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size: 0.95rem; margin-top: 0.6rem;">
+      <b>Result:</b> Abstaining eliminated <b>5 actual errors</b> while sacrificing only 1 correct prediction.
+    </p>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 9 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 10: Demo Integration -->
+  <div class="slide" data-index="10">
+    <div class="slide-header">9. System Integration</div>
+    <h2>Interactive Gradio Demo & Safety UI</h2>
+    <div class="grid-2">
+      <div>
+        <h3>Implementation (app.py)</h3>
+        <ul>
+          <li><b>Efficient Model Reuse:</b> 66.3 MB model unpickled and validated once at launch; retained in memory.</li>
+          <li><b>Strict Delegation:</b> Calls <code>predict_image(image, artifact)</code> without logic duplication.</li>
+          <li><b>Local Privacy:</b> Public sharing disabled (<code>share=False</code>); photos not stored in project directories (transient OS temp storage used by Gradio).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--primary);">Uncertainty UX & Safety</h3>
+        <p>• <b>Prominent Warning:</b> When confidence &lt; 0.52, primary output becomes <span class="amber">"Uncertain — manual inspection recommended."</span></p>
+        <p style="margin-top: 0.4rem;">• <b>Full Probability Table:</b> All 6 class probabilities formatted clearly.</p>
+        <p style="margin-top: 0.4rem;">• <b>Limitations Banner:</b> Explicitly warns that confidence does not detect unknown out-of-distribution items.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 10 / 11</span>
+    </div>
+  </div>
+
+  <!-- Slide 11: Summary & Viva -->
+  <div class="slide" data-index="11">
+    <div class="slide-header">10. Summary & Outlook</div>
+    <h2>Phase 1 Deliverables & Phase 2 Outlook</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="color: var(--primary);">Phase 1 Achievements & Status</h3>
+        <p>• <b>156 passed, 1 skipped</b> (missing model artifact test skipped).</p>
+        <p>• Verified final test performance: <b>0.8999 macro F1</b>, <b>90.19% accuracy</b> (91.37% selective).</p>
+        <p>• LaTeX report project and separate HTML preview (PDF compilation pending).</p>
+        <p>• Interactive photo demo ready for model placement.</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--primary);">Provenance & Phase 2 Outlook</h3>
+        <p>• <i>Provenance:</i> Author's account of formatting changes noted; exact historical state unverified from Git.</p>
+        <p>• Deep learning benchmark: lightweight Vision Transformer (ViT) vs. classical features.</p>
+        <p>• Conformal prediction for finite-sample coverage guarantees.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Smart Waste Segregation — Phase 1</span>
+      <span>Slide 11 / 11</span>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn" onclick="prevSlide()">◀ Previous</button>
+  <span id="slideCounter">Slide 1 of 11</span>
+  <button class="btn" onclick="nextSlide()">Next ▶</button>
+  <button class="btn" onclick="toggleFullscreen()">Fullscreen</button>
+  <button class="btn" onclick="window.print()">Print / Export PDF</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const counter = document.getElementById('slideCounter');
+
+  function showSlide(index) {
+    if (index < 1) index = 1;
+    if (index > totalSlides) index = totalSlides;
+    currentSlide = index;
+    slides.forEach((s, idx) => {
+      s.classList.toggle('active', (idx + 1) === currentSlide);
+    });
+    counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+  }
+
+  function nextSlide() { showSlide(currentSlide + 1); }
+  function prevSlide() { showSlide(currentSlide - 1); }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    } else if (e.key === 'Home') {
+      showSlide(1);
+    } else if (e.key === 'End') {
+      showSlide(totalSlides);
+    }
+  });
+</script>
+
+</body>
+</html>

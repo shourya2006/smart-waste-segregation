@@ -171,7 +171,7 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m waste_sorting.rf_refinement -
   - Refined RF estimator is saved at `artifacts/daksh-rf-refinement/extended_spatial_color_texture/estimator.joblib`.
   - Takes 2,760-dim feature vectors from `extract_extended_features(image)` and internally handles column indexing.
   - The model is fitted on outer-training rows only and is uncalibrated.
-- **For Saksham Mighlani (Demo & Integration)**:
+- **For Saksham Miglani (Demo & Integration)**:
   - The pipeline interface accepts full extended feature matrices directly without external manual scaling.
 
 ## Limitations & Viva Discussion Points

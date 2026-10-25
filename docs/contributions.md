@@ -15,7 +15,7 @@ Detailed deliverables and dependencies are in [team-assignments.md](team-assignm
 | Shourya Bafna | Shared training protocol, dummy baseline, SVM | Group-aware folds, SVM runs, theory |
 | Daksh Batra | Random Forest and feature comparisons | RF runs, feature experiments, comparison tables |
 | Prajjwal Tripathi | Calibration, abstention, and final evaluation | Metrics, reliability plots, failure analysis |
-| Saksham Mighlani | Photo upload demo and submission integration | Demo code, integration checks, report assembly |
+| Saksham Miglani | Photo upload demo and submission integration | Demo code, integration checks, report assembly |
 
 ## Existing repository history
 
@@ -40,6 +40,7 @@ their own commit or pull request; do not count this assignment as completed work
 | Shourya Bafna | 2026-10-23 | Assistant-assisted training-input validation, five shared group-aware folds, dummy/linear/RBF SVM searches, fold-local scaling tests and teammate handoff | [SVM baseline branch](https://github.com/shourya2006/smart-waste-segregation/tree/codex/svm-baselines) |
 | Daksh Batra | 2026-10-23 | Assistant-assisted Random Forest pipeline, 5-family feature comparison study (120 evaluated candidates), class weighting experiments, 4 unit/integration tests, and documented handoff | [Random Forest branch](https://github.com/shourya2006/smart-waste-segregation/tree/codex/random-forest) |
 | Prajjwal Tripathi | 2026-10-24 | Group-aware Platt calibration, validation abstention threshold sweep and selection, frozen test set evaluation, prediction interface, 18 unit tests, and reproducible report artifacts | [Calibration & evaluation branch](https://github.com/shourya2006/smart-waste-segregation/tree/feat/calibration-evaluation) |
+| Saksham Miglani | 2026-10-25 | Photo upload demo with in-memory model reuse, uncertainty and limitations UX, 23 integration tests, reproducible demo lockfile, IEEE report and presentation assembly | [Demo integration branch](https://github.com/shourya2006/smart-waste-segregation/tree/feat/demo-integration) |
 
 Record completed work with the contributor's name, a short description, date,
 and commit or pull-request link. Each member should review another component.
@@ -69,3 +70,7 @@ calibration, evaluation and earlier review fixes. [PR #7](https://github.com/sho
 Caches without preprocessing provenance are rejected as unverifiable. Preserve historical
 experiment caches; do not relabel them with newly calculated fingerprints or rerun the
 final evaluation to upgrade them.
+
+## Demo integration and submission assembly
+
+Saksham Miglani (2026-10-25): Implemented local Gradio photo upload demonstration (`app.py` and `src/waste_sorting/demo.py`) reusing the preserved evaluated model in memory once per process and strictly delegating inference to the shared `predict_image` contract. Configured frozen abstention threshold ($\tau = 0.52$), prominent amber uncertainty warning (`"Uncertain — manual inspection recommended"`), 6-class calibrated probabilities display, input bounding ($16$ MP / $8,192$ px side limits), and automated clearing of stale results. Created 23 integration tests (`tests/test_demo.py`) with synthetic fixtures and evaluated artifact guards (suite total: 157 tests, 1 expected skip when model binary is not placed). Formulated `requirements-demo.lock` locking Gradio 6.30.0 while preserving exact baseline package pins. Assembled the complete IEEE LaTeX report project (`report/`), HTML report export (`report/report.html`), editable presentation sources (`presentation/slides.md`), interactive presentation export (`presentation/index.html`), clean-checkout reproduction instructions, and member notes (`docs/member-notes/saksham-mighlani.md`). Implementation branch: `feat/demo-integration`.

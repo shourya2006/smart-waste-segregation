@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Waste Segregation: Handcrafted Feature Engineering, Group-Aware Cross-Validation, and Calibrated Selective Classification for Classical ML</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<style>
+  @page {
+    size: letter;
+    margin: 1.8cm 1.5cm;
+  }
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 10pt;
+    line-height: 1.25;
+    color: #111;
+    background: #fdfdfd;
+    margin: 0;
+    padding: 2rem;
+  }
+  .paper-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  }
+  h1.title {
+    font-size: 18pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.2rem;
+    line-height: 1.2;
+  }
+  .authors-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .author-card h3 {
+    margin: 0;
+    font-size: 11pt;
+    font-weight: bold;
+  }
+  .author-card p {
+    margin: 2px 0 0;
+    font-size: 9pt;
+    font-style: italic;
+    color: #444;
+  }
+  .abstract-box {
+    margin-bottom: 1.8rem;
+    padding: 0 1rem;
+  }
+  .abstract-box b {
+    font-style: italic;
+  }
+  .keywords {
+    margin-top: 0.6rem;
+    font-size: 9pt;
+  }
+  .two-column-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.8rem;
+    text-align: justify;
+  }
+  h2.section-head {
+    font-size: 10.5pt;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 2px;
+  }
+  h3.subsection-head {
+    font-size: 10pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+  p {
+    margin: 0 0 0.6rem;
+    text-indent: 1em;
+  }
+  p.no-indent {
+    text-indent: 0;
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8rem 0;
+    font-size: 8.5pt;
+  }
+  table.data-table th, table.data-table td {
+    padding: 4px 6px;
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+  }
+  table.data-table th {
+    background: #f8f8f8;
+    font-weight: bold;
+  }
+  .caption {
+    font-size: 8.5pt;
+    font-style: italic;
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    color: #333;
+  }
+  .figure-box {
+    text-align: center;
+    margin: 1rem 0;
+  }
+  .figure-box img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+  }
+  ul, ol {
+    margin: 0 0 0.6rem;
+    padding-left: 1.4rem;
+  }
+  li {
+    margin-bottom: 0.2rem;
+  }
+  .references-list {
+    font-size: 8.5pt;
+    line-height: 1.3;
+    padding-left: 1.4rem;
+  }
+  .references-list li {
+    margin-bottom: 0.4rem;
+    text-indent: -1.4rem;
+    padding-left: 1.4rem;
+  }
+  @media print {
+    body {
+      padding: 0;
+      background: none;
+    }
+    .paper-container {
+      box-shadow: none;
+      padding: 0;
+      max-width: 100%;
+    }
+  }
+  @media (max-width: 768px) {
+    body { padding: 0.5rem; }
+    .paper-container { padding: 1.5rem 1rem; }
+    .authors-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+    .two-column-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="paper-container">
+  <h1 class="title">Smart Waste Segregation: Handcrafted Feature Engineering, Group-Aware Cross-Validation, and Calibrated Selective Classification for Classical ML</h1>
+
+  <div class="authors-grid">
+    <div class="author-card">
+      <h3>Om Yadav</h3>
+      <p>Data Verification & Preprocessing</p>
+    </div>
+    <div class="author-card">
+      <h3>Aditya Bharadwaj</h3>
+      <p>Feature Engineering & Caching</p>
+    </div>
+    <div class="author-card">
+      <h3>Shourya Bafna</h3>
+      <p>Training Protocol & SVM Baselines</p>
+    </div>
+    <div class="author-card">
+      <h3>Daksh Batra</h3>
+      <p>Random Forest & Feature Studies</p>
+    </div>
+    <div class="author-card">
+      <h3>Prajjwal Tripathi</h3>
+      <p>Confidence Calibration & Evaluation</p>
+    </div>
+    <div class="author-card">
+      <h3>Saksham Mighlani</h3>
+      <p>Demo Integration & Report Assembly</p>
+    </div>
+  </div>
+
+  <div class="abstract-box">
+    <p class="no-indent"><b>Abstract</b>—Automated sorting of recyclable solid municipal waste requires robust, interpretable, and computationally lightweight classification models capable of identifying common material categories from visual imagery. In Phase 1 of the Smart Waste Segregation project, we investigate a strictly classical machine learning pipeline operating on the 6-class TrashNet dataset without transfer learning or deep neural networks. We conduct rigorous data auditing and near-duplicate grouping to eliminate data leakage before partitioning the dataset into group-aware stratified splits (1,764 training, 380 validation, 377 test images). We design and extract standardized handcrafted descriptors combining color histograms (HSV, RGB, LAB), gradient orientation profiles (Histogram of Oriented Gradients, HOG), and multi-scale texture features (Local Binary Patterns, LBP), totaling up to 2,760 dimensions across multiple image regions. Within a strictly isolated 5-fold group-aware cross-validation protocol, we evaluate Support Vector Machines (SVM) and Random Forests. An extended RBF SVM (C=10, gamma=10 with elementwise square root and L2 normalization) achieves a winning training cross-validation macro F1 score of 0.8803 ± 0.0271, outperforming refined Random Forest models (0.8370 ± 0.0241). The winning pipeline is calibrated using out-of-fold Platt scaling, and an abstention threshold (tau = 0.52) is selected exclusively on the validation split. On the untouched test set (377 images), the model delivers an unconditional macro F1 of 0.8999 and an accuracy of 90.19%. Selective classification under abstention rejects 6 ambiguous images (5 of which were misclassifications), yielding an accepted test accuracy of 91.37% and an accepted macro F1 of 0.9129 at 98.41% coverage. We package the validated model into a local Gradio photo upload demonstration that surfaces calibrated probabilities and uncertainty advisories while preserving local privacy.</p>
+    <div class="keywords"><b>Keywords</b>—Waste classification, handcrafted features, HOG, LBP, Support Vector Machines, Random Forest, probability calibration, selective classification, abstention.</div>
+  </div>
+
+  <div class="two-column-layout">
+    <div class="col-left">
+      <h2 class="section-head">I. Introduction</h2>
+      <p>Effective municipal waste segregation is critical to sustainable materials recovery, circular economy adoption, and environmental conservation. Automated sorting facilities increasingly rely on computer vision systems to distinguish recyclable packaging materials at source and processing conveyor nodes. However, deploying computer vision models in resource-constrained municipal sorting environments demands rigorous guarantees regarding data leakage, training isolation, computational footprint, and prediction reliability.</p>
+      <p>In accordance with Phase 1 project requirements, this study investigates classical machine learning techniques—specifically Support Vector Machines (SVM) and Random Forests—leveraging handcrafted visual representations. While contemporary research frequently adopts deep convolutional networks, classical methods offer deterministic feature provenance, lower training energy demands, transparency, and minimal hardware requirements for embedded sorting devices.</p>
+
+      <h2 class="section-head">II. Dataset Audit, Preprocessing, and Splits</h2>
+      <h3 class="subsection-head">A. TrashNet Acquisition & Duplicate Review</h3>
+      <p>The benchmark dataset comprises 2,527 digital images across six recyclable waste categories: <i>cardboard</i>, <i>glass</i>, <i>metal</i>, <i>paper</i>, <i>plastic</i>, and <i>trash</i>. Initial auditing confirmed all source images were 3-channel RGB digital photographs at 512×384 pixels. Exact MD5 hashing identified conflicting class labels across identical image files, resulting in the quarantine of 6 image files across 3 conflicting-content groups.</p>
+      <p>For the remaining 2,521 usable images, candidate duplicate pairs were generated using perceptual hashing with an inclusive Hamming distance threshold of &le; 6. A total of 45 candidate pairs were subjected to multi-reviewer visual inspection. Six ambiguous pairs exhibited identical brand packaging but indeterminate deformation; following conservative methodology, these pairs were assigned to unified duplicate groups to ensure they would never be split across train, validation, or test sets.</p>
+
+      <h3 class="subsection-head">B. Group-Aware Stratified Splitting</h3>
+      <p>The 2,521 audited images were partitioned into outer splits using a group-aware stratified allocation targeting a nominal 70/15/15 ratio. As summarized in Table I, duplicate groups were preserved atomically within their assigned splits. The final verified split contains 1,764 training images (69.97%), 380 validation images (15.07%), and 377 test images (14.95%).</p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Train</th>
+            <th>Val</th>
+            <th>Test</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Cardboard</td><td>282</td><td>61</td><td>60</td><td>403</td></tr>
+          <tr><td>Glass</td><td>351</td><td>75</td><td>75</td><td>501</td></tr>
+          <tr><td>Metal</td><td>288</td><td>61</td><td>61</td><td>410</td></tr>
+          <tr><td>Paper</td><td>416</td><td>89</td><td>89</td><td>594</td></tr>
+          <tr><td>Plastic</td><td>338</td><td>72</td><td>72</td><td>482</td></tr>
+          <tr><td>Trash</td><td>89</td><td>22</td><td>20</td><td>131</td></tr>
+          <tr style="font-weight:bold;"><td>Total</td><td>1,764</td><td>380</td><td>377</td><td>2,521</td></tr>
+        </tbody>
+      </table>
+      <div class="caption">TABLE I: Audited Dataset Splits and Class Distribution</div>
+
+      <h3 class="subsection-head">C. Standardized Preprocessing Pipeline</h3>
+      <p>The preprocessing module implements EXIF orientation normalization, alpha channel compositing onto white background ([255, 255, 255]), and aspect-preserving letterboxing via Lanczos interpolation. This prevents structural distortion of object silhouettes before gradient feature calculation.</p>
+
+      <h2 class="section-head">III. Handcrafted Feature Extraction</h2>
+      <h3 class="subsection-head">A. Baseline Descriptors (1,806 Dimensions)</h3>
+      <p>The baseline feature representation combines three complementary visual modalities:</p>
+      <ul>
+        <li><b>HSV Color Histograms (32 dims):</b> 16 Hue, 8 Saturation, 8 Value bins, independently L1-normalized.</li>
+        <li><b>HOG (1,764 dims):</b> 9 signed orientation bins, 16×16 pixels/cell, 2×2 cells/block with Dalal-Triggs L2-Hys clipping.</li>
+        <li><b>Uniform LBP (10 dims):</b> Circular uniform LBP with P=8, R=1.0, L1-normalized across 10 bins.</li>
+      </ul>
+
+      <h3 class="subsection-head">B. Opt-In Extended Descriptors (2,760 Dimensions)</h3>
+      <p>Features are extracted across six regions (global, foreground, 4 quadrants) on a 256×256 canvas: multi-color space (HSV, RGB, LAB, joint HS; 288 dims/region) and multi-scale LBP (R&isin;{1,2,3}, P&isin;{8,16,24}; 172 dims/region), totaling 2,760 raw features. The winning pipeline selects 1,608 dimensions corresponding to global color and spatial texture.</p>
+
+      <h2 class="section-head">IV. Model Comparisons & Training Protocol</h2>
+      <p>All model training and feature ablations were conducted strictly on the 1,764 training samples using 5-fold StratifiedGroupKFold (seed 42). Feature scaling (StandardScaler) was fitted exclusively on the 4/5 training complement of each fold.</p>
+    </div>
+
+    <div class="col-right">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Model Family</th>
+            <th>Descriptors</th>
+            <th>Dims</th>
+            <th>CV Macro F1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Dummy (Most Freq.)</td><td>All</td><td>1,806</td><td>0.0636 ± 0.0002</td></tr>
+          <tr><td>Linear SVM</td><td>All</td><td>1,806</td><td>0.6007 ± 0.0284</td></tr>
+          <tr><td>RBF SVM</td><td>All</td><td>1,806</td><td>0.6731 ± 0.0339</td></tr>
+          <tr><td>Random Forest</td><td>Color (HSV)</td><td>32</td><td>0.7366 ± 0.0260</td></tr>
+          <tr><td>Random Forest</td><td>HOG Only</td><td>1,764</td><td>0.6252 ± 0.0350</td></tr>
+          <tr><td>Random Forest</td><td>LBP Only</td><td>10</td><td>0.5069 ± 0.0108</td></tr>
+          <tr><td>Random Forest</td><td>All</td><td>1,806</td><td>0.7090 ± 0.0522</td></tr>
+          <tr><td>RF Refinement</td><td>Ext. Spatial</td><td>2,760</td><td>0.8370 ± 0.0241</td></tr>
+          <tr style="font-weight:bold; background:#eef7ee;"><td>Extended RBF SVM</td><td>Ext. Global/Spat</td><td>1,608</td><td>0.8803 ± 0.0271</td></tr>
+        </tbody>
+      </table>
+      <div class="caption">TABLE II: 5-Fold Training CV Macro F1 Across Models</div>
+
+      <h3 class="subsection-head">A. Key Observations</h3>
+      <p><b>Feature Subspace Dilution in Random Forest:</b> Sampling m = &radic;p candidate features caused 32 color features to represent only 1.8% of candidates in the 1,806 space, degrading score from 0.7366 to 0.7090. Tuning max_features=0.25 on extended features restored RF performance to 0.8370.</p>
+      <p><b>Nonlinear Separation in RBF SVM:</b> Applying elementwise square-root and L2 normalization (root_l2) with C=10, &gamma;=10 achieved the global maximum CV macro F1 of <b>0.8803 ± 0.0271</b>, which was chosen for final evaluation.</p>
+
+      <h2 class="section-head">V. Confidence Calibration & Abstention</h2>
+      <p>Prajjwal Tripathi implemented Platt sigmoid calibration via CalibratedClassifierCV(ensemble=True) across the 5 training folds. Abstention threshold selection on the 380 validation images selected &tau; = <b>0.52</b> (98.16% coverage, 90.08% accepted accuracy).</p>
+
+      <div class="figure-box">
+        <img src="figures/reliability-diagram.png" alt="Reliability Diagram">
+        <div class="caption">Fig. 1: Reliability diagram on the frozen test set across 10 fixed confidence bins.</div>
+      </div>
+
+      <h2 class="section-head">VI. Final Test Evaluation</h2>
+      <p>On the 377 untouched test images:</p>
+      <ul>
+        <li><b>Unconditional Macro F1:</b> 0.8999</li>
+        <li><b>Unconditional Accuracy:</b> 90.19% (340/377 correct)</li>
+        <li><b>Multiclass Log Loss:</b> 0.4599 | <b>Brier Score:</b> 0.1828</li>
+        <li><b>Expected Calibration Error:</b> 0.1325 (10 fixed bins)</li>
+        <li><b>Selective Accuracy (&tau;=0.52):</b> <b>91.37%</b> (339/371) at <b>98.41%</b> coverage</li>
+        <li><b>Selective Macro F1:</b> <b>0.9129</b></li>
+      </ul>
+
+      <div class="figure-box">
+        <img src="figures/confusion-matrix.png" alt="Confusion Matrix">
+        <div class="caption">Fig. 2: Test confusion matrix (377 images) across all 6 classes.</div>
+      </div>
+
+      <h3 class="subsection-head">A. Empirical Audit of Abstained Predictions</h3>
+      <p>Of 6 abstained test images, 5 were misclassifications (cardboard100, glass301, paper538, plastic116, plastic464), and only 1 was correct (paper348). Abstention safely prevented 5 user-facing errors.</p>
+
+      <h2 class="section-head">VII. Demo & Integration</h2>
+      <p>Saksham Mighlani built the local Gradio interface (app.py) reusing the validated model in-memory without reloading the 66 MB binary. Predictions strictly call the shared predict_image contract. An amber uncertainty banner alerts users when P_max &lt; 0.52, and the system explicitly notes that confidence-based abstention cannot reliably detect unknown out-of-distribution classes. Uploaded photos are processed in memory and are never stored in project directories, though the underlying Gradio framework creates transient transport files in system temporary storage.</p>
+
+      <h2 class="section-head">VIII. Provenance & Limitations</h2>
+      <p>The original calibration run was executed on an uncommitted tree before commit b775f02. According to the original author's account, subsequent non-functional docstring and comment line-wrapping edits altered the package hash from 26e7e076... to cab3b677.... Because no intermediate git tree snapshot was preserved, the exact historical package state could not be independently reconstructed from Git history; this explanation is recorded as the author's account rather than an independently proven fact. The evaluated model and final predictions were preserved without refitting to maintain evaluation integrity.</p>
+
+      <h2 class="section-head">IX. References</h2>
+      <ol class="references-list">
+        <li>M. Yang and G. Thung, "Classification of trash for recyclability status," <i>CS229 Project Report</i>, Stanford Univ., 2016.</li>
+        <li>N. Dalal and B. Triggs, "Histograms of oriented gradients for human detection," in <i>CVPR</i>, vol. 1, pp. 886-893, 2005.</li>
+        <li>T. Ojala, M. Pietik&auml;inen, and T. M&auml;enp&auml;&auml;, "Multiresolution gray-scale and rotation invariant texture classification with local binary patterns," <i>IEEE TPAMI</i>, vol. 24, no. 7, pp. 971-987, 2002.</li>
+        <li>C. Cortes and V. Vapnik, "Support-vector networks," <i>Machine Learning</i>, vol. 20, no. 3, pp. 273-297, 1995.</li>
+        <li>L. Breiman, "Random forests," <i>Machine Learning</i>, vol. 45, no. 1, pp. 5-32, 2001.</li>
+        <li>J. C. Platt, "Probabilistic outputs for support vector machines," in <i>Advances in Large Margin Classifiers</i>, pp. 61-74, 1999.</li>
+        <li>A. Niculescu-Mizil and R. Caruana, "Predicting good probabilities with supervised learning," in <i>ICML</i>, pp. 625-632, 2005.</li>
+        <li>C. Guo et al., "On calibration of modern neural networks," in <i>ICML</i>, pp. 1321-1330, 2017.</li>
+        <li>R. El-Yaniv and Y. Wiener, "On the foundations of noise-free selective classification," <i>JMLR</i>, vol. 11, pp. 1605-1641, 2010.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
