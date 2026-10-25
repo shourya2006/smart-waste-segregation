@@ -56,3 +56,16 @@ Daksh Batra, with the coding assistant: Random Forest refinement study evaluatin
 ## Confidence calibration, abstention and evaluation
 
 Prajjwal Tripathi: Implementation of group-aware sigmoid calibration (`CalibratedClassifierCV`, 5 frozen training folds, `ensemble=True`) on the selected extended RBF SVM (`global_color_spatial_texture`, C=10, gamma=10). Validation-only abstention threshold sweep and selection (threshold 0.52 achieving 98.16% coverage and 90.08% accepted accuracy). Frozen evaluation on untouched test data (377 images) producing **0.8999 macro F1** (0.9019 accuracy, 0.4599 log loss, 0.1828 multiclass Brier score, 0.1325 ECE) unconditional, and **0.9129 macro F1** (98.41% coverage, 91.37% accuracy) post-abstention. Implemented shared `predict_image(image, artifact)` interface, comprehensive unit tests (18 tests, 112 passing in total suite), final-evaluation overwrite guard, and generated reproducible tables and visualization plots. Branch: `feat/calibration-evaluation`.
+
+## Evaluation integration review fixes
+
+Shourya Bafna (2026-10-25): Added shared cache provenance covering the extended extractor,
+preprocessing implementation and extraction settings; require fitted model class metadata
+before prediction. Added regression coverage for preprocessing-only changes and missing or
+invalid model class metadata. Validation: 134 tests and lint passed. Original evaluation
+records and threshold remain unchanged. Prajjwal Tripathi retains authorship of the
+calibration, evaluation and earlier review fixes. [PR #7](https://github.com/shourya2006/smart-waste-segregation/pull/7).
+
+Caches without preprocessing provenance are rejected as unverifiable. Preserve historical
+experiment caches; do not relabel them with newly calculated fingerprints or rerun the
+final evaluation to upgrade them.

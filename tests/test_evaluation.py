@@ -1,5 +1,6 @@
 import hashlib
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -241,6 +242,7 @@ class FeatureCacheValidationTests(unittest.TestCase):
         )
         self.manifest_sha = sha256(self.root / "docs/dataset/manifest.csv")
         self.extractor_sha = sha256(self.root / "src/waste_sorting/extended_features.py")
+        self.preprocessing_sha = sha256(self.root / "src/waste_sorting/preprocessing.py")
         self.settings_hash = hashlib.sha256(
             json.dumps(EXTENDED_SETTINGS, sort_keys=True).encode("utf-8")
         ).hexdigest()
@@ -255,6 +257,7 @@ class FeatureCacheValidationTests(unittest.TestCase):
             "split": self.split_name,
             "manifest_sha256": self.manifest_sha,
             "extractor_sha256": self.extractor_sha,
+            "preprocessing_sha256": self.preprocessing_sha,
             "settings_hash": self.settings_hash,
         }
         payload.update(kwargs)
@@ -274,7 +277,9 @@ class FeatureCacheValidationTests(unittest.TestCase):
 
     def test_unverifiable_cache_missing_keys_rejected(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
-            for missing_key in ["manifest_sha256", "extractor_sha256", "settings_hash"]:
+            for missing_key in [
+                "manifest_sha256", "extractor_sha256", "preprocessing_sha256", "settings_hash"
+            ]:
                 cache_path = Path(tmp_dir) / f"missing_{missing_key}.npz"
                 payload = {
                     "features": self.valid_features,
@@ -282,6 +287,7 @@ class FeatureCacheValidationTests(unittest.TestCase):
                     "split": self.split_name,
                     "manifest_sha256": self.manifest_sha,
                     "extractor_sha256": self.extractor_sha,
+                    "preprocessing_sha256": self.preprocessing_sha,
                     "settings_hash": self.settings_hash,
                 }
                 del payload[missing_key]
@@ -315,6 +321,25 @@ class FeatureCacheValidationTests(unittest.TestCase):
                     cache_path, self.split_name, self.root, self.manifest
                 )
             self.assertIn("extractor checksum mismatch", str(ctx.exception))
+
+    def test_preprocessing_only_change_invalidates_cache(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            root = Path(tmp_dir)
+            for relative in [
+                "docs/dataset/manifest.csv",
+                "src/waste_sorting/extended_features.py",
+                "src/waste_sorting/preprocessing.py",
+            ]:
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(self.root / relative, destination)
+            cache = self._save_cache(root)
+            validate_feature_cache(cache, self.split_name, root, self.manifest)
+            (root / "src/waste_sorting/preprocessing.py").write_text(
+                "def preprocess_image(image, config):\n    return image\n"
+            )
+            with self.assertRaisesRegex(ValueError, "preprocessing checksum mismatch"):
+                validate_feature_cache(cache, self.split_name, root, self.manifest)
 
     def test_stale_settings_hash_rejected(self):
         with tempfile.TemporaryDirectory() as tmp_dir:

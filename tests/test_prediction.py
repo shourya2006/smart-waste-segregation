@@ -150,6 +150,18 @@ class PredictionInterfaceTests(unittest.TestCase):
             validate_artifact(bad_artifact)
         self.assertIn("must exactly match canonical order", str(ctx.exception))
 
+    def test_artifact_rejects_missing_model_class_order(self):
+        del self.dummy_model.classes_
+        with self.assertRaisesRegex(ValueError, "missing classes_"):
+            validate_artifact(self.valid_artifact)
+
+    def test_artifact_rejects_invalid_model_class_metadata(self):
+        for invalid in [None, 6, "cardboard", np.array([[0, 1, 2, 3, 4, 5]])]:
+            with self.subTest(classes=invalid):
+                self.dummy_model.classes_ = invalid
+                with self.assertRaisesRegex(ValueError, "classes_"):
+                    validate_artifact(self.valid_artifact)
+
     def test_artifact_rejects_mismatched_model_class_order(self):
         bad_model = DummyCalibratedModel()
         bad_model.classes_ = np.array([5, 4, 3, 2, 1, 0])  # reversed class order

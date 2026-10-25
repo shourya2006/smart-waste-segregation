@@ -82,6 +82,19 @@ def load_manifest(root: Path) -> pd.DataFrame:
     return included
 
 
+def feature_cache_provenance(root: Path) -> dict[str, str]:
+    """Fingerprint all local source and settings used to produce extended features."""
+    root = Path(root)
+    return {
+        "manifest_sha256": sha256(root / "docs/dataset/manifest.csv"),
+        "extractor_sha256": sha256(root / "src/waste_sorting/extended_features.py"),
+        "preprocessing_sha256": sha256(root / "src/waste_sorting/preprocessing.py"),
+        "settings_hash": hashlib.sha256(
+            json.dumps(EXTENDED_SETTINGS, sort_keys=True).encode("utf-8")
+        ).hexdigest(),
+    }
+
+
 def validate_feature_cache(
     cache_path: str | Path,
     split_name: str,
@@ -111,6 +124,7 @@ def validate_feature_cache(
         "split",
         "manifest_sha256",
         "extractor_sha256",
+        "preprocessing_sha256",
         "settings_hash",
     }
     missing = required_keys - set(data.files)
@@ -125,42 +139,21 @@ def validate_feature_cache(
     if cached_split != split_name:
         raise ValueError(f"Cache split mismatch: expected {split_name!r}, found {cached_split!r}")
 
-    # Validate manifest provenance
-    manifest_file = root / "docs/dataset/manifest.csv"
-    if not manifest_file.exists():
-        raise FileNotFoundError(f"Manifest not found for cache verification: {manifest_file}")
-    expected_manifest_sha = sha256(manifest_file)
-    cached_manifest_sha = str(data["manifest_sha256"])
-    if cached_manifest_sha != expected_manifest_sha:
-        raise ValueError(
-            f"Stale feature cache: manifest checksum mismatch (cache has {cached_manifest_sha!r}, "
-            f"current manifest has {expected_manifest_sha!r})"
-        )
-
-    # Validate extractor provenance
-    extractor_file = root / "src/waste_sorting/extended_features.py"
-    if not extractor_file.exists():
-        raise FileNotFoundError(
-            f"Extractor file not found for cache verification: {extractor_file}"
-        )
-    expected_extractor_sha = sha256(extractor_file)
-    cached_extractor_sha = str(data["extractor_sha256"])
-    if cached_extractor_sha != expected_extractor_sha:
-        raise ValueError(
-            "Stale feature cache: extractor checksum mismatch (cache has "
-            f"{cached_extractor_sha!r}, current extractor has {expected_extractor_sha!r})"
-        )
-
-    # Validate settings provenance
-    expected_settings_hash = hashlib.sha256(
-        json.dumps(EXTENDED_SETTINGS, sort_keys=True).encode("utf-8")
-    ).hexdigest()
-    cached_settings_hash = str(data["settings_hash"])
-    if cached_settings_hash != expected_settings_hash:
-        raise ValueError(
-            "Stale feature cache: feature extraction settings hash mismatch (cache has "
-            f"{cached_settings_hash!r}, current settings hash is {expected_settings_hash!r})"
-        )
+    # The writer and reader share the same complete provenance contract.
+    expected = feature_cache_provenance(root)
+    descriptions = {
+        "manifest_sha256": "manifest checksum",
+        "extractor_sha256": "extractor checksum",
+        "preprocessing_sha256": "preprocessing checksum",
+        "settings_hash": "feature extraction settings hash",
+    }
+    for key, expected_value in expected.items():
+        cached_value = str(data[key])
+        if cached_value != expected_value:
+            raise ValueError(
+                f"Stale feature cache: {descriptions[key]} mismatch "
+                f"(cache has {cached_value!r}, current value is {expected_value!r})"
+            )
 
     # Validate image IDs against manifest
     if manifest is None:
@@ -256,19 +249,12 @@ def extract_split_features(
     if cache_path:
         cache_path = Path(cache_path)
         cache_path.parent.mkdir(parents=True, exist_ok=True)
-        manifest_file = root / "docs/dataset/manifest.csv"
-        extractor_file = root / "src/waste_sorting/extended_features.py"
-        settings_hash = hashlib.sha256(
-            json.dumps(EXTENDED_SETTINGS, sort_keys=True).encode("utf-8")
-        ).hexdigest()
         np.savez_compressed(
             cache_path,
             features=matrix,
             image_ids=expected_ids,
             split=split_name,
-            manifest_sha256=sha256(manifest_file),
-            extractor_sha256=sha256(extractor_file),
-            settings_hash=settings_hash,
+            **feature_cache_provenance(root),
         )
 
     return matrix, expected_y, expected_ids, expected_groups

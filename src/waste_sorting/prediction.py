@@ -135,6 +135,12 @@ def validate_artifact(artifact: Any) -> dict[str, Any]:
     # Verify fitted model's classes_ matches the expected encoded probability-column order
     expected_numeric = np.arange(len(CANONICAL_CLASSES))
     expected_string = np.array(CANONICAL_CLASSES)
+    if not hasattr(model, "classes_"):
+        raise ValueError(
+            "Fitted model is missing classes_; probability column order is unverifiable"
+        )
+    if not isinstance(model.classes_, (np.ndarray, list, tuple)):
+        raise ValueError("Model classes_ must contain the expected probability column order")
     if hasattr(model, "classes_"):
         model_classes = model.classes_
         if isinstance(model_classes, np.ndarray):
