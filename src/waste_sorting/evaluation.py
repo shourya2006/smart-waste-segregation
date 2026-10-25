@@ -6,6 +6,7 @@ Phase 1 deliverable for Prajjwal Tripathi (Confidence Calibration and Evaluation
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import time
 from pathlib import Path
@@ -28,6 +29,9 @@ from sklearn.metrics import (
 from waste_sorting.acquisition import sha256
 from waste_sorting.extended_features import (
     DIMENSION as EXTENDED_DIMENSION,
+)
+from waste_sorting.extended_features import (
+    SETTINGS as EXTENDED_SETTINGS,
 )
 from waste_sorting.extended_features import (
     extended_columns,
@@ -78,6 +82,121 @@ def load_manifest(root: Path) -> pd.DataFrame:
     return included
 
 
+def validate_feature_cache(
+    cache_path: str | Path,
+    split_name: str,
+    root: Path,
+    manifest: pd.DataFrame | None = None,
+) -> np.ndarray:
+    """Validate identity, extractor/preprocessing provenance, and integrity of a feature cache.
+
+    Raises:
+        FileNotFoundError: If cache file does not exist.
+        ValueError: If cache is malformed, unverifiable (missing provenance keys),
+            stale (mismatched manifest, extractor, or settings hash), wrong split,
+            wrong image IDs, wrong dtype, wrong shape, or contains non-finite or negative values.
+    """
+    cache_file = Path(cache_path)
+    if not cache_file.exists():
+        raise FileNotFoundError(f"Feature cache file not found: {cache_file}")
+
+    try:
+        data = np.load(cache_file, allow_pickle=True)
+    except Exception as exc:
+        raise ValueError(f"Malformed cache file {cache_file}: {exc}") from exc
+
+    required_keys = {
+        "features",
+        "image_ids",
+        "split",
+        "manifest_sha256",
+        "extractor_sha256",
+        "settings_hash",
+    }
+    missing = required_keys - set(data.files)
+    if missing:
+        raise ValueError(
+            f"Unverifiable feature cache at {cache_file}: missing required provenance keys: "
+            f"{sorted(missing)}"
+        )
+
+    # Validate split identity
+    cached_split = str(data["split"])
+    if cached_split != split_name:
+        raise ValueError(f"Cache split mismatch: expected {split_name!r}, found {cached_split!r}")
+
+    # Validate manifest provenance
+    manifest_file = root / "docs/dataset/manifest.csv"
+    if not manifest_file.exists():
+        raise FileNotFoundError(f"Manifest not found for cache verification: {manifest_file}")
+    expected_manifest_sha = sha256(manifest_file)
+    cached_manifest_sha = str(data["manifest_sha256"])
+    if cached_manifest_sha != expected_manifest_sha:
+        raise ValueError(
+            f"Stale feature cache: manifest checksum mismatch (cache has {cached_manifest_sha!r}, "
+            f"current manifest has {expected_manifest_sha!r})"
+        )
+
+    # Validate extractor provenance
+    extractor_file = root / "src/waste_sorting/extended_features.py"
+    if not extractor_file.exists():
+        raise FileNotFoundError(
+            f"Extractor file not found for cache verification: {extractor_file}"
+        )
+    expected_extractor_sha = sha256(extractor_file)
+    cached_extractor_sha = str(data["extractor_sha256"])
+    if cached_extractor_sha != expected_extractor_sha:
+        raise ValueError(
+            "Stale feature cache: extractor checksum mismatch (cache has "
+            f"{cached_extractor_sha!r}, current extractor has {expected_extractor_sha!r})"
+        )
+
+    # Validate settings provenance
+    expected_settings_hash = hashlib.sha256(
+        json.dumps(EXTENDED_SETTINGS, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+    cached_settings_hash = str(data["settings_hash"])
+    if cached_settings_hash != expected_settings_hash:
+        raise ValueError(
+            "Stale feature cache: feature extraction settings hash mismatch (cache has "
+            f"{cached_settings_hash!r}, current settings hash is {expected_settings_hash!r})"
+        )
+
+    # Validate image IDs against manifest
+    if manifest is None:
+        manifest = load_manifest(root)
+    split_df = manifest[manifest["split"] == split_name].sort_values("image_id")
+    expected_ids = split_df["image_id"].to_numpy()
+    cached_ids = data["image_ids"]
+    if not np.array_equal(cached_ids, expected_ids):
+        raise ValueError(f"Cache image IDs do not match manifest split {split_name!r} image IDs")
+
+    # Validate numeric dtype
+    features = data["features"]
+    if not isinstance(features, np.ndarray) or features.dtype != np.float32:
+        dtype_str = getattr(features, "dtype", type(features))
+        raise ValueError(f"Invalid feature matrix dtype: expected float32, got {dtype_str}")
+
+    # Validate dimensions
+    expected_shape = (len(expected_ids), EXTENDED_DIMENSION)
+    if features.shape != expected_shape:
+        raise ValueError(
+            f"Invalid feature matrix shape: expected {expected_shape}, got {features.shape}"
+        )
+
+    # Validate finite values
+    if not np.isfinite(features).all():
+        raise ValueError("Feature cache contains non-finite values (NaN or Inf)")
+
+    # Validate nonnegative values
+    if (features < 0.0).any():
+        raise ValueError(
+            "Feature cache contains negative values; extended histograms must be nonnegative"
+        )
+
+    return features
+
+
 def extract_split_features(
     split_name: str,
     root: Path,
@@ -90,6 +209,7 @@ def extract_split_features(
 
     Verifies every image file's SHA256 checksum against the manifest.
     Optionally reads from/saves to a local cache in the ignored artifacts directory.
+    Validates manifest, split, extractor, and preprocessing provenance before reusing cache.
     """
     root = Path(root).resolve()
     if manifest is None:
@@ -105,14 +225,13 @@ def extract_split_features(
     expected_groups = split_df["duplicate_group"].to_numpy()
 
     if cache_path and Path(cache_path).exists():
-        loaded = np.load(cache_path, allow_pickle=True)
-        cached_matrix = loaded["features"]
-        cached_ids = loaded["image_ids"]
-        if np.array_equal(cached_ids, expected_ids) and cached_matrix.shape == (
-            len(split_df),
-            EXTENDED_DIMENSION,
-        ):
-            return cached_matrix, expected_y, expected_ids, expected_groups
+        cached_matrix = validate_feature_cache(
+            cache_path=cache_path,
+            split_name=split_name,
+            root=root,
+            manifest=manifest,
+        )
+        return cached_matrix, expected_y, expected_ids, expected_groups
 
     raw_dir = root / "data/raw/trashnet"
 
@@ -137,11 +256,19 @@ def extract_split_features(
     if cache_path:
         cache_path = Path(cache_path)
         cache_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_file = root / "docs/dataset/manifest.csv"
+        extractor_file = root / "src/waste_sorting/extended_features.py"
+        settings_hash = hashlib.sha256(
+            json.dumps(EXTENDED_SETTINGS, sort_keys=True).encode("utf-8")
+        ).hexdigest()
         np.savez_compressed(
             cache_path,
             features=matrix,
             image_ids=expected_ids,
             split=split_name,
+            manifest_sha256=sha256(manifest_file),
+            extractor_sha256=sha256(extractor_file),
+            settings_hash=settings_hash,
         )
 
     return matrix, expected_y, expected_ids, expected_groups

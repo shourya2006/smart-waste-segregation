@@ -174,3 +174,97 @@ res = predict_image('data/raw/trashnet/cardboard/cardboard1.jpg', 'artifacts/cal
 print(res)
 "
 ```
+
+## 7. Package Source Provenance Explanation
+
+- **Original Recorded Fingerprint in `calibration-protocol.json` and `summary.json`**:
+  `26e7e076578c4646b63052a82f79f06916f2d0acb3eecf1c3a93c65da9de5e24`
+- **Committed `package_source_sha256` in PR #7 (`b775f02`)**:
+  `cab3b67772c89686c874670f9f4421e3d780af0963eda865bd8a2790d6dab35c`
+
+### Author's Account and Reconstruction Status
+
+1. **Reconstruction Status**:
+   As recorded in `calibration-protocol.json` (`working_tree_dirty: true`, `git_revision: 8c6f035f21a5e83c21270b897f5c449a023bf0aa`),
+   the single evaluation and calibration run was performed on an uncommitted working tree prior to commit `b775f02`.
+   Because no intermediate git commit or tree snapshot was preserved for that intermediate working-tree state, the exact historical
+   package source matching fingerprint `26e7e076...` cannot be independently reconstructed from Git history.
+
+2. **Author's Account of Post-Evaluation Edits**:
+   According to the author's account, following the evaluation execution, repository linter checks (`ruff check .`) flagged
+   line-length violations (rule `E501`: >100 characters) across docstrings, comments, error strings, and print statements in
+   `src/waste_sorting/evaluation.py` and `src/waste_sorting/prediction.py`. Those lines were wrapped across multiple lines for
+   lint compliance, and the selective accuracy reporting wording was adjusted from "+1.18%" to "+1.19 percentage points" before
+   creating commit `b775f02`. These non-functional text and line-wrapping edits altered the file bytes and resulting package hash.
+
+3. **Preservation of Recorded Fingerprint**:
+   In strict adherence to the project evaluation protocol ("Preserve the existing fitted model and final-test predictions; do not
+   retune, refit, regenerate test predictions or rerun final test evaluation"), the model was not refitted and test evaluation
+   was not rerun. The original fingerprint `26e7e076578c4646b63052a82f79f06916f2d0acb3eecf1c3a93c65da9de5e24` is preserved
+   in `calibration-protocol.json` and `summary.json` as historical ground truth. It is not replaced with a contemporary fingerprint,
+   nor is retroactive verification claimed without an independent historical commit snapshot.
+
+## 8. Handoff for Saksham Mighlani (Demo Integration)
+
+For implementing the Gradio demo (`app.py`), UI tests, and report assembly on `feat/demo-integration`:
+
+### Artifact Location & Checksum
+- **Evaluated Model Artifact**: `artifacts/calibrated_svm/model.joblib`
+- **File Size**: `66,270,283` bytes (~66.3 MB)
+- **SHA-256**: `83b0658d5180c02d6f03dce835bb8e269d6a89a493b6298a2bb00fd594f3b112`
+- **Git Policy**: The `.joblib` binary is excluded from git via `.gitignore` (`artifacts/`). Do not commit this binary to GitHub.
+
+### Obtaining the Evaluated Model Without Rerunning Evaluation
+Saksham does not need to refit or rerun evaluation:
+1. Ensure the model binary is present at `artifacts/calibrated_svm/model.joblib` (obtained from the shared local repository or preserved workspace artifacts).
+2. Verify integrity without rerunning evaluation:
+   ```python
+   import hashlib
+   from pathlib import Path
+
+   p = Path("artifacts/calibrated_svm/model.joblib")
+   assert p.exists(), "Model artifact missing"
+   computed = hashlib.sha256(p.read_bytes()).hexdigest()
+   expected = "83b0658d5180c02d6f03dce835bb8e269d6a89a493b6298a2bb00fd594f3b112"
+   assert computed == expected, f"Checksum mismatch: {computed} != {expected}"
+   ```
+
+### Runtime Environment Requirements
+- **Python**: 3.12 (tested on 3.12.5)
+- **Dependencies**: Pinned in `requirements.lock`. Install with:
+  ```sh
+  pip install -r requirements.lock
+  pip install -e .
+  ```
+- Key packages required for model unpickling and inference:
+  - `scikit-learn==1.9.1`
+  - `joblib==1.6.0`
+  - `numpy==2.5.4`
+  - `scipy==1.18.1`
+  - `pillow==13.0.0`
+  - `scikit-image==0.26.0`
+
+### Calling the Shared Prediction Interface
+Call `predict_image` directly in `app.py`:
+```python
+from pathlib import Path
+from waste_sorting.prediction import predict_image
+
+artifact_path = Path("artifacts/calibrated_svm/model.joblib")
+
+# Pass image file path or PIL Image instance
+result = predict_image("path/to/upload.jpg", artifact_path)
+
+# Structured result:
+# result.predicted_class: str ("cardboard", "glass", "metal", "paper", "plastic", "trash")
+# result.probabilities: dict[str, float] (canonical order, sums to 1.0)
+# result.max_probability: float
+# result.abstained: bool (True when max_probability < 0.52)
+```
+
+### UI Display Guidelines for Abstention and Limitations
+- When `result.abstained` is `True`, display an uncertainty advisory:
+  *"Confidence below calibrated threshold (0.52). Manual inspection recommended."*
+- Include the project limitation note in the demo:
+  *"Abstention does not establish reliable detection of unknown or out-of-distribution object categories."*
+

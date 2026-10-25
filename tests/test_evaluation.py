@@ -1,5 +1,5 @@
-"""Unit tests for calibration, abstention threshold selection and evaluation metrics."""
-
+import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from waste_sorting.acquisition import sha256
 from waste_sorting.evaluation import (
     compute_calibration_curve_and_ece,
     fit_calibrated_ensemble,
@@ -16,6 +17,13 @@ from waste_sorting.evaluation import (
     run_pipeline,
     select_abstention_threshold,
     sweep_abstention_thresholds,
+    validate_feature_cache,
+)
+from waste_sorting.extended_features import (
+    DIMENSION as EXTENDED_DIMENSION,
+)
+from waste_sorting.extended_features import (
+    SETTINGS as EXTENDED_SETTINGS,
 )
 
 
@@ -210,5 +218,194 @@ class EvaluationModuleTests(unittest.TestCase):
             self.assertIn("A guard prevents accidentally overwriting", str(ctx.exception))
 
 
+class FeatureCacheValidationTests(unittest.TestCase):
+    """Synthetic tests verifying extended-feature cache validation rules."""
+
+    def setUp(self):
+        self.root = Path(__file__).resolve().parent.parent
+        self.split_name = "validation"
+        self.n_samples = 8
+        self.image_ids = np.array([f"img_{i:03d}.jpg" for i in range(self.n_samples)])
+        self.manifest = pd.DataFrame(
+            [
+                {
+                    "image_id": self.image_ids[i],
+                    "label": "cardboard",
+                    "included": True,
+                    "split": self.split_name,
+                    "duplicate_group": f"grp_{i}",
+                    "sha256": "dummy_checksum",
+                }
+                for i in range(self.n_samples)
+            ]
+        )
+        self.manifest_sha = sha256(self.root / "docs/dataset/manifest.csv")
+        self.extractor_sha = sha256(self.root / "src/waste_sorting/extended_features.py")
+        self.settings_hash = hashlib.sha256(
+            json.dumps(EXTENDED_SETTINGS, sort_keys=True).encode("utf-8")
+        ).hexdigest()
+        self.valid_features = np.ones(
+            (self.n_samples, EXTENDED_DIMENSION), dtype=np.float32
+        )
+
+    def _save_cache(self, directory: Path, filename: str = "cache.npz", **kwargs) -> Path:
+        payload = {
+            "features": self.valid_features,
+            "image_ids": self.image_ids,
+            "split": self.split_name,
+            "manifest_sha256": self.manifest_sha,
+            "extractor_sha256": self.extractor_sha,
+            "settings_hash": self.settings_hash,
+        }
+        payload.update(kwargs)
+        cache_path = directory / filename
+        np.savez_compressed(cache_path, **payload)
+        return cache_path
+
+    def test_valid_cache_passes_validation(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            cache_path = self._save_cache(Path(tmp_dir))
+            mat = validate_feature_cache(
+                cache_path, self.split_name, self.root, self.manifest
+            )
+            self.assertEqual(mat.shape, (self.n_samples, EXTENDED_DIMENSION))
+            self.assertEqual(mat.dtype, np.float32)
+            self.assertTrue(np.allclose(mat, 1.0))
+
+    def test_unverifiable_cache_missing_keys_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            for missing_key in ["manifest_sha256", "extractor_sha256", "settings_hash"]:
+                cache_path = Path(tmp_dir) / f"missing_{missing_key}.npz"
+                payload = {
+                    "features": self.valid_features,
+                    "image_ids": self.image_ids,
+                    "split": self.split_name,
+                    "manifest_sha256": self.manifest_sha,
+                    "extractor_sha256": self.extractor_sha,
+                    "settings_hash": self.settings_hash,
+                }
+                del payload[missing_key]
+                np.savez_compressed(cache_path, **payload)
+
+                with self.assertRaises(ValueError) as ctx:
+                    validate_feature_cache(
+                        cache_path, self.split_name, self.root, self.manifest
+                    )
+                self.assertIn("Unverifiable feature cache", str(ctx.exception))
+                self.assertIn(missing_key, str(ctx.exception))
+
+    def test_stale_manifest_sha_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            cache_path = self._save_cache(
+                Path(tmp_dir), manifest_sha256="stale_manifest_hash_12345"
+            )
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("manifest checksum mismatch", str(ctx.exception))
+
+    def test_stale_extractor_sha_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            cache_path = self._save_cache(
+                Path(tmp_dir), extractor_sha256="stale_extractor_hash_12345"
+            )
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("extractor checksum mismatch", str(ctx.exception))
+
+    def test_stale_settings_hash_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            cache_path = self._save_cache(
+                Path(tmp_dir), settings_hash="stale_settings_hash_12345"
+            )
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("feature extraction settings hash mismatch", str(ctx.exception))
+
+    def test_split_mismatch_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            cache_path = self._save_cache(Path(tmp_dir), split="train")
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("Cache split mismatch", str(ctx.exception))
+
+    def test_image_ids_mismatch_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            wrong_ids = np.array([f"wrong_{i:03d}.jpg" for i in range(self.n_samples)])
+            cache_path = self._save_cache(Path(tmp_dir), image_ids=wrong_ids)
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("Cache image IDs do not match", str(ctx.exception))
+
+    def test_non_float32_dtype_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # float64
+            f64 = self.valid_features.astype(np.float64)
+            cache_path = self._save_cache(Path(tmp_dir), features=f64)
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("Invalid feature matrix dtype: expected float32", str(ctx.exception))
+
+    def test_wrong_dimensions_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            # 1,806 baseline features instead of 2,760
+            bad_shape = np.ones((self.n_samples, 1806), dtype=np.float32)
+            cache_path = self._save_cache(Path(tmp_dir), features=bad_shape)
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("Invalid feature matrix shape", str(ctx.exception))
+
+    def test_non_finite_values_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            nan_feats = self.valid_features.copy()
+            nan_feats[0, 5] = np.nan
+            cache_path = self._save_cache(Path(tmp_dir), features=nan_feats)
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("Feature cache contains non-finite values", str(ctx.exception))
+
+    def test_negative_values_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            neg_feats = self.valid_features.copy()
+            neg_feats[1, 10] = -0.5
+            cache_path = self._save_cache(Path(tmp_dir), features=neg_feats)
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    cache_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("Feature cache contains negative values", str(ctx.exception))
+
+    def test_malformed_cache_file_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            corrupt_path = Path(tmp_dir) / "corrupt.npz"
+            corrupt_path.write_bytes(b"not an npz archive content")
+            with self.assertRaises(ValueError) as ctx:
+                validate_feature_cache(
+                    corrupt_path, self.split_name, self.root, self.manifest
+                )
+            self.assertIn("Malformed cache file", str(ctx.exception))
+
+    def test_missing_cache_file_raises_not_found(self):
+        missing = Path("/nonexistent/path/cache.npz")
+        with self.assertRaises(FileNotFoundError):
+            validate_feature_cache(missing, self.split_name, self.root, self.manifest)
+
+
 if __name__ == "__main__":
     unittest.main()
+

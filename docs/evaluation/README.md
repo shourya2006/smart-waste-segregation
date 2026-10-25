@@ -85,3 +85,19 @@ Reproduction command:
 ```sh
 python -m waste_sorting.evaluation --output docs/evaluation --artifacts artifacts/calibrated_svm
 ```
+
+## 6. Provenance and Artifact Integrity
+
+- **Original Evaluation Fingerprint (`calibration-protocol.json`)**: `26e7e076578c4646b63052a82f79f06916f2d0acb3eecf1c3a93c65da9de5e24`
+- **Committed Package Source Hash (`b775f02`)**: `cab3b67772c89686c874670f9f4421e3d780af0963eda865bd8a2790d6dab35c`
+- **Status & Author's Account**: Evaluation was performed on an uncommitted working tree (`working_tree_dirty: true`), and the exact historical source snapshot producing fingerprint `26e7e076...` was not captured as an independent git commit and cannot be independently reconstructed. Per the author's account, subsequent edits before commit `b775f02` were limited to line wrapping for `ruff check .` (E501) and reporting text clarifications. In strict accordance with the evaluation protocol, the model was not refitted and test evaluation was not rerun; the original evaluation fingerprint is preserved as historical ground truth. See full details in [Prajjwal Tripathi's Member Notes](../member-notes/prajjwal-tripathi.md#7-package-source-provenance-explanation).
+
+## 7. Model Artifact and Demo Handoff
+
+- **Model Artifact Path**: `artifacts/calibrated_svm/model.joblib`
+- **Model Checksum (SHA-256)**: `83b0658d5180c02d6f03dce835bb8e269d6a89a493b6298a2bb00fd594f3b112`
+- **Model Size**: 66,270,283 bytes
+- **Inference Entrypoint**: `from waste_sorting.prediction import predict_image`
+- **Environment**: Python 3.12, pinned dependencies in `requirements.lock` (`scikit-learn==1.9.1`, `joblib==1.6.0`, `numpy==2.5.4`, `pillow==13.0.0`).
+- **Handoff Documentation**: Detailed instructions for Saksham Mighlani's demo integration are documented in [Prajjwal Tripathi's Member Notes](../member-notes/prajjwal-tripathi.md#8-handoff-for-saksham-mighlani-demo-integration).
+

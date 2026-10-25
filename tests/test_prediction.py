@@ -11,6 +11,7 @@ from PIL import Image
 from waste_sorting.evaluation import CLASSES
 from waste_sorting.extended_features import DIMENSION as EXTENDED_DIMENSION
 from waste_sorting.prediction import (
+    CANONICAL_CLASSES,
     PredictionResult,
     predict_image,
     validate_artifact,
@@ -22,6 +23,7 @@ class DummyCalibratedModel:
 
     def __init__(self, probabilities=None):
         self.classes_ = np.arange(len(CLASSES))
+        self.n_features_in_ = EXTENDED_DIMENSION
         self.probabilities = (
             probabilities
             if probabilities is not None
@@ -106,7 +108,7 @@ class PredictionInterfaceTests(unittest.TestCase):
         bad_artifact["classes"] = ["cardboard", "glass", "metal"]
         with self.assertRaises(ValueError) as ctx:
             validate_artifact(bad_artifact)
-        self.assertIn("exactly 6 distinct classes", str(ctx.exception))
+        self.assertIn("must exactly match canonical order", str(ctx.exception))
 
     def test_artifact_invalid_threshold(self):
         for bad_thresh in [-0.1, 1.5, "high"]:
@@ -127,6 +129,85 @@ class PredictionInterfaceTests(unittest.TestCase):
                 predict_image(corrupt_file, self.valid_artifact)
             self.assertIn("Corrupt or unreadable image file", str(ctx.exception))
 
+    def test_artifact_rejects_reversed_class_metadata(self):
+        bad_artifact = dict(self.valid_artifact)
+        bad_artifact["classes"] = list(reversed(CANONICAL_CLASSES))
+        with self.assertRaises(ValueError) as ctx:
+            validate_artifact(bad_artifact)
+        self.assertIn("must exactly match canonical order", str(ctx.exception))
+
+    def test_artifact_rejects_permuted_class_metadata(self):
+        bad_artifact = dict(self.valid_artifact)
+        bad_artifact["classes"] = [
+            "glass",
+            "cardboard",
+            "metal",
+            "paper",
+            "plastic",
+            "trash",
+        ]
+        with self.assertRaises(ValueError) as ctx:
+            validate_artifact(bad_artifact)
+        self.assertIn("must exactly match canonical order", str(ctx.exception))
+
+    def test_artifact_rejects_mismatched_model_class_order(self):
+        bad_model = DummyCalibratedModel()
+        bad_model.classes_ = np.array([5, 4, 3, 2, 1, 0])  # reversed class order
+        bad_artifact = dict(self.valid_artifact)
+        bad_artifact["calibrated_model"] = bad_model
+        with self.assertRaises(ValueError) as ctx:
+            validate_artifact(bad_artifact)
+        self.assertIn("does not match expected", str(ctx.exception))
+
+    def test_artifact_rejects_model_input_dimension_mismatch(self):
+        bad_model = DummyCalibratedModel()
+        bad_model.n_features_in_ = 1806  # baseline dimension instead of 2760
+        bad_artifact = dict(self.valid_artifact)
+        bad_artifact["calibrated_model"] = bad_model
+        with self.assertRaises(ValueError) as ctx:
+            validate_artifact(bad_artifact)
+        self.assertIn("Model input dimension mismatch", str(ctx.exception))
+
+    def test_artifact_rejects_calibrated_fold_dimension_mismatch(self):
+        class MockClassifier:
+            def __init__(self, estimator):
+                self.estimator = estimator
+
+        class MockBaseEstimator:
+            def __init__(self, n_features, classes):
+                self.n_features_in_ = n_features
+                self.classes_ = classes
+
+        bad_model = DummyCalibratedModel()
+        bad_base = MockBaseEstimator(1806, np.arange(6))
+        bad_model.calibrated_classifiers_ = [MockClassifier(bad_base)]
+
+        bad_artifact = dict(self.valid_artifact)
+        bad_artifact["calibrated_model"] = bad_model
+        with self.assertRaises(ValueError) as ctx:
+            validate_artifact(bad_artifact)
+        self.assertIn("base estimator input dimension mismatch", str(ctx.exception))
+
+    def test_artifact_rejects_calibrated_fold_class_order_mismatch(self):
+        class MockClassifier:
+            def __init__(self, estimator):
+                self.estimator = estimator
+
+        class MockBaseEstimator:
+            def __init__(self, n_features, classes):
+                self.n_features_in_ = n_features
+                self.classes_ = classes
+
+        bad_model = DummyCalibratedModel()
+        bad_base = MockBaseEstimator(EXTENDED_DIMENSION, np.array([1, 0, 2, 3, 4, 5]))
+        bad_model.calibrated_classifiers_ = [MockClassifier(bad_base)]
+
+        bad_artifact = dict(self.valid_artifact)
+        bad_artifact["calibrated_model"] = bad_model
+        with self.assertRaises(ValueError) as ctx:
+            validate_artifact(bad_artifact)
+        self.assertIn("base estimator classes_ [1 0 2 3 4 5] does not match", str(ctx.exception))
+
     def test_invalid_image_type_rejected(self):
         with self.assertRaises(ValueError) as ctx:
             predict_image(12345, self.valid_artifact)
@@ -135,3 +216,4 @@ class PredictionInterfaceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

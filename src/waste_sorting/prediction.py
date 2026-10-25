@@ -55,6 +55,16 @@ class PredictionResult:
         return self.as_dict().items()
 
 
+CANONICAL_CLASSES: tuple[str, ...] = (
+    "cardboard",
+    "glass",
+    "metal",
+    "paper",
+    "plastic",
+    "trash",
+)
+
+
 def validate_artifact(artifact: Any) -> dict[str, Any]:
     """Validate artifact structure, metadata, classes, dimensions and threshold."""
     if isinstance(artifact, (str, Path)):
@@ -81,8 +91,11 @@ def validate_artifact(artifact: Any) -> dict[str, Any]:
         raise ValueError(f"Artifact missing required metadata keys: {sorted(missing)}")
 
     classes = loaded["classes"]
-    if not isinstance(classes, (list, tuple)) or len(classes) != 6 or len(set(classes)) != 6:
-        raise ValueError(f"Artifact must define exactly 6 distinct classes, got {classes}")
+    if not isinstance(classes, (list, tuple)) or tuple(classes) != CANONICAL_CLASSES:
+        raise ValueError(
+            f"Artifact classes must exactly match canonical order {CANONICAL_CLASSES}, "
+            f"got {classes}"
+        )
 
     input_dim = loaded["input_dimension"]
     if input_dim != EXTENDED_DIMENSION:
@@ -98,6 +111,79 @@ def validate_artifact(artifact: Any) -> dict[str, Any]:
     model = loaded["calibrated_model"]
     if not hasattr(model, "predict_proba"):
         raise ValueError("Calibrated model inside artifact does not provide predict_proba")
+
+    # Check model input dimension where available
+    model_n_features = getattr(model, "n_features_in_", None)
+    if model_n_features is not None and model_n_features != input_dim:
+        raise ValueError(
+            f"Model input dimension mismatch: model.n_features_in_={model_n_features} "
+            f"!= expected {input_dim}"
+        )
+
+    # Check calibrated classifiers input dimension where available
+    if hasattr(model, "calibrated_classifiers_"):
+        for i, clf in enumerate(model.calibrated_classifiers_):
+            base_est = getattr(clf, "estimator", None)
+            if base_est is not None:
+                base_dim = getattr(base_est, "n_features_in_", None)
+                if base_dim is not None and base_dim != input_dim:
+                    raise ValueError(
+                        f"Calibrated fold {i} base estimator input dimension mismatch: "
+                        f"{base_dim} != expected {input_dim}"
+                    )
+
+    # Verify fitted model's classes_ matches the expected encoded probability-column order
+    expected_numeric = np.arange(len(CANONICAL_CLASSES))
+    expected_string = np.array(CANONICAL_CLASSES)
+    if hasattr(model, "classes_"):
+        model_classes = model.classes_
+        if isinstance(model_classes, np.ndarray):
+            if np.issubdtype(model_classes.dtype, np.integer):
+                if not np.array_equal(model_classes, expected_numeric):
+                    raise ValueError(
+                        f"Model classes_ {model_classes} does not match expected "
+                        f"encoded column order {expected_numeric}"
+                    )
+            elif np.issubdtype(model_classes.dtype, np.str_) or np.issubdtype(
+                model_classes.dtype, np.object_
+            ):
+                if not np.array_equal(model_classes, expected_string):
+                    raise ValueError(
+                        f"Model classes_ {model_classes} does not match expected "
+                        f"canonical class order {expected_string}"
+                    )
+            else:
+                if not (
+                    np.array_equal(model_classes, expected_numeric)
+                    or np.array_equal(model_classes, expected_string)
+                ):
+                    raise ValueError(
+                        f"Model classes_ {model_classes} does not match expected "
+                        "probability column order"
+                    )
+        else:
+            if list(model_classes) != list(expected_numeric) and list(
+                model_classes
+            ) != list(CANONICAL_CLASSES):
+                raise ValueError(
+                    f"Model classes_ {model_classes} does not match expected "
+                    "probability column order"
+                )
+
+    if hasattr(model, "calibrated_classifiers_"):
+        for i, clf in enumerate(model.calibrated_classifiers_):
+            base_est = getattr(clf, "estimator", None)
+            if base_est is not None and hasattr(base_est, "classes_"):
+                base_classes = base_est.classes_
+                if isinstance(base_classes, np.ndarray):
+                    if not (
+                        np.array_equal(base_classes, expected_numeric)
+                        or np.array_equal(base_classes, expected_string)
+                    ):
+                        raise ValueError(
+                            f"Calibrated fold {i} base estimator classes_ {base_classes} "
+                            "does not match expected order"
+                        )
 
     return loaded
 
