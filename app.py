@@ -11,6 +11,7 @@ import argparse
 from pathlib import Path
 
 import gradio as gr
+
 from waste_sorting.demo import (
     DEFAULT_ARTIFACT_PATH,
     EXPECTED_ARTIFACT_SHA256,
@@ -35,6 +36,9 @@ SYNTHETIC_BANNER = (
 )
 
 CUSTOM_CSS = """
+.uncertain-banner:has(textarea:placeholder-shown) {
+    display: none;
+}
 .uncertain-banner textarea, .uncertain-banner input, .uncertain-banner {
     background: #fff4d6 !important;
     border: 2px solid #8a6d1d !important;
@@ -93,27 +97,27 @@ def clear_all() -> tuple:
     return (None, *clear_outputs())
 
 
-def build_interface(synthetic_fixture: bool = False, css: str = CUSTOM_CSS) -> gr.Blocks:
+def build_interface(synthetic_fixture: bool = False) -> gr.Blocks:
     """Construct the Gradio demo interface.
     Returns a Gradio Blocks object without launching.
     """
-    with gr.Blocks(css=css) as demo:
+    with gr.Blocks(title="Smart Waste Segregation", analytics_enabled=False) as demo:
         if synthetic_fixture:
-            gr.Markdown(SYNTHETIC_BANNER, elem_id="synthetic-warning-box")
+            gr.Markdown(SYNTHETIC_BANNER, elem_classes=["synthetic-warning-box"])
         gr.Markdown("# Smart Waste Segregation Demo")
-        gr.Markdown(LIMITATIONS_NOTE, elem_id="limitations-box")
+        gr.Markdown(LIMITATIONS_NOTE, elem_classes=["limitations-box"])
         image_input = gr.Image(label="Upload Photo", type="numpy")
         with gr.Row():
             classify_btn = gr.Button("Classify")
             clear_btn = gr.Button("Clear")
-        error_msg = gr.Textbox(label="Error", visible=False)
+        error_msg = gr.Textbox(label="Status", interactive=False, elem_id="demo-status")
         primary_res = gr.Textbox(
             label="Result", interactive=False, elem_classes=["primary-result"]
         )
         uncertainty_msg = gr.Textbox(
             label="Uncertainty", interactive=False, elem_classes=["uncertain-banner"]
         )
-        confidence_txt = gr.Textbox(label="Confidence", interactive=False)
+        confidence_txt = gr.Textbox(label="Confidence", interactive=False, lines=3)
         prob_table = gr.Dataframe(
             headers=PROBABILITY_HEADERS, datatype=["str", "str"], interactive=False
         )
@@ -122,9 +126,17 @@ def build_interface(synthetic_fixture: bool = False, css: str = CUSTOM_CSS) -> g
             error_msg, primary_res, uncertainty_msg,
             confidence_txt, prob_table, tentative_cls,
         ]
-        classify_btn.click(classify_callback, inputs=image_input, outputs=outputs)
-        image_input.change(on_image_change, inputs=image_input, outputs=outputs)
-        clear_btn.click(clear_all, outputs=outputs)
+        prediction_event = classify_btn.click(
+            classify_callback, inputs=image_input, outputs=outputs, api_name="classify"
+        )
+        image_input.change(
+            on_image_change, inputs=image_input, outputs=outputs,
+            cancels=[prediction_event], queue=False,
+        )
+        clear_btn.click(
+            clear_all, outputs=[image_input, *outputs],
+            cancels=[prediction_event], queue=False, api_name="clear",
+        )
     return demo
 
 def _synthetic_fixture_artifact(abstain: bool = False) -> dict:
@@ -214,6 +226,7 @@ def main(argv: list[str] | None = None) -> None:
         server_port=args.port,
         share=False,
         inbrowser=False,
+        css=CUSTOM_CSS,
     )
 
 

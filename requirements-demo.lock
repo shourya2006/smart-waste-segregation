@@ -1,5 +1,6 @@
 # Resolved Python 3.12 environment with Gradio demo dependencies; generated 2026-10-25.
-# Preserves all base and model-runtime dependencies from requirements.lock.
+# Preserves base pins except Pillow: Gradio requires <13; demo uses 12.3.0.
+# Historical evaluation uses Pillow 13.0.0 in requirements.lock.
 # Install with: python -m pip install -r requirements-demo.lock && python -m pip install -e .
 aiofiles==24.1.0
 annotated-doc==0.0.5
@@ -44,7 +45,7 @@ opentelemetry-api==1.45.1
 orjson==3.13.0
 packaging==26.3
 pandas==3.0.6
-pillow>=8.0,<13.0
+pillow==12.3.0
 pydantic==2.12.3
 pydantic_core==2.41.4
 pydub==0.25.1

@@ -1,5 +1,8 @@
 """Capture demo screenshots for desktop and mobile layouts using headless Chrome."""
 
+import argparse
+import shutil
+import socket
 import subprocess
 import sys
 import time
@@ -23,25 +26,35 @@ def wait_for_server(timeout=15):
     return False
 
 def main():
-    print(f"Launching app.py on port {PORT} with synthetic fixture...")
-    proc = subprocess.Popen(
-        [sys.executable, "app.py", "--synthetic-fixture", "--port", str(PORT)],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--synthetic-fixture", action="store_true")
+    parser.add_argument("--browser-executable", type=Path)
+    args = parser.parse_args()
+    browser = args.browser_executable or shutil.which("chromium") or shutil.which("google-chrome")
+    browser = str(browser or CHROME_BIN)
+    if not Path(browser).is_file():
+        parser.error("Provide --browser-executable with the path to Chrome or Chromium")
+    with socket.socket() as sock:
+        try:
+            sock.bind(("127.0.0.1", PORT))
+        except OSError:
+            parser.error(f"Port {PORT} is already in use; stop that server before capturing")
+    command = [sys.executable, "app.py", "--port", str(PORT)]
+    if args.synthetic_fixture:
+        command.append("--synthetic-fixture")
+    print(f"Launching {'synthetic fixture' if args.synthetic_fixture else 'evaluated-model'} demo")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    proc = subprocess.Popen(command)
     try:
         if not wait_for_server():
             print("Timed out waiting for Gradio server to become ready.")
-            out, err = proc.communicate(timeout=2)
-            print("STDOUT:", out.decode())
-            print("STDERR:", err.decode())
             sys.exit(1)
         print("Server is ready! Capturing desktop layout (1280x800)...")
         # Let Gradio frontend hydrate
         time.sleep(3)
         desktop_png = OUT_DIR / "demo-desktop.png"
         subprocess.run([
-            CHROME_BIN,
+            browser,
             "--headless=new",
             "--disable-gpu",
             "--virtual-time-budget=5000",
@@ -54,7 +67,7 @@ def main():
         print("Capturing narrow-screen / mobile layout (390x844)...")
         mobile_png = OUT_DIR / "demo-mobile.png"
         subprocess.run([
-            CHROME_BIN,
+            browser,
             "--headless=new",
             "--disable-gpu",
             "--virtual-time-budget=5000",
@@ -67,7 +80,11 @@ def main():
     finally:
         print("Terminating demo server...")
         proc.terminate()
-        proc.wait(timeout=5)
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait(timeout=5)
         print("Done.")
 
 if __name__ == "__main__":

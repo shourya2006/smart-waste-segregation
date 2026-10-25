@@ -235,6 +235,7 @@ class DemoPredictionTests(unittest.TestCase):
         self.assertIn(view.primary_result, {*CLASS_DISPLAY_LABELS.values(), UNCERTAIN_PRIMARY})
 
 
+@unittest.skipUnless(importlib.util.find_spec("gradio"), "install the demo dependencies")
 class DemoAppConstructionTests(unittest.TestCase):
     def test_importing_app_does_not_launch_server(self):
         with patch("gradio.Blocks.launch") as launch:
@@ -250,6 +251,34 @@ class DemoAppConstructionTests(unittest.TestCase):
             interface = demo_app.build_interface()
             launch.assert_not_called()
         self.assertIsNotNone(interface)
+
+    def test_clear_event_includes_upload_and_all_result_fields(self):
+        import app as demo_app
+
+        config = demo_app.build_interface().get_config_file()
+        clear_event = next(d for d in config["dependencies"] if d["api_name"] == "clear")
+        components = {c["id"]: c for c in config["components"]}
+        self.assertEqual(len(clear_event["outputs"]), len(demo_app.clear_all()))
+        self.assertEqual(components[clear_event["outputs"][0]]["type"], "image")
+
+    def test_error_output_is_visible_and_read_only(self):
+        import app as demo_app
+
+        config = demo_app.build_interface().get_config_file()
+        status = next(
+            c for c in config["components"] if c["props"].get("elem_id") == "demo-status"
+        )
+        self.assertTrue(status["props"]["visible"])
+        self.assertFalse(status["props"]["interactive"])
+
+    def test_real_gradio_distribution_is_used(self):
+        import gradio
+
+        self.assertEqual(gradio.__version__, "6.30.0")
+        self.assertNotEqual(
+            Path(gradio.__file__).resolve().parent,
+            Path(__file__).resolve().parents[1] / "gradio",
+        )
 
     def test_image_change_and_clear_drop_stale_outputs(self):
         import app as demo_app

@@ -178,13 +178,12 @@ Evaluated exactly once on the untouched test partition (377 images):
 
 ## 10. Robustness, Testing & Submission Synthesis
 
-### Automated Test Suite: 156 Passing, 1 Skipped
-- Preprocessing & data verification: 32 tests (Om Yadav)
-- Handcrafted features & caching: 16 tests (Aditya Bharadwaj)
-- Training protocol & SVM: 34 tests (Shourya Bafna)
-- Random Forest: 4 tests (Daksh Batra)
-- Calibration & prediction contract: 18 tests (Prajjwal Tripathi)
-- Demo UI & integration: 22 passed, 1 skipped for missing model binary (Saksham Mighlani)
+### Automated Test Suite: 162 Passing With Model Artifact
+- Original merged core: 134 tests across data, features, training, forests, calibration and prediction.
+- Saksham's initial demo contribution: 23 tests.
+- Shourya's integration fixes: 5 additional tests, including the actual Gradio HTTP server.
+- With demo dependencies and the evaluated artifact: 162 passed, 0 skipped.
+- Fresh checkouts skip the real-artifact test until the binary is supplied separately.
 
 ### Submission Deliverables Assembled
 - IEEE LaTeX Report (`report/main.tex`, `references.bib`, separate HTML preview `report.html`)

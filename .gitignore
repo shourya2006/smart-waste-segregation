@@ -25,6 +25,8 @@ htmlcov/
 # Generated assets and chat scratch space
 work/
 outputs/
+output/playwright/
+.playwright-cli/
 data/raw/*
 data/processed/*
 !data/raw/.gitkeep

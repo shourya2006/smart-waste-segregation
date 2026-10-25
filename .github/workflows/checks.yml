@@ -15,10 +15,10 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - name: Install locked environment and project
+      - name: Install locked demo environment and project
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.lock
+          python -m pip install -r requirements-demo.lock
           python -m pip install --no-deps .
           python -m pip check
       - name: Lint Python sources

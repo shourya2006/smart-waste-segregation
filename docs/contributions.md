@@ -73,4 +73,16 @@ final evaluation to upgrade them.
 
 ## Demo integration and submission assembly
 
-Saksham Miglani (2026-10-25): Implemented local Gradio photo upload demonstration (`app.py` and `src/waste_sorting/demo.py`) reusing the preserved evaluated model in memory once per process and strictly delegating inference to the shared `predict_image` contract. Configured frozen abstention threshold ($\tau = 0.52$), prominent amber uncertainty warning (`"Uncertain — manual inspection recommended"`), 6-class calibrated probabilities display, input bounding ($16$ MP / $8,192$ px side limits), and automated clearing of stale results. Created 23 integration tests (`tests/test_demo.py`) with synthetic fixtures and evaluated artifact guards (suite total: 157 tests, 1 expected skip when model binary is not placed). Formulated `requirements-demo.lock` locking Gradio 6.30.0 while preserving exact baseline package pins. Assembled the complete IEEE LaTeX report project (`report/`), HTML report export (`report/report.html`), editable presentation sources (`presentation/slides.md`), interactive presentation export (`presentation/index.html`), clean-checkout reproduction instructions, and member notes (`docs/member-notes/saksham-mighlani.md`). Implementation branch: `feat/demo-integration`.
+Saksham Miglani (2026-10-25): Implemented local Gradio photo upload demonstration (`app.py` and `src/waste_sorting/demo.py`) reusing the preserved evaluated model in memory once per process and strictly delegating inference to the shared `predict_image` contract. Configured frozen abstention threshold ($\tau = 0.52$), prominent amber uncertainty warning (`"Uncertain — manual inspection recommended"`), 6-class calibrated probabilities display, input bounding ($16$ MP / $8,192$ px side limits), and automated clearing of stale results. Created 23 integration tests (`tests/test_demo.py`) with synthetic fixtures and evaluated artifact guards (suite total: 157 tests, 1 expected skip when model binary is not placed). Introduced the Gradio demo dependency file; its final Pillow compatibility exception is documented in [demo verification](demo-verification.md). Assembled the complete IEEE LaTeX report project (`report/`), HTML report export (`report/report.html`), editable presentation sources (`presentation/slides.md`), interactive presentation export (`presentation/index.html`), clean-checkout reproduction instructions, and member notes (`docs/member-notes/saksham-miglani.md`). Implementation branch: `feat/demo-integration`.
+
+## Demo runtime review fixes
+
+Shourya Bafna (2026-10-26), with the coding assistant: Removed the substitute
+Gradio module and package import shims, corrected real-server styling and callback
+wiring, made errors visible, and verified desktop/mobile real-model inference.
+Pinned the demo dependency exception explicitly and added five regression and
+HTTP integration tests. All 162 tests pass locally with the original model.
+Updated screenshots and CI to exercise the real library. Saksham retains
+authorship of the original demo and submission assembly in
+[PR #8](https://github.com/shourya2006/smart-waste-segregation/pull/8).
+Detailed evidence and remaining submission work: [demo verification](demo-verification.md).

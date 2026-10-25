@@ -11,8 +11,8 @@ This document details the demo implementation, shared prediction contract integr
 - **Shared Prediction Interface Integration:** Inference strictly delegates to `predict_image(image, artifact)` owned by Prajjwal Tripathi (`src/waste_sorting/prediction.py`). Preprocessing, feature extraction, probability mapping, and abstention logic remain in the shared core and are never duplicated in the UI layer.
 - **Single Process-Level Model Reuse:** The 66.3 MB evaluated model (`artifacts/calibrated_svm/model.joblib`) is verified and loaded once at process initialization and cached in memory (`_RUNTIME_ARTIFACT`). Repeated classifications reuse this in-memory object, avoiding disk I/O and unpickling overhead on each image upload.
 - **Robust Input Handling & Bounding:**
-  - Handles PIL images, file paths, numpy arrays, and raw byte buffers.
-  - Enforces bounding guards: rejects images exceeding $8,192$ pixels on any side or $16,777,216$ pixels ($16$ MP) total before decoding to prevent decompression bomb vulnerabilities.
+  - Handles PIL images, file paths and numpy arrays; rejects unsupported inputs including raw byte buffers.
+  - Enforces bounding guards: rejects images exceeding $8,192$ pixels on any side or $16,777,216$ pixels ($16$ MP) total before feature extraction. Gradio decodes browser uploads before the application callback; this is not a pre-decode upload limit.
   - Surfaces clear, user-facing error messages for empty uploads, unsupported formats, and corrupt files.
 - **Uncertainty UX & Safety Signaling:**
   - Frozen abstention threshold is hardcoded to $\tau = 0.52$ (no user-adjustable slider).
@@ -33,7 +33,7 @@ This document details the demo implementation, shared prediction contract integr
 - Dedicated test for the real evaluated model artifact that runs conditionally when the binary is present and verifies predictions on synthetic images without rerunning the held-out test set.
 
 ### 3. Reproducible Dependencies (`requirements-demo.lock`)
-- Created `requirements-demo.lock` locking Gradio 6.30.0 and its sub-dependencies while preserving all 32 base and runtime dependencies from `requirements.lock` with zero version mismatches.
+- Created `requirements-demo.lock` locking Gradio 6.30.0 and its sub-dependencies with one documented base-version difference: Pillow 12.3.0 is needed for Gradio, while the historical evaluation environment retains Pillow 13.0.0. See `docs/demo-verification.md` for the bounded compatibility comparison.
 
 ### 4. Submission Deliverables Assembly
 - **IEEE LaTeX Report:** Complete, self-contained IEEE conference report project (`report/main.tex`, `report/references.bib`, `report/Makefile`, `report/README.md`) synthesizing contributions from all teammates.
@@ -55,7 +55,7 @@ Key verified figures:
 - **Frozen Abstention Threshold:** **0.52** (Selected strictly on 380 validation images: 98.16% coverage, 90.08% accepted accuracy).
 - **Selective Test Accuracy (at $\tau = 0.52$):** **91.37%** (339 / 371 correct, $+1.19$ percentage points over unconditional).
 - **Selective Test Coverage:** **98.41%** (371 / 377 accepted; 6 abstained).
-- **Selective Test Macro F1:** **0.9129** ($+1.30\%$ relative gain).
+- **Selective Test Macro F1:** **0.9129** ($+1.30$ percentage points).
 - **Test Loss Metrics:** Multiclass Log Loss: **0.4599**; Multiclass Brier Score: **0.1828**; Expected Calibration Error (ECE): **0.1325** (10 fixed bins).
 
 ---
@@ -68,25 +68,15 @@ The evaluated model binary is:
 - **Expected Size:** `66,270,283` bytes (~66.3 MB)
 - **Git Policy:** Excluded from Git via `.gitignore` (`artifacts/`).
 
-### Current Status: Blocked
-As of current workspace inspection, `artifacts/calibrated_svm/model.joblib` is not present on disk.
-- In accordance with instructions:
-  - We do not download an arbitrary replacement model.
-  - We do not retrain or recalibrate a new model.
-  - Real-model integration checks are marked as **BLOCKED** rather than passed.
-  - The demo application and test suite support clearly identified synthetic fixture mode (`python app.py --synthetic-fixture`), and `test_demo.py` gracefully skips `test_evaluated_artifact_on_synthetic_image` with an explicit notice.
-- **Action Required:** Obtain the preserved `model.joblib` binary from Prajjwal Tripathi and place it at `artifacts/calibrated_svm/model.joblib`. Verify checksum before launching the production demo:
-  ```bash
-  python -c "
-  import hashlib, pathlib
-  p = pathlib.Path('artifacts/calibrated_svm/model.joblib')
-  assert p.exists(), 'Model file missing'
-  digest = hashlib.sha256(p.read_bytes()).hexdigest()
-  expected = '83b0658d5180c02d6f03dce835bb8e269d6a89a493b6298a2bb00fd594f3b112'
-  assert digest == expected, f'Mismatch: {digest}'
-  print('Model artifact verified successfully!')
-  "
-  ```
+### Current Status: Verified Locally
+The original artifact was supplied out of band and independently verified by exact size
+and SHA-256. Real-model integration now executes on generated images. The binary remains
+ignored by Git and is still required separately in every fresh checkout.
+
+The initial draft used a repository-level Gradio stub. The integration follow-up by
+Shourya removes that stub, exercises the actual server and updates the runtime checks.
+See [demo verification](../demo-verification.md) for the current environment, evidence
+and limitations. Original evaluation records are preserved.
 
 ---
 
@@ -177,7 +167,7 @@ pip install -e .
 # Verify linting
 ruff check .
 
-# Run full test suite (157 tests, 0 skipped when model binary is present; 1 skipped otherwise)
+# Run full test suite (162 tests, 0 skipped with demo dependencies and model binary; 1 skipped without the model)
 python -m unittest discover -s tests -v
 ```
 

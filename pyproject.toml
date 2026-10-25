@@ -23,7 +23,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["ruff>=0.8"]
-demo = ["gradio>=5"]
+demo = ["gradio==6.30.0"]
 
 [project.scripts]
 waste-data = "waste_sorting.data_cli:main"

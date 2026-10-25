@@ -52,7 +52,7 @@ ruff check .
 python -m unittest discover -s tests -v
 ```
 
-`requirements.lock` pins the base model-runtime environment. `requirements-demo.lock` locks the reproducible demo environment (Gradio 6.30.0 and dependencies) while preserving the exact base package pins.
+`requirements.lock` pins the base model-runtime environment. `requirements-demo.lock` locks the reproducible demo environment (Gradio 6.30.0 and dependencies) with exact dependency pins. The sole base-version difference is Pillow 12.3.0 in the demo, required by Gradio's Pillow <13 constraint; the original evaluation environment remains Pillow 13.0.0 in `requirements.lock`. See [demo verification](docs/demo-verification.md) for the bounded compatibility check.
 
 ## Running the Photo Upload Demo
 
@@ -89,10 +89,10 @@ Open `http://127.0.0.1:7860` in your browser.
 
 ### 3. Demo Features & Safety Behavior
 - **In-Memory Model Reuse:** The 66 MB model binary is validated and loaded once per process and reused across requests.
-- **Supported Inputs:** JPEG, PNG, or standard still-image formats showing a single waste item. Images exceeding 8,192 pixels on any side or 16 megapixels total are rejected before processing.
+- **Supported Inputs:** JPEG, PNG, or standard still-image formats showing a single waste item. Images exceeding 8,192 pixels on any side or 16,777,216 pixels total are rejected before feature extraction. Gradio decodes browser uploads before the application callback.
 - **Uncertainty & Abstention:** Predictions with calibrated maximum probability below the frozen threshold (**0.52**) prominently display **"Uncertain — manual inspection recommended"**. A tentative category is displayed separately without endorsement.
 - **Stale State Clearing:** Predictions are instantly wiped whenever an uploaded photo is cleared or replaced.
-- **Privacy & Security:** Public sharing is disabled (`--share` is rejected). Photos are processed strictly in RAM and are never stored in project directories or persistent application storage; the underlying Gradio framework creates transient transport files in system temporary storage.
+- **Privacy & Security:** Public sharing is disabled (`--share` is rejected). The application does not save uploaded photos as dataset or project files. Gradio creates temporary upload/cache files in system temporary storage; those files may remain after a browser session.
 
 ## Reproducing Reported Metrics vs. Running the Demo
 
