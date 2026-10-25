@@ -36,10 +36,10 @@ choices. They are not additional faculty requirements.
 - [x] Complete Random Forest training and compare the initial model families.
 - [x] Compare five Random Forest feature families and tune using training-only cross-validation.
 - [x] Complete SVM feature/normalization search and extended-descriptor study (0.8803 selection-CV macro F1).
-- [ ] Calibrate probabilities using held-out training folds.
-- [ ] Select an abstention threshold using validation data and inspect coverage.
-- [ ] Freeze and evaluate on the untouched test set.
-- [ ] Report macro F1, per-class metrics, confusion matrix, and calibration.
+- [x] Calibrate probabilities using held-out training folds.
+- [x] Select an abstention threshold using validation data and inspect coverage.
+- [x] Freeze and evaluate on the untouched test set.
+- [x] Report macro F1, per-class metrics, confusion matrix, and calibration.
 - [ ] Analyze mistakes and optionally evaluate independent everyday photos.
 - [ ] Integrate a Gradio photo upload prototype with a limitations note.
 - [ ] Complete literature review, LaTeX/IEEE report, slides, and viva practice.

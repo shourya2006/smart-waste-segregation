@@ -1,0 +1,499 @@
+{
+  "protocol": {
+    "base_training_fingerprint": "8b721ac54a69b6dfd39410ebec83caa9093ccad6747e8312e5e38dd1b1c572d5",
+    "calibration_method": "sigmoid (Platt scaling)",
+    "ensemble": true,
+    "feature_family": "global_color_spatial_texture",
+    "fold_count": 5,
+    "fold_file_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+    "hyperparameters": {
+      "C": 10.0,
+      "class_weight": null,
+      "gamma": 10.0,
+      "seed": 42
+    },
+    "input_feature_dimension": 2760,
+    "limitation_note": "Hyperparameters C=10, gamma=10 were previously selected using these training folds; calibration diagnostics on these rows are not independent performance estimates. Abstention does not establish reliable detection of unknown object categories.",
+    "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+    "normalization": "elementwise square root then per-row L2 (root_l2)",
+    "scope": "Phase 1 Calibration and Evaluation",
+    "selected_feature_dimension": 1608,
+    "selected_model": "extended_rbf_svm",
+    "source": {
+      "git_revision": "8c6f035f21a5e83c21270b897f5c449a023bf0aa",
+      "package_source_sha256": "26e7e076578c4646b63052a82f79f06916f2d0acb3eecf1c3a93c65da9de5e24",
+      "packages": {
+        "joblib": "1.6.0",
+        "numpy": "2.5.4",
+        "pandas": "3.0.6",
+        "scikit-image": "0.26.0",
+        "scikit-learn": "1.9.1",
+        "scipy": "1.18.1"
+      },
+      "platform": "macOS-26.6.1-arm64-arm-64bit",
+      "python": "3.12.5",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "working_tree_dirty": true
+    }
+  },
+  "saved_artifacts": {
+    "confusion_matrix_plot": "docs/evaluation/confusion-matrix.png",
+    "model_joblib": "artifacts/calibrated_svm/model.joblib",
+    "reliability_diagram_plot": "docs/evaluation/reliability-diagram.png",
+    "test_metrics": "docs/evaluation/test-metrics.json",
+    "test_predictions": "docs/evaluation/test-predictions.csv",
+    "validation_sweep": "docs/evaluation/validation-threshold-sweep.csv"
+  },
+  "test_metrics": {
+    "abstention": {
+      "abstained_count": 6,
+      "accepted_accuracy": 0.9137466307277629,
+      "accepted_count": 371,
+      "accepted_macro_f1": 0.9129311759156721,
+      "coverage": 0.9840848806366048,
+      "threshold": 0.52,
+      "total_count": 377
+    },
+    "classes": [
+      "cardboard",
+      "glass",
+      "metal",
+      "paper",
+      "plastic",
+      "trash"
+    ],
+    "sample_count": 377,
+    "unconditional": {
+      "accuracy": 0.9018567639257294,
+      "brier_score": 0.18278109432631282,
+      "brier_score_formula": "(1 / N) * sum_{i=1}^N sum_{c=1}^C (p_{ic} - y_{ic})^2",
+      "calibration_bins": [
+        {
+          "accuracy": 0.0,
+          "bin_index": 0,
+          "confidence": 0.05,
+          "count": 0,
+          "range": [
+            0.0,
+            0.1
+          ]
+        },
+        {
+          "accuracy": 0.0,
+          "bin_index": 1,
+          "confidence": 0.15000000000000002,
+          "count": 0,
+          "range": [
+            0.1,
+            0.2
+          ]
+        },
+        {
+          "accuracy": 0.0,
+          "bin_index": 2,
+          "confidence": 0.25,
+          "count": 0,
+          "range": [
+            0.2,
+            0.3
+          ]
+        },
+        {
+          "accuracy": 0.0,
+          "bin_index": 3,
+          "confidence": 0.3831763068226537,
+          "count": 2,
+          "range": [
+            0.3,
+            0.4
+          ]
+        },
+        {
+          "accuracy": 0.25,
+          "bin_index": 4,
+          "confidence": 0.4907734898918179,
+          "count": 4,
+          "range": [
+            0.4,
+            0.5
+          ]
+        },
+        {
+          "accuracy": 0.375,
+          "bin_index": 5,
+          "confidence": 0.5585196550974768,
+          "count": 16,
+          "range": [
+            0.5,
+            0.6
+          ]
+        },
+        {
+          "accuracy": 0.7083333333333334,
+          "bin_index": 6,
+          "confidence": 0.6617465481753221,
+          "count": 24,
+          "range": [
+            0.6,
+            0.7
+          ]
+        },
+        {
+          "accuracy": 0.925531914893617,
+          "bin_index": 7,
+          "confidence": 0.7599615002943159,
+          "count": 94,
+          "range": [
+            0.7,
+            0.8
+          ]
+        },
+        {
+          "accuracy": 0.9631336405529954,
+          "bin_index": 8,
+          "confidence": 0.8385286136795082,
+          "count": 217,
+          "range": [
+            0.8,
+            0.9
+          ]
+        },
+        {
+          "accuracy": 1.0,
+          "bin_index": 9,
+          "confidence": 0.9218878005596423,
+          "count": 20,
+          "range": [
+            0.9,
+            1.0
+          ]
+        }
+      ],
+      "confusion_matrix": [
+        [
+          57,
+          0,
+          0,
+          1,
+          2,
+          0
+        ],
+        [
+          0,
+          68,
+          3,
+          3,
+          1,
+          0
+        ],
+        [
+          1,
+          6,
+          54,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          2,
+          1,
+          81,
+          1,
+          3
+        ],
+        [
+          1,
+          4,
+          3,
+          2,
+          61,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          19
+        ]
+      ],
+      "ece_formula": "sum_{m=1}^{10} (|B_m| / N) * |acc(B_m) - conf(B_m)|",
+      "expected_calibration_error": 0.13249071005637314,
+      "log_loss": 0.45988995653988723,
+      "log_loss_formula": "- (1 / N) * sum_{i=1}^N sum_{c=1}^C y_{ic} * ln(p_{ic})",
+      "macro_f1": 0.8999167402334742,
+      "per_class": {
+        "cardboard": {
+          "f1": 0.9421487603305785,
+          "precision": 0.9344262295081968,
+          "recall": 0.95,
+          "support": 60
+        },
+        "glass": {
+          "f1": 0.8774193548387097,
+          "precision": 0.85,
+          "recall": 0.9066666666666666,
+          "support": 75
+        },
+        "metal": {
+          "f1": 0.8852459016393442,
+          "precision": 0.8852459016393442,
+          "recall": 0.8852459016393442,
+          "support": 61
+        },
+        "paper": {
+          "f1": 0.9204545454545454,
+          "precision": 0.9310344827586207,
+          "recall": 0.9101123595505618,
+          "support": 89
+        },
+        "plastic": {
+          "f1": 0.8905109489051095,
+          "precision": 0.9384615384615385,
+          "recall": 0.8472222222222222,
+          "support": 72
+        },
+        "trash": {
+          "f1": 0.8837209302325582,
+          "precision": 0.8260869565217391,
+          "recall": 0.95,
+          "support": 20
+        }
+      }
+    }
+  },
+  "validation_metrics": {
+    "abstention": {
+      "abstained_count": 7,
+      "accepted_accuracy": 0.900804289544236,
+      "accepted_count": 373,
+      "accepted_macro_f1": 0.9009863464738216,
+      "coverage": 0.9815789473684211,
+      "threshold": 0.52,
+      "total_count": 380
+    },
+    "classes": [
+      "cardboard",
+      "glass",
+      "metal",
+      "paper",
+      "plastic",
+      "trash"
+    ],
+    "sample_count": 380,
+    "unconditional": {
+      "accuracy": 0.8947368421052632,
+      "brier_score": 0.21431256762269865,
+      "brier_score_formula": "(1 / N) * sum_{i=1}^N sum_{c=1}^C (p_{ic} - y_{ic})^2",
+      "calibration_bins": [
+        {
+          "accuracy": 0.0,
+          "bin_index": 0,
+          "confidence": 0.05,
+          "count": 0,
+          "range": [
+            0.0,
+            0.1
+          ]
+        },
+        {
+          "accuracy": 0.0,
+          "bin_index": 1,
+          "confidence": 0.15000000000000002,
+          "count": 0,
+          "range": [
+            0.1,
+            0.2
+          ]
+        },
+        {
+          "accuracy": 0.0,
+          "bin_index": 2,
+          "confidence": 0.25,
+          "count": 0,
+          "range": [
+            0.2,
+            0.3
+          ]
+        },
+        {
+          "accuracy": 0.0,
+          "bin_index": 3,
+          "confidence": 0.35000000000000003,
+          "count": 0,
+          "range": [
+            0.3,
+            0.4
+          ]
+        },
+        {
+          "accuracy": 0.3333333333333333,
+          "bin_index": 4,
+          "confidence": 0.4731921808233448,
+          "count": 3,
+          "range": [
+            0.4,
+            0.5
+          ]
+        },
+        {
+          "accuracy": 0.7391304347826086,
+          "bin_index": 5,
+          "confidence": 0.5596812603022204,
+          "count": 23,
+          "range": [
+            0.5,
+            0.6
+          ]
+        },
+        {
+          "accuracy": 0.6666666666666666,
+          "bin_index": 6,
+          "confidence": 0.6663977303189763,
+          "count": 27,
+          "range": [
+            0.6,
+            0.7
+          ]
+        },
+        {
+          "accuracy": 0.9270833333333334,
+          "bin_index": 7,
+          "confidence": 0.7575801401997749,
+          "count": 96,
+          "range": [
+            0.7,
+            0.8
+          ]
+        },
+        {
+          "accuracy": 0.9318181818181818,
+          "bin_index": 8,
+          "confidence": 0.8378625837319462,
+          "count": 220,
+          "range": [
+            0.8,
+            0.9
+          ]
+        },
+        {
+          "accuracy": 0.9090909090909091,
+          "bin_index": 9,
+          "confidence": 0.9117520990525526,
+          "count": 11,
+          "range": [
+            0.9,
+            1.0
+          ]
+        }
+      ],
+      "confusion_matrix": [
+        [
+          56,
+          1,
+          0,
+          3,
+          1,
+          0
+        ],
+        [
+          1,
+          67,
+          3,
+          1,
+          3,
+          0
+        ],
+        [
+          0,
+          3,
+          58,
+          0,
+          1,
+          0
+        ],
+        [
+          2,
+          2,
+          1,
+          80,
+          3,
+          1
+        ],
+        [
+          1,
+          6,
+          3,
+          1,
+          61,
+          0
+        ],
+        [
+          1,
+          0,
+          2,
+          0,
+          0,
+          18
+        ]
+      ],
+      "ece_formula": "sum_{m=1}^{10} (|B_m| / N) * |acc(B_m) - conf(B_m)|",
+      "expected_calibration_error": 0.10927889485862662,
+      "log_loss": 0.5683560256731234,
+      "log_loss_formula": "- (1 / N) * sum_{i=1}^N sum_{c=1}^C y_{ic} * ln(p_{ic})",
+      "macro_f1": 0.895362653342013,
+      "per_class": {
+        "cardboard": {
+          "f1": 0.9180327868852459,
+          "precision": 0.9180327868852459,
+          "recall": 0.9180327868852459,
+          "support": 61
+        },
+        "glass": {
+          "f1": 0.8701298701298701,
+          "precision": 0.8481012658227848,
+          "recall": 0.8933333333333333,
+          "support": 75
+        },
+        "metal": {
+          "f1": 0.8992248062015504,
+          "precision": 0.8656716417910447,
+          "recall": 0.9354838709677419,
+          "support": 62
+        },
+        "paper": {
+          "f1": 0.9195402298850575,
+          "precision": 0.9411764705882353,
+          "recall": 0.898876404494382,
+          "support": 89
+        },
+        "plastic": {
+          "f1": 0.8652482269503546,
+          "precision": 0.8840579710144928,
+          "recall": 0.8472222222222222,
+          "support": 72
+        },
+        "trash": {
+          "f1": 0.9,
+          "precision": 0.9473684210526315,
+          "recall": 0.8571428571428571,
+          "support": 21
+        }
+      }
+    }
+  },
+  "validation_selection": {
+    "abstained_count": 7,
+    "accepted_accuracy": 0.900804289544236,
+    "accepted_count": 373,
+    "coverage": 0.9815789473684211,
+    "min_coverage": 0.8,
+    "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+    "target_accuracy": 0.9,
+    "target_met": true,
+    "threshold": 0.52,
+    "total_count": 380
+  }
+}
