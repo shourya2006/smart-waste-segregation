@@ -588,17 +588,11 @@ def write_report(root, study, output, *, artifacts=None, update_docs=False):
         "![Confusion matrix](confusion-matrix.png)\n\n![Per-class metrics](per-class-metrics.png)\n"
     )
     if update_docs:
-        for path, names in [
-            (
-                Path(root) / "docs/training/rf-refinement-study.md",
-                ["families", "comparison", "validation"],
-            ),
-            (Path(root) / "docs/member-notes/daksh-batra.md", ["baselines", "families"]),
-        ]:
-            text = path.read_text()
-            for name in names:
-                text = replace_section(text, name, sections[name])
-            path.write_text(text)
+        path = Path(root) / "docs/training/rf-refinement-study.md"
+        text = path.read_text()
+        for name in ["families", "comparison", "validation"]:
+            text = replace_section(text, name, sections[name])
+        path.write_text(text)
     return result
 
 

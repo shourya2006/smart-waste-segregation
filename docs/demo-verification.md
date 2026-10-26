@@ -65,7 +65,8 @@ was rerun. The model checksum and tracked `docs/evaluation/` records are
 unchanged. Historical evaluation source reconstruction remains limited as
 described in the evaluation documentation.
 
-The LaTeX PDF still needs compilation. The HTML report is a separate preview.
+The [LaTeX report PDF](../output/pdf/phase-1-report.pdf) has been compiled and
+visually verified. The earlier HTML report is an archived preview.
 A teammate should reproduce the demo from a fresh checkout with the original
 artifact supplied separately; the isolated local dependency check does not
 replace that handoff.

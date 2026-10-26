@@ -28,8 +28,10 @@ accuracy (91.37% accepted accuracy at 98.41% coverage).
 
 The interactive Gradio demo (`app.py`), integration tests, reproducible demo lockfile,
 IEEE technical report sources (`report/`), and presentation sources (`presentation/`) are prepared.
-A standalone HTML preview (`report/report.html`) is provided for reading convenience;
-direct PDF compilation from `report/main.tex` remains an explicit outstanding check pending a local TeX distribution.
+The [compiled IEEE report](output/pdf/phase-1-report.pdf),
+[editable presentation](output/presentation/smart-waste-segregation-final.pptx), and
+[presentation PDF](output/pdf/project-presentation.pdf) are ready. The earlier HTML
+report is archived and does not contain every correction in the final PDF.
 
 ## Local setup
 
