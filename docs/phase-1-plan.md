@@ -42,7 +42,7 @@ choices. They are not additional faculty requirements.
 - [x] Report macro F1, per-class metrics, confusion matrix, and calibration.
 - [ ] Analyze mistakes and optionally evaluate independent everyday photos (mistake analysis completed from saved test predictions; external everyday photos deferred to Phase 2).
 - [x] Integrate a Gradio photo upload prototype with an uncertainty response and limitations note (real-model integration verified using the preserved artifact and generated images; see demo-verification.md).
-- [x] Complete literature review, LaTeX/IEEE report sources, slides, and viva preparation (final PDF compilation and verification remain pending).
+- [x] Complete literature review, LaTeX/IEEE report sources, slides, and viva preparation (report PDF compiled and visually verified; editable presentation and presenter notes prepared).
 - [ ] Have a teammate reproduce the final results from a clean checkout (reproduction guide documented; teammate execution pending).
 
 ## Experiment protocol

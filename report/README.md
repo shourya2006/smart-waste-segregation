@@ -1,35 +1,27 @@
-# Phase 1 IEEE Technical Report
+# Phase 1 IEEE report
 
-This directory contains the complete IEEE-format technical report for Phase 1 of the Smart Waste Segregation project.
+The current submission report is compiled directly from `main.tex` with IEEEtran.
 
-## Authors & Responsibilities
-- **Om Yadav**: Data Verification & Preprocessing
-- **Aditya Bharadwaj**: Handcrafted Features & Caching
-- **Shourya Bafna**: Training Protocol & SVM Baselines
-- **Daksh Batra**: Random Forest & Feature Studies
-- **Prajjwal Tripathi**: Confidence Calibration & Evaluation
-- **Saksham Mighlani**: Demo Integration & Report Assembly
+- PDF: [Phase 1 report](../output/pdf/phase-1-report.pdf)
+- Editable source: [main.tex](main.tex)
+- References: [references.bib](references.bib)
 
-## Compilation Instructions
+The five-page report covers the six contributors, literature, dataset audit,
+features, model theory and comparisons, calibration, frozen test results,
+demo implementation and limitations. Counts and settings match the saved
+experiment records. Report preparation does not refit or evaluate any model.
 
-### Local LaTeX Installation (TeX Live / MacTeX)
-Compile with `pdflatex` and `bibtex`:
-```bash
-make
-# or manually:
-pdflatex main
-bibtex main
-pdflatex main
-pdflatex main
+## Compilation
+
+From the repository root with Tectonic installed:
+
+```sh
+tectonic --outdir output/pdf report/main.tex
 ```
 
-### Overleaf / Online LaTeX
-Upload `main.tex`, `references.bib`, and the `figures/` directory to Overleaf. Set the engine to `pdfLaTeX` or `LaTeX`.
+This writes `output/pdf/main.pdf`. The distributed copy has the descriptive name
+`phase-1-report.pdf`. Alternatively, run `make` inside `report/` with TeX Live,
+or upload the source, bibliography and `figures/` folder to Overleaf.
 
-### Local Environment Note & Compilation Limitation
-On this local environment, no TeX distribution (such as MacTeX or TeX Live `pdflatex`/`xelatex`) is installed. Direct command-line compilation from `main.tex` to PDF is therefore unavailable in this environment.
-
-To inspect the rendered report layout without installing TeX:
-- Open `report/report.html` in any web browser (renders complete IEEE two-column layout with KaTeX formulas and figures).
-- Inspect `report/report.pdf`, generated directly from the HTML source.
-- For formal camera-ready compilation from LaTeX source, upload this folder to Overleaf or run `make` on a system with TeX Live installed.
+The earlier `report.html` is an archived preview and does not contain all
+corrections in the current LaTeX report. Use the compiled PDF for submission.

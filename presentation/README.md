@@ -1,24 +1,21 @@
-# Phase 1 Presentation Sources & Export
+# Project presentation
 
-This directory contains the editable presentation slides and interactive web export for Phase 1 of the Smart Waste Segregation project.
+Use the current editable deck and PDF export for the presentation:
 
-## Structure
-- `slides.md`: Markdown presentation source formatted for Marp, Slidev, or GitHub rendering.
-- `index.html`: Interactive, standalone, zero-dependency HTML presentation viewer with keyboard navigation, slide transitions, and printable stylesheet.
-- `figures/`: Key visual artifacts embedded in the presentation.
+- [Editable PowerPoint](../output/presentation/smart-waste-segregation-final.pptx)
+- [Presentation PDF](../output/pdf/project-presentation.pdf)
+- [Presenter guide](../output/presentation/presenter-guide.md)
 
-## Viewing & Presenting
-Open `index.html` in any modern web browser:
-- **Next Slide**: Right Arrow, Spacebar, Page Down, or the "Next" button.
-- **Previous Slide**: Left Arrow, Page Up, or the "Previous" button.
-- **First / Last Slide**: Home / End keys.
-- **Fullscreen**: Click the "Fullscreen" button or press F11.
+The deck contains 15 main slides and three backup slides for questions.
+Allow about 13 minutes, including a brief live demonstration.
+Speaker notes identify the presenter, suggested timing, explanation and sources.
+All six members have speaking sections. Use Presenter View in PowerPoint to
+see the notes without displaying them to the audience.
 
-## Exporting to PDF
-1. Open `index.html` in Chrome or any Chromium-based browser.
-2. Press `Cmd + P` (macOS) or `Ctrl + P` (Linux/Windows).
-3. Set Destination to "Save as PDF", Layout to "Landscape", Margins to "None", and enable "Background graphics".
-4. Alternatively, use Marp CLI:
-   ```bash
-   npx @marp-team/marp-cli slides.md --pdf -o presentation.pdf
-   ```
+Prepare one demonstration photo beforehand. Keep the original evaluated model
+available locally. The saved demo screenshot is a functional example using a
+generated color patch, not an accuracy benchmark. The threshold remains 0.52.
+
+The earlier `slides.md` and `index.html` remain archived source material.
+They do not contain all the corrections in the current deck. Use the files above
+for the project presentation.
