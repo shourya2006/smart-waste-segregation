@@ -38,9 +38,6 @@ from waste_sorting.backbones import (
 )
 from waste_sorting.training import _source_metadata
 
-# Provenance describes this code checkout, wherever --root points the data.
-REPOSITORY = Path(__file__).resolve().parents[2]
-
 
 def pick_device():
     if torch.cuda.is_available():
@@ -188,13 +185,13 @@ def train_model(model, config, train_loader, validation_loader=None, *, epochs=N
     return {"history": history, "best_epoch": best_epoch, "epochs_run": len(history)}
 
 
-def _run_metadata(config, device, model):
+def _run_metadata(config, root, device, model):
     return {
         "config": config,
         "device": device.type,
         "trainable_parameters": count_trainable_parameters(model),
         "source": {
-            **_source_metadata(REPOSITORY),
+            **_source_metadata(root),
             "torch": torch.__version__,
             "torchvision": importlib.metadata.version("torchvision"),
         },
@@ -246,7 +243,7 @@ def run_cv(config, root, output, *, pretrained=True, log=print):
         "std_macro_f1": float(runs["macro_f1"].std(ddof=1)) if len(runs) > 1 else 0.0,
         "mean_accuracy": float(runs["accuracy"].mean()),
         "median_best_epoch": int(statistics.median_low(runs["best_epoch"])),
-        **_run_metadata(config, device, model),
+        **_run_metadata(config, root, device, model),
     }
     (output / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     return summary
@@ -272,7 +269,7 @@ def train_final(config, root, output, epochs, *, pretrained=True, log=print):
         "classes": config["classes"],
         "history": result["history"],
         "model_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-        **_run_metadata(config, device, model),
+        **_run_metadata(config, root, device, model),
     }
     (output / "metadata.json").write_text(json.dumps(metadata, indent=2, sort_keys=True))
     return metadata

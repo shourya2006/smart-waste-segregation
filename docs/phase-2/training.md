@@ -131,7 +131,7 @@ The pre-registered BASE run (up to 40 epochs, patience 8) is Aditya's first abla
 - CPU runs repeat exactly. GPU and MPS kernels are not bit-for-bit deterministic, so expect
   small differences between machines. Record the `device` in `summary.json` next to every
   reported number.
-- Provenance comes from the code checkout. `working_tree_dirty: true` means uncommitted
+- Provenance comes from `--root` (the repository checkout), as in Phase 1. `working_tree_dirty: true` means uncommitted
   code; commit before any run you plan to report.
 
 ## 7. Theory for the viva

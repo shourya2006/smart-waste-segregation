@@ -29,6 +29,8 @@ class DlTrainingTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
+        # Provenance reads the repository root, as in tests/test_training.py.
+        (self.root / "requirements.lock").write_text("synthetic test fixture\n")
         config = tomllib.loads((REPO / "configs/phase2.toml").read_text())
         config["preprocessing"].update(width=64, height=64)
         config["dl"]["data"].update(batch_size=8, num_workers=0)
