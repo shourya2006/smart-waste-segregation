@@ -33,6 +33,7 @@ waste-train = "waste_sorting.training:main"
 waste-svm-study = "waste_sorting.svm_study:main"
 waste-evaluate = "waste_sorting.evaluation:main"
 waste-dl-data = "waste_sorting.dl_data:main"
+waste-dl-embeddings = "waste_sorting.embeddings:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
