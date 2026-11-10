@@ -1,0 +1,16 @@
+# Phase 2 deep-learning additions, resolved with Python 3.12 on 2026-11-10 by
+# installing torch and torchvision on top of requirements-demo.lock (pip freeze diff).
+# The remaining torch dependencies (filelock, fsspec, jinja2, networkx,
+# typing_extensions) are already pinned in requirements-demo.lock.
+# Install after the demo lock:
+#   python -m pip install -r requirements-demo.lock
+#   python -m pip install -r requirements-dl.lock
+#   python -m pip install --no-deps -e .
+# The default PyPI Linux wheels include CUDA, so use the line above on GPU machines
+# (Colab, Kaggle). ONLY in CI or on Linux machines without an NVIDIA GPU, add
+# --extra-index-url https://download.pytorch.org/whl/cpu to get the smaller +cpu wheels.
+mpmath==1.3.0
+setuptools==84.2.1
+sympy==1.14.0
+torch==2.15.0
+torchvision==0.29.2

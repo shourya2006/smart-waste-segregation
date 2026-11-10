@@ -1,0 +1,49 @@
+# Phase 2 deep-learning data settings. Phase 1 files (phase1.toml, manifest,
+# splits, folds) stay frozen; this file only describes how they are loaded.
+# Starting choices, not official course-mandated hyperparameters.
+# Paths are relative to the repository root.
+
+# Must equal `classes` in configs/phase1.toml (checked by tests/test_dl_data.py).
+classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
+
+[paths]
+image_root = "data/raw/trashnet"
+manifest = "docs/dataset/manifest.csv"
+folds = "docs/training/folds.json"
+artifacts = "artifacts/phase2"
+
+# Read by the shared Phase 1 preprocess_image (EXIF fix, RGB, white letterbox).
+[preprocessing]
+width = 224
+height = 224
+preserve_aspect_ratio = true
+padding_rgb = [255, 255, 255]
+
+[dl.data]
+batch_size = 32
+num_workers = 2
+seed = 42
+# ImageNet statistics expected by pretrained backbones; nothing is computed
+# from TrashNet, so validation/test pixels can never leak into normalisation.
+mean = [0.485, 0.456, 0.406]
+std = [0.229, 0.224, 0.225]
+# true: WeightedRandomSampler draws classes equally often in training batches.
+# Use either this or class-weighted loss, not both.
+balanced_sampling = false
+
+# Training images only. Each step can be switched off for ablations;
+# enabled = false turns every step off (train transform == eval transform).
+[dl.augmentation]
+enabled = true
+random_resized_crop = true
+crop_scale = [0.8, 1.0]
+crop_ratio = [0.75, 1.3333]
+horizontal_flip = true
+flip_probability = 0.5
+rotation = true
+rotation_degrees = 10
+color_jitter = true
+brightness = 0.15
+contrast = 0.15
+saturation = 0.1
+hue = 0.0
