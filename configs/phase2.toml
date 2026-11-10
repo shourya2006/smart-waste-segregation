@@ -47,3 +47,17 @@ brightness = 0.15
 contrast = 0.15
 saturation = 0.1
 hue = 0.0
+
+# Training loop (waste-dl-train). Defaults are the BASE row of the pre-registered
+# docs/phase-2/ablation-plan.md; ablations change one key with --set.
+[dl.training]
+backbone = "mobilenet_v2"     # or "efficientnet_b0"
+unfreeze_blocks = 0           # 0 = frozen backbone; n = train model.features[-n:]
+dropout = 0.2
+lr_head = 1e-3
+lr_backbone = 1e-4            # used only for unfrozen backbone blocks
+lr_min = 1e-5                 # cosine annealing floor
+weight_decay = 1e-2
+max_epochs = 40
+patience = 8                  # early stopping on unweighted fold-validation loss
+class_weighted_loss = false   # use this or dl.data.balanced_sampling, not both
