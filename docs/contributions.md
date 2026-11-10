@@ -41,6 +41,7 @@ their own commit or pull request; do not count this assignment as completed work
 | Daksh Batra | 2026-10-23 | Assistant-assisted Random Forest pipeline, 5-family feature comparison study (120 evaluated candidates), class weighting experiments, 4 unit/integration tests, and documented handoff | [Random Forest branch](https://github.com/shourya2006/smart-waste-segregation/tree/codex/random-forest) |
 | Prajjwal Tripathi | 2026-10-24 | Group-aware Platt calibration, validation abstention threshold sweep and selection, frozen test set evaluation, prediction interface, 18 unit tests, and reproducible report artifacts | [Calibration & evaluation branch](https://github.com/shourya2006/smart-waste-segregation/tree/feat/calibration-evaluation) |
 | Saksham Miglani | 2026-10-25 | Photo upload demo with in-memory model reuse, uncertainty and limitations UX, 23 integration tests, reproducible demo lockfile, IEEE report and presentation assembly | [Demo integration branch](https://github.com/shourya2006/smart-waste-segregation/tree/feat/demo-integration) |
+| Om Yadav | 2026-11-10 | Phase 2, assistant-assisted: PyTorch dataset over the frozen splits and CV folds, train-only switchable augmentation, balanced sampling and class weights, reproducible seeded loaders, CPU PyTorch lock and CI, 17 unit tests, [pipeline documentation](phase-2/data-pipeline.md) | TODO: PR link |
 
 Record completed work with the contributor's name, a short description, date,
 and commit or pull-request link. Each member should review another component.
