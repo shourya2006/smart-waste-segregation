@@ -12,10 +12,27 @@ loop and the hybrids. It adds no new split, statistic or image cache.
 
 ```sh
 python -m pip install -r requirements-demo.lock
-python -m pip install -r requirements-dl.lock   # Linux: add --extra-index-url https://download.pytorch.org/whl/cpu
+python -m pip install -r requirements-dl.lock
 python -m pip install --no-deps -e .
 waste-dl-data          # or: python -m waste_sorting.dl_data
 ```
+
+Only CI and Linux machines without an NVIDIA GPU should add
+`--extra-index-url https://download.pytorch.org/whl/cpu` to the `requirements-dl.lock`
+line; it installs the smaller `+cpu` wheels, which cannot use a GPU.
+
+### GPU machines (Colab / Kaggle)
+
+Install `requirements-dl.lock` **without** `--extra-index-url`; the default PyPI Linux
+wheels include CUDA. Then check:
+
+```sh
+python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+```
+
+It must print `True`. If the version ends in `+cpu`, reinstall `torch` and `torchvision`
+without the CPU index. macOS has no CUDA: training there uses the CPU (or MPS, if a
+teammate adds it later).
 
 `waste-dl-data` prints split sizes and class counts and saves
 `artifacts/phase2/augmentation_preview.png` (training images only; ignored by Git).
