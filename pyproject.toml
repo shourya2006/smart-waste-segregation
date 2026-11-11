@@ -35,6 +35,7 @@ waste-evaluate = "waste_sorting.evaluation:main"
 waste-dl-data = "waste_sorting.dl_data:main"
 waste-dl-embeddings = "waste_sorting.embeddings:main"
 waste-dl-train = "waste_sorting.dl_training:main"
+waste-hybrid = "waste_sorting.hybrid:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
