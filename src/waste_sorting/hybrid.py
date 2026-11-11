@@ -98,8 +98,9 @@ def load_aligned_features(
 
     # 2. Load Phase 1 extended features
     ext_cache_candidates = [
-        root / "artifacts/daksh-rf-refinement/extended-training-features.npz",
+        root / "artifacts/phase2/extended-features/train.npz",
         root / "artifacts/phase1/extended-features/train.npz",
+        root / "artifacts/daksh-rf-refinement/extended-training-features.npz",
     ]
     ext_cache = None
     for cand in ext_cache_candidates:
@@ -151,7 +152,6 @@ def make_h1_pipeline(
     if classifier_type == "logistic_regression":
         clf = LogisticRegression(
             C=C,
-            penalty="l2",
             solver="lbfgs",
             max_iter=2000,
             random_state=seed,
@@ -207,7 +207,6 @@ def make_h2_pipeline(
     elif classifier_type == "logistic_regression":
         clf = LogisticRegression(
             C=C,
-            penalty="l2",
             solver="lbfgs",
             max_iter=2000,
             random_state=seed,
@@ -403,8 +402,9 @@ def generate_phase1_svm_oof(
         raise FileExistsError(f"Output file already exists: {out_file}")
 
     ext_cache_candidates = [
-        root / "artifacts/daksh-rf-refinement/extended-training-features.npz",
+        root / "artifacts/phase2/extended-features/train.npz",
         root / "artifacts/phase1/extended-features/train.npz",
+        root / "artifacts/daksh-rf-refinement/extended-training-features.npz",
     ]
     ext_cache = None
     for cand in ext_cache_candidates:

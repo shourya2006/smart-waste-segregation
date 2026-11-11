@@ -1,0 +1,1408 @@
+[
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_logreg_c1",
+      "backbone": "mobilenet_v2",
+      "classifier": "logistic_regression",
+      "C": 1.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8450259644962438,
+    "std_macro_f1": 0.029785383421348947,
+    "mean_accuracy": 0.8662429378531075,
+    "std_accuracy": 0.022326910343296112,
+    "mean_recalls": {
+      "cardboard": 0.9219298245614034,
+      "glass": 0.8620703933747412,
+      "metal": 0.8844525105868118,
+      "paper": 0.9014343086632243,
+      "plastic": 0.8334503950834066,
+      "trash": 0.6242105263157894
+    },
+    "fold_macro_f1s": [
+      0.8225360228388253,
+      0.8189065197196627,
+      0.8918821370799406,
+      0.8549473379313856,
+      0.8368578049114045
+    ],
+    "total_train_seconds": 2.5797202000394464,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_logreg_c01",
+      "backbone": "mobilenet_v2",
+      "classifier": "logistic_regression",
+      "C": 0.1,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8439688340608669,
+    "std_macro_f1": 0.02769877842113684,
+    "mean_accuracy": 0.8656683359013867,
+    "std_accuracy": 0.02214031012830576,
+    "mean_recalls": {
+      "cardboard": 0.9148496240601502,
+      "glass": 0.8621118012422361,
+      "metal": 0.8774954627949183,
+      "paper": 0.9110154905335628,
+      "plastic": 0.8364354697102723,
+      "trash": 0.6036842105263157
+    },
+    "fold_macro_f1s": [
+      0.8250298518841966,
+      0.8229547712661381,
+      0.8905203902828577,
+      0.8469860592996538,
+      0.8343530975714883
+    ],
+    "total_train_seconds": 4.0444030000362545,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_logreg_c10",
+      "backbone": "mobilenet_v2",
+      "classifier": "logistic_regression",
+      "C": 10.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8429943145514862,
+    "std_macro_f1": 0.032856118519342545,
+    "mean_accuracy": 0.8600089881869544,
+    "std_accuracy": 0.022143915089429957,
+    "mean_recalls": {
+      "cardboard": 0.9149749373433582,
+      "glass": 0.85055900621118,
+      "metal": 0.8635813672111313,
+      "paper": 0.8870625358577167,
+      "plastic": 0.8305092186128183,
+      "trash": 0.7084210526315788
+    },
+    "fold_macro_f1s": [
+      0.8345580556490505,
+      0.8088423119172546,
+      0.8934994767969927,
+      0.854822856889931,
+      0.8232488715042022
+    ],
+    "total_train_seconds": 2.2462360999779776,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_linsvm_c01",
+      "backbone": "mobilenet_v2",
+      "classifier": "linear_svm",
+      "C": 0.1,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8214949335704038,
+    "std_macro_f1": 0.02026361994654996,
+    "mean_accuracy": 0.8407293271700051,
+    "std_accuracy": 0.021653403613259976,
+    "mean_recalls": {
+      "cardboard": 0.9183583959899749,
+      "glass": 0.8419875776397516,
+      "metal": 0.8005444646098002,
+      "paper": 0.8797475616752723,
+      "plastic": 0.8215978928884986,
+      "trash": 0.6242105263157894
+    },
+    "fold_macro_f1s": [
+      0.7927802891946437,
+      0.8192431809279359,
+      0.8463485084600629,
+      0.8339447598756955,
+      0.8151579293936804
+    ],
+    "total_train_seconds": 266.9588889000006,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_linsvm_c1",
+      "backbone": "mobilenet_v2",
+      "classifier": "linear_svm",
+      "C": 1.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.82228966966365,
+    "std_macro_f1": 0.019543889988003785,
+    "mean_accuracy": 0.8407325372367745,
+    "std_accuracy": 0.020086503855055202,
+    "mean_recalls": {
+      "cardboard": 0.9147869674185463,
+      "glass": 0.8506418219461697,
+      "metal": 0.8075620084694496,
+      "paper": 0.8653757888697647,
+      "plastic": 0.8245829675153644,
+      "trash": 0.6342105263157894
+    },
+    "fold_macro_f1s": [
+      0.7978783011115126,
+      0.815445353646891,
+      0.8421877299710543,
+      0.8425401040221634,
+      0.8133968595666293
+    ],
+    "total_train_seconds": 1481.0179113000631,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_rbf_c1",
+      "backbone": "mobilenet_v2",
+      "classifier": "rbf_svm",
+      "C": 1.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8297487042349327,
+    "std_macro_f1": 0.023654101267157585,
+    "mean_accuracy": 0.8633988186954289,
+    "std_accuracy": 0.008877020173150594,
+    "mean_recalls": {
+      "cardboard": 0.8829573934837093,
+      "glass": 0.8448447204968945,
+      "metal": 0.9019963702359346,
+      "paper": 0.9471600688468158,
+      "plastic": 0.8423617208077261,
+      "trash": 0.46789473684210525
+    },
+    "fold_macro_f1s": [
+      0.8118470571695525,
+      0.8005490914018992,
+      0.858920786516415,
+      0.8438728269432763,
+      0.8335537591435215
+    ],
+    "total_train_seconds": 42.513329299981706,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_rbf_c10",
+      "backbone": "mobilenet_v2",
+      "classifier": "rbf_svm",
+      "C": 10.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8501323592565839,
+    "std_macro_f1": 0.020414856068933913,
+    "mean_accuracy": 0.8769966615305599,
+    "std_accuracy": 0.008883730017764028,
+    "mean_recalls": {
+      "cardboard": 0.8936090225563911,
+      "glass": 0.8620289855072464,
+      "metal": 0.9159709618874773,
+      "paper": 0.9495410212277682,
+      "plastic": 0.8452589991220367,
+      "trash": 0.5610526315789472
+    },
+    "fold_macro_f1s": [
+      0.8388762464944488,
+      0.8280081862427447,
+      0.8805156197514141,
+      0.8594811167543673,
+      0.8437806270399449
+    ],
+    "total_train_seconds": 44.2115547999274,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h1_mobilenet_v2_rbf_c10_g1e3",
+      "backbone": "mobilenet_v2",
+      "classifier": "rbf_svm",
+      "C": 10.0,
+      "gamma": 0.001
+    },
+    "mean_macro_f1": 0.8336480227849254,
+    "std_macro_f1": 0.026012137795157493,
+    "mean_accuracy": 0.8679346430405752,
+    "std_accuracy": 0.010575607478620854,
+    "mean_recalls": {
+      "cardboard": 0.8793859649122806,
+      "glass": 0.850600414078675,
+      "metal": 0.9090744101633395,
+      "paper": 0.951950659781985,
+      "plastic": 0.8512730465320455,
+      "trash": 0.4673684210526316
+    },
+    "fold_macro_f1s": [
+      0.8046279237083783,
+      0.8150917838511246,
+      0.8667755378008635,
+      0.8534860896370033,
+      0.8282587789272573
+    ],
+    "total_train_seconds": 48.737135000061244,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "efficientnet_b0",
+    "hyperparameters": {
+      "candidate": "h1_efficientnet_b0_logreg_c1",
+      "backbone": "efficientnet_b0",
+      "classifier": "logistic_regression",
+      "C": 1.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8596775460799119,
+    "std_macro_f1": 0.019368585230607416,
+    "mean_accuracy": 0.8741750128402671,
+    "std_accuracy": 0.016117346942726294,
+    "mean_recalls": {
+      "cardboard": 0.9220551378446116,
+      "glass": 0.856231884057971,
+      "metal": 0.8739866908650937,
+      "paper": 0.9135398737808377,
+      "plastic": 0.8512730465320457,
+      "trash": 0.708421052631579
+    },
+    "fold_macro_f1s": [
+      0.8432978258128462,
+      0.8439210009046083,
+      0.8861271783423352,
+      0.8509395743526585,
+      0.8741021509871114
+    ],
+    "total_train_seconds": 1.1824850999983028,
+    "embedding_metadata": {
+      "backbone": "efficientnet_b0",
+      "weights_name": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:02:22.863333+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "efficientnet_b0",
+    "hyperparameters": {
+      "candidate": "h1_efficientnet_b0_logreg_c01",
+      "backbone": "efficientnet_b0",
+      "classifier": "logistic_regression",
+      "C": 0.1,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8584388296194436,
+    "std_macro_f1": 0.018087496678679003,
+    "mean_accuracy": 0.8770095017976374,
+    "std_accuracy": 0.012126361288901814,
+    "mean_recalls": {
+      "cardboard": 0.9149122807017545,
+      "glass": 0.8619875776397515,
+      "metal": 0.8565638233514822,
+      "paper": 0.935197934595525,
+      "plastic": 0.8631694468832309,
+      "trash": 0.6763157894736842
+    },
+    "fold_macro_f1s": [
+      0.8492160485413859,
+      0.8349799928535111,
+      0.8836252520463047,
+      0.8645111401431401,
+      0.8598617145128773
+    ],
+    "total_train_seconds": 1.735726400045678,
+    "embedding_metadata": {
+      "backbone": "efficientnet_b0",
+      "weights_name": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:02:22.863333+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "efficientnet_b0",
+    "hyperparameters": {
+      "candidate": "h1_efficientnet_b0_linsvm_c01",
+      "backbone": "efficientnet_b0",
+      "classifier": "linear_svm",
+      "C": 0.1,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8423920297765033,
+    "std_macro_f1": 0.026665456047480766,
+    "mean_accuracy": 0.8628466872110939,
+    "std_accuracy": 0.01885917437079959,
+    "mean_recalls": {
+      "cardboard": 0.9256265664160402,
+      "glass": 0.8591304347826088,
+      "metal": 0.8496672716273442,
+      "paper": 0.8991967871485944,
+      "plastic": 0.8424056189640036,
+      "trash": 0.6447368421052632
+    },
+    "fold_macro_f1s": [
+      0.830229205566169,
+      0.8107836553903228,
+      0.8795363749603147,
+      0.8578607555034717,
+      0.8335501574622385
+    ],
+    "total_train_seconds": 227.58061489998363,
+    "embedding_metadata": {
+      "backbone": "efficientnet_b0",
+      "weights_name": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:02:22.863333+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "efficientnet_b0",
+    "hyperparameters": {
+      "candidate": "h1_efficientnet_b0_rbf_c1",
+      "backbone": "efficientnet_b0",
+      "classifier": "rbf_svm",
+      "C": 1.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8401626501163679,
+    "std_macro_f1": 0.03887963518415088,
+    "mean_accuracy": 0.8736228813559321,
+    "std_accuracy": 0.02468173558986937,
+    "mean_recalls": {
+      "cardboard": 0.8901002506265664,
+      "glass": 0.8763561076604555,
+      "metal": 0.9194797338173017,
+      "paper": 0.9471600688468159,
+      "plastic": 0.8392888498683055,
+      "trash": 0.4784210526315789
+    },
+    "fold_macro_f1s": [
+      0.8211076110074501,
+      0.8011758250134181,
+      0.8998470793005401,
+      0.8566598113287079,
+      0.8220229239317237
+    ],
+    "total_train_seconds": 39.374106199946254,
+    "embedding_metadata": {
+      "backbone": "efficientnet_b0",
+      "weights_name": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:02:22.863333+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h1",
+    "backbone": "efficientnet_b0",
+    "hyperparameters": {
+      "candidate": "h1_efficientnet_b0_rbf_c10",
+      "backbone": "efficientnet_b0",
+      "classifier": "rbf_svm",
+      "C": 10.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8582337234213877,
+    "std_macro_f1": 0.03697480969661139,
+    "mean_accuracy": 0.886665382639959,
+    "std_accuracy": 0.02051694280577576,
+    "mean_recalls": {
+      "cardboard": 0.9008145363408522,
+      "glass": 0.882153209109731,
+      "metal": 0.9229885057471263,
+      "paper": 0.9471600688468158,
+      "plastic": 0.872036874451273,
+      "trash": 0.54
+    },
+    "fold_macro_f1s": [
+      0.8333881709911672,
+      0.8166884112140232,
+      0.9043633925986866,
+      0.8882644137051509,
+      0.8484642285979106
+    ],
+    "total_train_seconds": 34.024973800056614,
+    "embedding_metadata": {
+      "backbone": "efficientnet_b0",
+      "weights_name": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:02:22.863333+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h2",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h2_fusion_mobilenet_v2_rbf_c10",
+      "backbone": "mobilenet_v2",
+      "classifier": "rbf_svm",
+      "C": 10.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.9039099751347924,
+    "std_macro_f1": 0.02616145093557494,
+    "mean_accuracy": 0.9166955572675912,
+    "std_accuracy": 0.018613365321245415,
+    "mean_recalls": {
+      "cardboard": 0.9395989974937343,
+      "glass": 0.9253416149068322,
+      "metal": 0.92994555353902,
+      "paper": 0.963970166379805,
+      "plastic": 0.8719490781387181,
+      "trash": 0.728421052631579
+    },
+    "fold_macro_f1s": [
+      0.8809255391637305,
+      0.8994430152549532,
+      0.9442010462217526,
+      0.9130408447888426,
+      0.8819394302446831
+    ],
+    "total_train_seconds": 134.5733740000287,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h2",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h2_fusion_mobilenet_v2_rbf_c50",
+      "backbone": "mobilenet_v2",
+      "classifier": "rbf_svm",
+      "C": 50.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.9039099751347924,
+    "std_macro_f1": 0.02616145093557494,
+    "mean_accuracy": 0.9166955572675912,
+    "std_accuracy": 0.018613365321245415,
+    "mean_recalls": {
+      "cardboard": 0.9395989974937343,
+      "glass": 0.9253416149068322,
+      "metal": 0.92994555353902,
+      "paper": 0.963970166379805,
+      "plastic": 0.8719490781387181,
+      "trash": 0.728421052631579
+    },
+    "fold_macro_f1s": [
+      0.8809255391637305,
+      0.8994430152549532,
+      0.9442010462217526,
+      0.9130408447888426,
+      0.8819394302446831
+    ],
+    "total_train_seconds": 161.24561169999652,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h2",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h2_fusion_mobilenet_v2_rbf_c10_g1e3",
+      "backbone": "mobilenet_v2",
+      "classifier": "rbf_svm",
+      "C": 10.0,
+      "gamma": 0.001
+    },
+    "mean_macro_f1": 0.5233721019578789,
+    "std_macro_f1": 0.017831775431642844,
+    "mean_accuracy": 0.6502279147406266,
+    "std_accuracy": 0.01391065128491468,
+    "mean_recalls": {
+      "cardboard": 0.7232456140350877,
+      "glass": 0.8877432712215322,
+      "metal": 0.1676346037507562,
+      "paper": 0.963970166379805,
+      "plastic": 0.5505706760316066,
+      "trash": 0.0
+    },
+    "fold_macro_f1s": [
+      0.5232031878141248,
+      0.5346631987589819,
+      0.5464180282668615,
+      0.5101303714206941,
+      0.5024457235287322
+    ],
+    "total_train_seconds": 166.8711462999927,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h2",
+    "backbone": "mobilenet_v2",
+    "hyperparameters": {
+      "candidate": "h2_fusion_mobilenet_v2_linsvm_c01",
+      "backbone": "mobilenet_v2",
+      "classifier": "linear_svm",
+      "C": 0.1,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.8798016118801941,
+    "std_macro_f1": 0.022632280839765696,
+    "mean_accuracy": 0.8917533384694402,
+    "std_accuracy": 0.017175546168312586,
+    "mean_recalls": {
+      "cardboard": 0.9147243107769423,
+      "glass": 0.8793374741200829,
+      "metal": 0.8881427707199032,
+      "paper": 0.9687894434882386,
+      "plastic": 0.8453028972783143,
+      "trash": 0.7068421052631579
+    },
+    "fold_macro_f1s": [
+      0.8615116536943161,
+      0.873446327303088,
+      0.8999812383738969,
+      0.9071021297405492,
+      0.8569667102891204
+    ],
+    "total_train_seconds": 5.015131499967538,
+    "embedding_metadata": {
+      "backbone": "mobilenet_v2",
+      "weights_name": "MobileNet_V2_Weights.IMAGENET1K_V2",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:01:18.679238+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h2",
+    "backbone": "efficientnet_b0",
+    "hyperparameters": {
+      "candidate": "h2_fusion_efficientnet_b0_rbf_c10",
+      "backbone": "efficientnet_b0",
+      "classifier": "rbf_svm",
+      "C": 10.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.9044278905707808,
+    "std_macro_f1": 0.033175893386978364,
+    "mean_accuracy": 0.9172701592193118,
+    "std_accuracy": 0.026562726928997756,
+    "mean_recalls": {
+      "cardboard": 0.9182957393483709,
+      "glass": 0.9080331262939959,
+      "metal": 0.9509981851179672,
+      "paper": 0.9615605278255881,
+      "plastic": 0.8898595258999122,
+      "trash": 0.7489473684210527
+    },
+    "fold_macro_f1s": [
+      0.8666597382912492,
+      0.9074480233947807,
+      0.954787190538501,
+      0.9090538621642853,
+      0.8841906384650874
+    ],
+    "total_train_seconds": 158.44390869990457,
+    "embedding_metadata": {
+      "backbone": "efficientnet_b0",
+      "weights_name": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:02:22.863333+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  },
+  {
+    "candidate": "h2",
+    "backbone": "efficientnet_b0",
+    "hyperparameters": {
+      "candidate": "h2_fusion_efficientnet_b0_rbf_c50",
+      "backbone": "efficientnet_b0",
+      "classifier": "rbf_svm",
+      "C": 50.0,
+      "gamma": "scale"
+    },
+    "mean_macro_f1": 0.9044278905707808,
+    "std_macro_f1": 0.033175893386978364,
+    "mean_accuracy": 0.9172701592193118,
+    "std_accuracy": 0.026562726928997756,
+    "mean_recalls": {
+      "cardboard": 0.9182957393483709,
+      "glass": 0.9080331262939959,
+      "metal": 0.9509981851179672,
+      "paper": 0.9615605278255881,
+      "plastic": 0.8898595258999122,
+      "trash": 0.7489473684210527
+    },
+    "fold_macro_f1s": [
+      0.8666597382912492,
+      0.9074480233947807,
+      0.954787190538501,
+      0.9090538621642853,
+      0.8841906384650874
+    ],
+    "total_train_seconds": 111.02943170000799,
+    "embedding_metadata": {
+      "backbone": "efficientnet_b0",
+      "weights_name": "EfficientNet_B0_Weights.IMAGENET1K_V1",
+      "embedding_dim": 1280,
+      "image_size": [
+        224,
+        224
+      ],
+      "split": "train",
+      "sample_count": 1764,
+      "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+      "config_hash": "cd2001a3c42f0e0f50e64a9b251fda53026136cff21e82e2e9ce29ae3e110460",
+      "source_fingerprint": "da4512f9bae29ce9ad229e47a2ee8e54a34451775aff8a8b2808a89964e6cc6b",
+      "torch_version": "2.15.0+cpu",
+      "torchvision_version": "0.29.2+cpu",
+      "git_revision": "2b20d8e82c3b077b8de4ebd76dbd6ee448144674",
+      "created_at_utc": "2026-11-11T10:02:22.863333+00:00",
+      "device": "cpu",
+      "classes": [
+        "cardboard",
+        "glass",
+        "metal",
+        "paper",
+        "plastic",
+        "trash"
+      ]
+    },
+    "provenance": {
+      "git_revision": "91d38a411a48120e2074cd6adb92a3f452f3555e",
+      "working_tree_dirty": true,
+      "package_source_sha256": "56e4d19548b3ebff4b7ba26eb9439001f3671b83eb0f213b3193429e4e45008b",
+      "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+      "python": "3.12.4",
+      "platform": "Windows-11-10.0.26300-SP0",
+      "packages": {
+        "numpy": "2.5.4",
+        "scipy": "1.18.1",
+        "scikit-learn": "1.9.1",
+        "scikit-image": "0.26.0",
+        "pandas": "3.0.6",
+        "joblib": "1.6.0"
+      }
+    }
+  }
+]
