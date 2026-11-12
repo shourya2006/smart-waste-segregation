@@ -46,13 +46,14 @@ class RunAblationsTests(unittest.TestCase):
 
     def test_dry_run_prints_thirteen_commands(self):
         """--dry-run prints exactly 13 commands each with one change from BASE."""
-        buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            run_ablations(runs_dir=Path("artifacts/phase2/runs"), dry_run=True)
-        lines = [line for line in buf.getvalue().splitlines() if "(dry-run)" in line]
-        self.assertEqual(len(lines), 13)
-        self.assertIn("waste-dl-train cv --output artifacts/phase2/runs/BASE", lines[0])
-        self.assertIn("--set dl.training.backbone=efficientnet_b0", lines[1])
+        with tempfile.TemporaryDirectory() as tmpdir:
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                run_ablations(runs_dir=Path(tmpdir) / "runs", dry_run=True)
+            lines = [line for line in buf.getvalue().splitlines() if "(dry-run)" in line]
+            self.assertEqual(len(lines), 13)
+            self.assertIn(f"waste-dl-train cv --output {Path(tmpdir) / 'runs' / 'BASE'}", lines[0])
+            self.assertIn("--set dl.training.backbone=efficientnet_b0", lines[1])
 
     def test_handle_run_directory_skip_completed(self):
         """Completed run with summary.json is skipped."""
@@ -79,20 +80,21 @@ class RunAblationsTests(unittest.TestCase):
 
     def test_run_ablations_only_subset(self):
         """--only flag selects specific IDs and rejects invalid ones."""
-        buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            run_ablations(
-                runs_dir=Path("artifacts/phase2/runs"),
-                only_ids=["BASE", "A1.1"],
-                dry_run=True,
-            )
-        lines = [line for line in buf.getvalue().splitlines() if "(dry-run)" in line]
-        self.assertEqual(len(lines), 2)
-        self.assertIn("BASE", lines[0])
-        self.assertIn("A1.1", lines[1])
+        with tempfile.TemporaryDirectory() as tmpdir:
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                run_ablations(
+                    runs_dir=Path(tmpdir) / "runs",
+                    only_ids=["BASE", "A1.1"],
+                    dry_run=True,
+                )
+            lines = [line for line in buf.getvalue().splitlines() if "(dry-run)" in line]
+            self.assertEqual(len(lines), 2)
+            self.assertIn("BASE", lines[0])
+            self.assertIn("A1.1", lines[1])
 
-        with self.assertRaises(ValueError):
-            run_ablations(runs_dir=Path("artifacts/phase2/runs"), only_ids=["NONEXISTENT"])
+            with self.assertRaises(ValueError):
+                run_ablations(runs_dir=Path(tmpdir) / "runs", only_ids=["NONEXISTENT"])
 
     def test_summarise_builds_correct_table(self):
         """`summarise` builds the correct table from fake runs.csv and summary.json."""
@@ -148,7 +150,34 @@ class RunAblationsTests(unittest.TestCase):
 
             self.assertAlmostEqual(df.loc[df["id"] == "BASE", "mean_macro_f1"].iloc[0], 0.90)
             self.assertEqual(df.loc[df["id"] == "BASE", "device"].iloc[0], "cuda")
+            self.assertEqual(df.loc[df["id"] == "BASE", "median_best_epoch"].iloc[0], 18)
             self.assertTrue(out_csv.is_file())
+
+    def test_summarise_raises_if_median_best_epoch_missing(self):
+        """`summarise` raises KeyError naming the run if median_best_epoch is absent."""
+        classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            runs_dir = Path(tmpdir) / "runs"
+            runs_dir.mkdir()
+            d = runs_dir / "BASE"
+            d.mkdir()
+            (d / "runs.csv").write_text("fold,macro_f1,epochs_run,train_seconds\n0,0.85,20,100\n")
+            summary = {
+                "mode": "cv",
+                "mean_macro_f1": 0.85,
+                "std_macro_f1": 0.01,
+                "mean_accuracy": 0.86,
+                # omitted "median_best_epoch"
+                "device": "mps",
+                "trainable_parameters": 7686,
+                "config": {"classes": classes},
+            }
+            (d / "summary.json").write_text(json.dumps(summary))
+
+            with self.assertRaises(KeyError) as ctx:
+                summarise_ablations(runs_dir)
+            self.assertIn("BASE", str(ctx.exception))
+            self.assertIn("median_best_epoch", str(ctx.exception))
 
 
 if __name__ == "__main__":
