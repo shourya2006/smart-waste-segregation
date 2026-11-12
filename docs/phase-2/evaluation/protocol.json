@@ -1,0 +1,1024 @@
+{
+  "abstention": {
+    "demo_rule": {
+      "min_coverage": 0.8,
+      "target_accuracy": 0.95
+    },
+    "demo_target_accuracy": 0.95,
+    "headline_rule": {
+      "min_coverage": 0.8,
+      "target_accuracy": 0.9
+    },
+    "min_coverage": 0.8,
+    "note": "demo_threshold added before the freeze because H3's headline threshold is 0.00 (no abstention); both are reported on test",
+    "split": "validation",
+    "target_accuracy": 0.9,
+    "threshold_grid": "0.00..1.00 step 0.01"
+  },
+  "calibration": {
+    "formula": "softmax(log(clip(p, 1e-12)) / T)",
+    "method": "temperature_scaling_on_training_oof",
+    "optimizer": "scipy.optimize.minimize_scalar(method='bounded')",
+    "prob_clip_min": 1e-12,
+    "temperature_bounds": [
+      0.05,
+      20.0
+    ]
+  },
+  "classes": [
+    "cardboard",
+    "glass",
+    "metal",
+    "paper",
+    "plastic",
+    "trash"
+  ],
+  "data_provenance": {
+    "folds_sha256": "6525c05675d2c9470659f2ad6a5721cadbe8558ac977ef7ef06dc858488b6625",
+    "manifest_sha256": "affd3e9d29e612b0179820a2a20ed21395e26d89a094f02bb7390d9400563314",
+    "phase2_config_sha256": "0b171b4a7d2d356388bf98a8c73c74a1679af474dee9190e8e4714476e4f3d93"
+  },
+  "git_revision": "62db0847aed82b6a2622bb5a19a903f21f677fa6",
+  "limitations": [
+    "Temperatures were fitted on out-of-fold predictions of fold models, while the evaluated models are the final full-training-split models, as in Phase 1."
+  ],
+  "models": {
+    "a2_1_cnn": {
+      "demo_threshold": 0.87,
+      "demo_threshold_selection": {
+        "abstained_count": 67,
+        "accepted_accuracy": 0.9552715654952076,
+        "accepted_count": 313,
+        "coverage": 0.8236842105263158,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.95,
+        "target_met": true,
+        "threshold": 0.87,
+        "total_count": 380
+      },
+      "hashes": {
+        "a2_metadata_sha256": "7c8088ef581cba82a4a0d88fef7ba5ed7b40de2d41d2152c486145c4fec23512",
+        "model_pt_sha256": "26592f8b5aee95eda28ef6088af8c7d737e7e6b9d38a6733c9faa5c1b4c5d28e"
+      },
+      "headline_threshold": 0.5,
+      "headline_threshold_selection": {
+        "abstained_count": 10,
+        "accepted_accuracy": 0.9,
+        "accepted_count": 370,
+        "coverage": 0.9736842105263158,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.9,
+        "target_met": true,
+        "threshold": 0.5,
+        "total_count": 380
+      },
+      "oof_calibration": {
+        "after": {
+          "brier_score": 0.14782615072611247,
+          "ece": 0.008102710301163479,
+          "log_loss": 0.2937023643622243
+        },
+        "before": {
+          "brier_score": 0.14823057122226277,
+          "ece": 0.01583336024039597,
+          "log_loss": 0.29574936749517317
+        }
+      },
+      "oof_path": "docs/phase-2/ablations/selected-oof_predictions.csv",
+      "oof_sample_count": 1764,
+      "oof_sha256": "a71f7d7b50abbe57b6771e7539e09ac7873ca66035023a32b69b49c1f5ccbb5f",
+      "temperature": 1.102995775962789,
+      "threshold": 0.5,
+      "validation_demo_abstention": {
+        "abstained_count": 67,
+        "accepted_accuracy": 0.9552715654952076,
+        "accepted_count": 313,
+        "accepted_macro_f1": 0.9464445674248688,
+        "coverage": 0.8236842105263158,
+        "threshold": 0.87,
+        "total_count": 380
+      },
+      "validation_metrics": {
+        "abstention": {
+          "abstained_count": 10,
+          "accepted_accuracy": 0.9,
+          "accepted_count": 370,
+          "accepted_macro_f1": 0.8817599405331998,
+          "coverage": 0.9736842105263158,
+          "threshold": 0.5,
+          "total_count": 380
+        },
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "sample_count": 380,
+        "unconditional": {
+          "accuracy": 0.881578947368421,
+          "brier_score": 0.167004652502369,
+          "brier_score_formula": "(1 / N) * sum_{i=1}^N sum_{c=1}^C (p_{ic} - y_{ic})^2",
+          "calibration_bins": [
+            {
+              "accuracy": 0.0,
+              "bin_index": 0,
+              "confidence": 0.05,
+              "count": 0,
+              "range": [
+                0.0,
+                0.1
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 1,
+              "confidence": 0.15000000000000002,
+              "count": 0,
+              "range": [
+                0.1,
+                0.2
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 2,
+              "confidence": 0.25,
+              "count": 0,
+              "range": [
+                0.2,
+                0.3
+              ]
+            },
+            {
+              "accuracy": 0.3333333333333333,
+              "bin_index": 3,
+              "confidence": 0.3816918468848837,
+              "count": 3,
+              "range": [
+                0.3,
+                0.4
+              ]
+            },
+            {
+              "accuracy": 0.14285714285714285,
+              "bin_index": 4,
+              "confidence": 0.46377827162380586,
+              "count": 7,
+              "range": [
+                0.4,
+                0.5
+              ]
+            },
+            {
+              "accuracy": 0.36363636363636365,
+              "bin_index": 5,
+              "confidence": 0.561693032392712,
+              "count": 11,
+              "range": [
+                0.5,
+                0.6
+              ]
+            },
+            {
+              "accuracy": 0.6666666666666666,
+              "bin_index": 6,
+              "confidence": 0.6516518075954854,
+              "count": 12,
+              "range": [
+                0.6,
+                0.7
+              ]
+            },
+            {
+              "accuracy": 0.6153846153846154,
+              "bin_index": 7,
+              "confidence": 0.7407932253028837,
+              "count": 13,
+              "range": [
+                0.7,
+                0.8
+              ]
+            },
+            {
+              "accuracy": 0.7631578947368421,
+              "bin_index": 8,
+              "confidence": 0.8581023448755898,
+              "count": 38,
+              "range": [
+                0.8,
+                0.9
+              ]
+            },
+            {
+              "accuracy": 0.9594594594594594,
+              "bin_index": 9,
+              "confidence": 0.9837361702580533,
+              "count": 296,
+              "range": [
+                0.9,
+                1.0
+              ]
+            }
+          ],
+          "confusion_matrix": [
+            [
+              53,
+              0,
+              1,
+              6,
+              0,
+              1
+            ],
+            [
+              0,
+              65,
+              7,
+              0,
+              3,
+              0
+            ],
+            [
+              0,
+              1,
+              60,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              78,
+              3,
+              7
+            ],
+            [
+              0,
+              4,
+              2,
+              1,
+              62,
+              3
+            ],
+            [
+              0,
+              0,
+              0,
+              2,
+              2,
+              17
+            ]
+          ],
+          "ece_formula": "sum_{m=1}^{10} (|B_m| / N) * |acc(B_m) - conf(B_m)|",
+          "expected_calibration_error": 0.045195875099444664,
+          "log_loss": 0.351331591659259,
+          "log_loss_formula": "- (1 / N) * sum_{i=1}^N sum_{c=1}^C y_{ic} * ln(p_{ic})",
+          "macro_f1": 0.8626676631926826,
+          "per_class": {
+            "cardboard": {
+              "f1": 0.9298245614035088,
+              "precision": 1.0,
+              "recall": 0.8688524590163934,
+              "support": 61
+            },
+            "glass": {
+              "f1": 0.896551724137931,
+              "precision": 0.9285714285714286,
+              "recall": 0.8666666666666667,
+              "support": 75
+            },
+            "metal": {
+              "f1": 0.9022556390977443,
+              "precision": 0.8450704225352113,
+              "recall": 0.967741935483871,
+              "support": 62
+            },
+            "paper": {
+              "f1": 0.8863636363636364,
+              "precision": 0.896551724137931,
+              "recall": 0.8764044943820225,
+              "support": 89
+            },
+            "plastic": {
+              "f1": 0.8671328671328671,
+              "precision": 0.8732394366197183,
+              "recall": 0.8611111111111112,
+              "support": 72
+            },
+            "trash": {
+              "f1": 0.6938775510204082,
+              "precision": 0.6071428571428571,
+              "recall": 0.8095238095238095,
+              "support": 21
+            }
+          }
+        }
+      },
+      "validation_reliability_png": "validation-reliability-a2_1_cnn.png",
+      "validation_sample_count": 380,
+      "validation_threshold_selection": {
+        "abstained_count": 10,
+        "accepted_accuracy": 0.9,
+        "accepted_count": 370,
+        "coverage": 0.9736842105263158,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.9,
+        "target_met": true,
+        "threshold": 0.5,
+        "total_count": 380
+      },
+      "validation_threshold_sweep_csv": "validation-threshold-sweep-a2_1_cnn.csv",
+      "validation_uncalibrated": {
+        "brier_score": 0.16927898699576993,
+        "ece": 0.055310895645715105,
+        "log_loss": 0.3659944668989461
+      }
+    },
+    "h3_hybrid": {
+      "demo_threshold": 0.53,
+      "demo_threshold_selection": {
+        "abstained_count": 14,
+        "accepted_accuracy": 0.9508196721311475,
+        "accepted_count": 366,
+        "coverage": 0.9631578947368421,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.95,
+        "target_met": true,
+        "threshold": 0.53,
+        "total_count": 380
+      },
+      "hashes": {
+        "hybrid_metadata_sha256": "fa030e1afb89adfd005d12789dcb2c8a231f70ac95f5dab1f7def4d8e50fb04f",
+        "model_pt_sha256": "26592f8b5aee95eda28ef6088af8c7d737e7e6b9d38a6733c9faa5c1b4c5d28e",
+        "recorded_a2_model_sha256": "26592f8b5aee95eda28ef6088af8c7d737e7e6b9d38a6733c9faa5c1b4c5d28e",
+        "svm_pipeline_sha256": "ca5a5411db8fbbe79296e552e50f7340fe3c3763148697151a83cc858f5d080a",
+        "w": 0.5
+      },
+      "headline_threshold": 0.0,
+      "headline_threshold_selection": {
+        "abstained_count": 0,
+        "accepted_accuracy": 0.9315789473684211,
+        "accepted_count": 380,
+        "coverage": 1.0,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.9,
+        "target_met": true,
+        "threshold": 0.0,
+        "total_count": 380
+      },
+      "oof_calibration": {
+        "after": {
+          "brier_score": 0.08746225965311547,
+          "ece": 0.019051226999134266,
+          "log_loss": 0.18564225786725091
+        },
+        "before": {
+          "brier_score": 0.11056838993073888,
+          "ece": 0.09498999057769501,
+          "log_loss": 0.2399370285841357
+        }
+      },
+      "oof_path": "artifacts/phase2/eval/h3/oof_predictions.csv",
+      "oof_sample_count": 1764,
+      "oof_sha256": "fa61af7dba0adba7c3a9189c9454a54003826ec8fc5d762eccd5591ee2664c10",
+      "temperature": 0.5362399011849001,
+      "threshold": 0.0,
+      "validation_demo_abstention": {
+        "abstained_count": 14,
+        "accepted_accuracy": 0.9508196721311475,
+        "accepted_count": 366,
+        "accepted_macro_f1": 0.9431424178412434,
+        "coverage": 0.9631578947368421,
+        "threshold": 0.53,
+        "total_count": 380
+      },
+      "validation_metrics": {
+        "abstention": {
+          "abstained_count": 0,
+          "accepted_accuracy": 0.9315789473684211,
+          "accepted_count": 380,
+          "accepted_macro_f1": 0.9201320170176647,
+          "coverage": 1.0,
+          "threshold": 0.0,
+          "total_count": 380
+        },
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "sample_count": 380,
+        "unconditional": {
+          "accuracy": 0.9315789473684211,
+          "brier_score": 0.1020283675246237,
+          "brier_score_formula": "(1 / N) * sum_{i=1}^N sum_{c=1}^C (p_{ic} - y_{ic})^2",
+          "calibration_bins": [
+            {
+              "accuracy": 0.0,
+              "bin_index": 0,
+              "confidence": 0.05,
+              "count": 0,
+              "range": [
+                0.0,
+                0.1
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 1,
+              "confidence": 0.15000000000000002,
+              "count": 0,
+              "range": [
+                0.1,
+                0.2
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 2,
+              "confidence": 0.25,
+              "count": 0,
+              "range": [
+                0.2,
+                0.3
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 3,
+              "confidence": 0.35000000000000003,
+              "count": 0,
+              "range": [
+                0.3,
+                0.4
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 4,
+              "confidence": 0.4777363794451433,
+              "count": 3,
+              "range": [
+                0.4,
+                0.5
+              ]
+            },
+            {
+              "accuracy": 0.5909090909090909,
+              "bin_index": 5,
+              "confidence": 0.544098162800731,
+              "count": 22,
+              "range": [
+                0.5,
+                0.6
+              ]
+            },
+            {
+              "accuracy": 0.42857142857142855,
+              "bin_index": 6,
+              "confidence": 0.6497024296843215,
+              "count": 14,
+              "range": [
+                0.6,
+                0.7
+              ]
+            },
+            {
+              "accuracy": 0.8125,
+              "bin_index": 7,
+              "confidence": 0.7561655824721472,
+              "count": 16,
+              "range": [
+                0.7,
+                0.8
+              ]
+            },
+            {
+              "accuracy": 0.9090909090909091,
+              "bin_index": 8,
+              "confidence": 0.8443668556628346,
+              "count": 22,
+              "range": [
+                0.8,
+                0.9
+              ]
+            },
+            {
+              "accuracy": 0.9966996699669967,
+              "bin_index": 9,
+              "confidence": 0.9927860352350716,
+              "count": 303,
+              "range": [
+                0.9,
+                1.0
+              ]
+            }
+          ],
+          "confusion_matrix": [
+            [
+              57,
+              0,
+              1,
+              2,
+              1,
+              0
+            ],
+            [
+              0,
+              69,
+              5,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              2,
+              60,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              83,
+              1,
+              4
+            ],
+            [
+              0,
+              3,
+              1,
+              0,
+              66,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              2,
+              0,
+              19
+            ]
+          ],
+          "ece_formula": "sum_{m=1}^{10} (|B_m| / N) * |acc(B_m) - conf(B_m)|",
+          "expected_calibration_error": 0.02386840724193797,
+          "log_loss": 0.2604430035293879,
+          "log_loss_formula": "- (1 / N) * sum_{i=1}^N sum_{c=1}^C y_{ic} * ln(p_{ic})",
+          "macro_f1": 0.9201320170176647,
+          "per_class": {
+            "cardboard": {
+              "f1": 0.9661016949152542,
+              "precision": 1.0,
+              "recall": 0.9344262295081968,
+              "support": 61
+            },
+            "glass": {
+              "f1": 0.9261744966442953,
+              "precision": 0.9324324324324325,
+              "recall": 0.92,
+              "support": 75
+            },
+            "metal": {
+              "f1": 0.9230769230769231,
+              "precision": 0.8823529411764706,
+              "recall": 0.967741935483871,
+              "support": 62
+            },
+            "paper": {
+              "f1": 0.9431818181818182,
+              "precision": 0.9540229885057471,
+              "recall": 0.9325842696629213,
+              "support": 89
+            },
+            "plastic": {
+              "f1": 0.9361702127659575,
+              "precision": 0.9565217391304348,
+              "recall": 0.9166666666666666,
+              "support": 72
+            },
+            "trash": {
+              "f1": 0.8260869565217391,
+              "precision": 0.76,
+              "recall": 0.9047619047619048,
+              "support": 21
+            }
+          }
+        }
+      },
+      "validation_reliability_png": "validation-reliability-h3_hybrid.png",
+      "validation_sample_count": 380,
+      "validation_threshold_selection": {
+        "abstained_count": 0,
+        "accepted_accuracy": 0.9315789473684211,
+        "accepted_count": 380,
+        "coverage": 1.0,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.9,
+        "target_met": true,
+        "threshold": 0.0,
+        "total_count": 380
+      },
+      "validation_threshold_sweep_csv": "validation-threshold-sweep-h3_hybrid.csv",
+      "validation_uncalibrated": {
+        "brier_score": 0.11475677754178597,
+        "ece": 0.06702942827362221,
+        "log_loss": 0.260558226809831
+      }
+    },
+    "phase1_svm": {
+      "demo_threshold": 0.76,
+      "demo_threshold_selection": {
+        "abstained_count": 57,
+        "accepted_accuracy": 0.9504643962848297,
+        "accepted_count": 323,
+        "coverage": 0.85,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.95,
+        "target_met": true,
+        "threshold": 0.76,
+        "total_count": 380
+      },
+      "hashes": {
+        "hybrid_metadata_sha256": "fa030e1afb89adfd005d12789dcb2c8a231f70ac95f5dab1f7def4d8e50fb04f",
+        "selected_family": "global_color_spatial_texture",
+        "svm_pipeline_sha256": "ca5a5411db8fbbe79296e552e50f7340fe3c3763148697151a83cc858f5d080a"
+      },
+      "headline_threshold": 0.45,
+      "headline_threshold_selection": {
+        "abstained_count": 8,
+        "accepted_accuracy": 0.9032258064516129,
+        "accepted_count": 372,
+        "coverage": 0.9789473684210527,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.9,
+        "target_met": true,
+        "threshold": 0.45,
+        "total_count": 380
+      },
+      "oof_calibration": {
+        "after": {
+          "brier_score": 0.16216790336846693,
+          "ece": 0.012561068875695301,
+          "log_loss": 0.3308066578311432
+        },
+        "before": {
+          "brier_score": 0.1643778326083118,
+          "ece": 0.03865029280632683,
+          "log_loss": 0.33923989121107473
+        }
+      },
+      "oof_path": "artifacts/phase2/eval/phase1_svm_oof.csv",
+      "oof_sample_count": 1764,
+      "oof_sha256": "8b991c55e39e5eb921a4e4c6bb74342973f1fb5aa575cb4b459df9b6ac87f631",
+      "temperature": 0.8340600363975194,
+      "threshold": 0.45,
+      "validation_demo_abstention": {
+        "abstained_count": 57,
+        "accepted_accuracy": 0.9504643962848297,
+        "accepted_count": 323,
+        "accepted_macro_f1": 0.9510766185411496,
+        "coverage": 0.85,
+        "threshold": 0.76,
+        "total_count": 380
+      },
+      "validation_metrics": {
+        "abstention": {
+          "abstained_count": 8,
+          "accepted_accuracy": 0.9032258064516129,
+          "accepted_count": 372,
+          "accepted_macro_f1": 0.9087013031019654,
+          "coverage": 0.9789473684210527,
+          "threshold": 0.45,
+          "total_count": 380
+        },
+        "classes": [
+          "cardboard",
+          "glass",
+          "metal",
+          "paper",
+          "plastic",
+          "trash"
+        ],
+        "sample_count": 380,
+        "unconditional": {
+          "accuracy": 0.8947368421052632,
+          "brier_score": 0.16261586072293405,
+          "brier_score_formula": "(1 / N) * sum_{i=1}^N sum_{c=1}^C (p_{ic} - y_{ic})^2",
+          "calibration_bins": [
+            {
+              "accuracy": 0.0,
+              "bin_index": 0,
+              "confidence": 0.05,
+              "count": 0,
+              "range": [
+                0.0,
+                0.1
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 1,
+              "confidence": 0.15000000000000002,
+              "count": 0,
+              "range": [
+                0.1,
+                0.2
+              ]
+            },
+            {
+              "accuracy": 0.0,
+              "bin_index": 2,
+              "confidence": 0.25,
+              "count": 0,
+              "range": [
+                0.2,
+                0.3
+              ]
+            },
+            {
+              "accuracy": 0.5,
+              "bin_index": 3,
+              "confidence": 0.36545059767922616,
+              "count": 4,
+              "range": [
+                0.3,
+                0.4
+              ]
+            },
+            {
+              "accuracy": 0.3333333333333333,
+              "bin_index": 4,
+              "confidence": 0.4568942970090595,
+              "count": 9,
+              "range": [
+                0.4,
+                0.5
+              ]
+            },
+            {
+              "accuracy": 0.5625,
+              "bin_index": 5,
+              "confidence": 0.5632898218988461,
+              "count": 16,
+              "range": [
+                0.5,
+                0.6
+              ]
+            },
+            {
+              "accuracy": 0.8,
+              "bin_index": 6,
+              "confidence": 0.637982711869874,
+              "count": 15,
+              "range": [
+                0.6,
+                0.7
+              ]
+            },
+            {
+              "accuracy": 0.6111111111111112,
+              "bin_index": 7,
+              "confidence": 0.7394312355956072,
+              "count": 18,
+              "range": [
+                0.7,
+                0.8
+              ]
+            },
+            {
+              "accuracy": 0.7647058823529411,
+              "bin_index": 8,
+              "confidence": 0.8581919703808666,
+              "count": 34,
+              "range": [
+                0.8,
+                0.9
+              ]
+            },
+            {
+              "accuracy": 0.9753521126760564,
+              "bin_index": 9,
+              "confidence": 0.9811252074651635,
+              "count": 284,
+              "range": [
+                0.9,
+                1.0
+              ]
+            }
+          ],
+          "confusion_matrix": [
+            [
+              57,
+              1,
+              0,
+              2,
+              1,
+              0
+            ],
+            [
+              1,
+              67,
+              4,
+              1,
+              2,
+              0
+            ],
+            [
+              0,
+              3,
+              58,
+              0,
+              1,
+              0
+            ],
+            [
+              3,
+              2,
+              1,
+              79,
+              3,
+              1
+            ],
+            [
+              0,
+              7,
+              3,
+              1,
+              61,
+              0
+            ],
+            [
+              1,
+              0,
+              2,
+              0,
+              0,
+              18
+            ]
+          ],
+          "ece_formula": "sum_{m=1}^{10} (|B_m| / N) * |acc(B_m) - conf(B_m)|",
+          "expected_calibration_error": 0.029528923443354956,
+          "log_loss": 0.36371891234985304,
+          "log_loss_formula": "- (1 / N) * sum_{i=1}^N sum_{c=1}^C y_{ic} * ln(p_{ic})",
+          "macro_f1": 0.8956143853706658,
+          "per_class": {
+            "cardboard": {
+              "f1": 0.926829268292683,
+              "precision": 0.9193548387096774,
+              "recall": 0.9344262295081968,
+              "support": 61
+            },
+            "glass": {
+              "f1": 0.864516129032258,
+              "precision": 0.8375,
+              "recall": 0.8933333333333333,
+              "support": 75
+            },
+            "metal": {
+              "f1": 0.8923076923076924,
+              "precision": 0.8529411764705882,
+              "recall": 0.9354838709677419,
+              "support": 62
+            },
+            "paper": {
+              "f1": 0.9186046511627907,
+              "precision": 0.9518072289156626,
+              "recall": 0.8876404494382022,
+              "support": 89
+            },
+            "plastic": {
+              "f1": 0.8714285714285714,
+              "precision": 0.8970588235294118,
+              "recall": 0.8472222222222222,
+              "support": 72
+            },
+            "trash": {
+              "f1": 0.9,
+              "precision": 0.9473684210526315,
+              "recall": 0.8571428571428571,
+              "support": 21
+            }
+          }
+        }
+      },
+      "validation_reliability_png": "validation-reliability-phase1_svm.png",
+      "validation_sample_count": 380,
+      "validation_threshold_selection": {
+        "abstained_count": 8,
+        "accepted_accuracy": 0.9032258064516129,
+        "accepted_count": 372,
+        "coverage": 0.9789473684210527,
+        "min_coverage": 0.8,
+        "selection_rule": "highest coverage with accuracy >= target and coverage >= min_coverage; ties to lower threshold",
+        "target_accuracy": 0.9,
+        "target_met": true,
+        "threshold": 0.45,
+        "total_count": 380
+      },
+      "validation_threshold_sweep_csv": "validation-threshold-sweep-phase1_svm.csv",
+      "validation_uncalibrated": {
+        "brier_score": 0.16235520113137775,
+        "ece": 0.03164139715166249,
+        "log_loss": 0.3565096648647751
+      }
+    }
+  },
+  "planned_test_analyses": {
+    "bootstrap": {
+      "confidence_level": 0.95,
+      "metrics": [
+        "macro_f1",
+        "accuracy"
+      ],
+      "n_resamples": 2000,
+      "seed": 42
+    },
+    "grad_cam": {
+      "grid_count": 12,
+      "model": "a2_1_cnn",
+      "selection": "6_correct_and_6_wrong_including_glass_metal_plastic_confusions",
+      "target": "last_convolutional_block"
+    },
+    "pairwise_mcnemar": {
+      "bonferroni_alpha": 0.016666666666666666,
+      "family_alpha": 0.05,
+      "method": "exact_binomial_on_discordant_unconditional_predictions",
+      "pairs": [
+        [
+          "h3_hybrid",
+          "a2_1_cnn"
+        ],
+        [
+          "h3_hybrid",
+          "phase1_svm"
+        ],
+        [
+          "a2_1_cnn",
+          "phase1_svm"
+        ]
+      ]
+    },
+    "phase1_reference_comparison": {
+      "recorded_phase1_test_macro_f1": 0.8999,
+      "reference_doc": "docs/evaluation/README.md"
+    },
+    "robustness_check": "evaluate_if_docs_robustness_exists_on_main",
+    "selective_metrics": {
+      "metrics_per_threshold": [
+        "coverage",
+        "accepted_accuracy",
+        "accepted_macro_f1"
+      ],
+      "thresholds_reported": [
+        "headline_threshold",
+        "demo_threshold"
+      ]
+    },
+    "single_test_predictions_csv": "test-predictions.csv",
+    "unconditional_metrics": [
+      "macro_f1",
+      "accuracy",
+      "per_class_precision_recall_f1",
+      "confusion_matrix",
+      "ece",
+      "brier_score",
+      "log_loss"
+    ]
+  },
+  "scope": "Phase 2 Final Evaluation Protocol",
+  "source": {
+    "git_revision": "62db0847aed82b6a2622bb5a19a903f21f677fa6",
+    "package_source_sha256": "5eff287c47247f79faabec8492a1f23fd03239894880b7019944249143525a49",
+    "packages": {
+      "joblib": "1.6.0",
+      "numpy": "2.5.4",
+      "pandas": "3.0.6",
+      "scikit-image": "0.26.0",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1"
+    },
+    "platform": "macOS-26.6.1-arm64-arm-64bit",
+    "python": "3.12.5",
+    "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+    "working_tree_dirty": true
+  }
+}
