@@ -1,0 +1,34 @@
+% Phase 2 Final Test Evaluation section for IEEE report
+% Author: Prajjwal Tripathi (generated from saved evaluation JSONs)
+
+\subsection{Frozen Phase 2 Test Evaluation and Statistical Comparison}
+\label{sec:phase2_eval}
+Before accessing the untouched TrashNet test split ($N=377$), all three finalists---Phase~1 RBF SVM, fine-tuned MobileNetV2 (\texttt{A2.1}), and equal-weight late fusion (\texttt{H3}, $w=0.5$)---were frozen in \texttt{protocol.json} (git revision \texttt{62db0847}). Each model's scalar temperature $T$ was fitted exclusively on its 1,764 training out-of-fold probabilities, and two abstention thresholds were selected strictly on the 380 validation images: a headline rule ($\ge 90\%$ accuracy, $\ge 80\%$ coverage) and a pre-declared demo rule ($\ge 95\%$ accuracy, $\ge 80\%$ coverage; added because \texttt{H3}'s headline threshold is $0.00$). Model SHA-256 hashes were verified prior to the single test pass.
+
+\begin{table*}[t]
+\caption{Untouched Phase~2 Test Results ($N=377$, 95\% Bootstrap CIs over 2,000 Resamples, and Both Pre-Declared Frozen Thresholds)}}
+\label{tab:phase2_main}\centering
+\begin{tabular}{lcccccc}\toprule
+Model & $T$ & Macro F1 [95\% CI] & Accuracy [95\% CI] & ECE & Headline ($\tau$, Cov/Acc) & Demo ($\tau$, Cov/Acc)\\\midrule
+Phase 1 SVM & 0.834 & 0.8963 [0.860, 0.926] & 90.19\% [87.0, 93.1] & 0.0361 & 0.45 (97.6\% / 91.6\%) & 0.76 (84.4\% / 97.2\%)\\
+A2.1 CNN & 1.103 & 0.8577 [0.813, 0.897] & 88.06\% [84.6, 91.2] & 0.0367 & 0.50 (96.6\% / 90.4\%) & 0.87 (76.4\% / 95.5\%)\\
+H3 Hybrid & 0.536 & \textbf{0.9233} [0.889, 0.952] & \textbf{93.63\%} [91.0, 96.0] & 0.0130 & 0.00 (100.0\% / 93.6\%) & 0.53 (96.6\% / 95.3\%)\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:phase2_main} reports the single test evaluation. \texttt{H3} Hybrid achieves the strongest test performance across every metric, reaching Macro~F1 $\mathbf{0.9233}$ and accuracy $\mathbf{93.63\%}$ with the lowest expected calibration error ($\mathrm{ECE}=0.0130$, Brier $0.0971$, log loss $0.2257$). At its frozen demo threshold ($\tau=0.53$), \texttt{H3} retains 96.55\% coverage at 95.33\% accepted accuracy, whereas \texttt{A2.1}'s strict demo threshold ($\tau=0.87$) drops to 76.39\% coverage on test. Compared against the historical Phase~1 test ensemble (0.8999 Macro~F1, 90.19\% accuracy, ECE 0.1325), the Phase~2 full-train \texttt{phase1\_svm} matches accuracy exactly (90.19\%, Macro~F1 0.8963) while OOF temperature scaling reduces test ECE by 72.8\% to 0.0361.
+
+\begin{table}[t]
+\caption{Pairwise Exact McNemar Tests on Unconditional Test Predictions ($\alpha_{\mathrm{Bonf}} = 0.05/3 = 0.0167$)}
+\label{tab:phase2_mcnemar}\centering
+\begin{tabular}{lrrrrrc}\toprule
+Comparison (A vs.\ B) & Both OK & A Only & B Only & Both Err & $p$ & Bonf.\\\midrule
+H3 Hybrid vs.\ A2.1 CNN & 330 & 23 & 2 & 22 & 0.0000 & Yes\\
+H3 Hybrid vs.\ Phase 1 SVM & 330 & 23 & 10 & 14 & 0.0351 & No\\
+A2.1 CNN vs.\ Phase 1 SVM & 307 & 25 & 33 & 12 & 0.3581 & No\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Pairwise exact McNemar binomial tests on discordant unconditional predictions (Table~\ref{tab:phase2_mcnemar}) confirm that \texttt{H3} Hybrid significantly outperforms \texttt{A2.1} CNN ($p=0.00002 < 0.0167$, 23 vs.\ 2 discordant wins). Although \texttt{H3} beats Phase~1 SVM nominally (23 vs.\ 10, $p=0.0351 < 0.05$), that margin does not clear the Bonferroni threshold $0.0167$ on $N=377$ images; the two single models do not differ significantly ($p=0.3581$). Hook-based Grad-CAM on \texttt{A2.1}'s final convolutional block across 12 test images (6 correct, 6 errors) gives a mixed test of the ``CNN sees shape'' hypothesis: 11/12 heatmaps place $\ge 80\%$ of activation mass on the foreground object (mean 93.6\%) rather than TrashNet's white posterboard, yet all six inspected errors involve clear object localization on overlapping glass, metal, and plastic shapes and specular reflections. External robustness remains unverified (robustness set not available on \texttt{main}), leaving TrashNet background dependence, CV selection optimism, and low test support ($n=20$ for trash) as primary limitations.
