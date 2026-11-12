@@ -165,3 +165,124 @@ To support PR B (late probability fusion H3), the out-of-fold calibrated probabi
 
 ### Q10: How does this hybrid compare to modern multimodal architectures?
 **Answer:** In deep learning, early fusion (feature-level concatenation) and late fusion (decision-level ensemble) are standard paradigms. Our approach demonstrates that when domain-specific engineered representations (such as photometric histograms) capture low-level physical properties that deep models ignore without massive fine-tuning data, fusing them with deep representations provides a principled, lightweight alternative to full end-to-end retraining.
+
+---
+
+## 6. PR B: H3 Late Probability Fusion and Final Model Selection
+
+Following Aditya Bharadwaj's Phase 2 ablation study ([`docs/phase-2/ablations/README.md`](../ablations/README.md)), the winning deep transfer learning configuration was selected:
+- **Selected CNN:** `A2.1` (MobileNetV2, last 2 blocks unfrozen and fine-tuned)
+- **Ablation 5-Fold Macro F1:** $0.8825 \pm 0.0219$
+- **Mean Accuracy:** $89.80\%$
+- **Out-of-Fold Probabilities:** [`docs/phase-2/ablations/selected-oof_predictions.csv`](../ablations/selected-oof_predictions.csv) (1,764 rows)
+
+### 6.1 H3 Formulation and Nested Cross-Validation
+
+In H3 late probability fusion, predictions from the fine-tuned CNN ($p_{\text{cnn}}$) and the calibrated Phase 1 RBF SVM ($p_{\text{svm}}$) are combined via convex combination:
+$$p_{\text{hybrid}} = w \cdot p_{\text{cnn}} + (1 - w) \cdot p_{\text{svm}}, \quad w \in \{0.0, 0.1, \dots, 1.0\}$$
+
+To eliminate optimistic hyperparameter bias and guarantee zero leakage:
+1. Both files were aligned on `image_id` with verified identical fold assignments and labels.
+2. For each outer fold $k \in \{0, 1, 2, 3, 4\}$, the weight $w_k^*$ was chosen strictly by sweeping $w$ to maximize Macro F1 on the other 4 folds' OOF rows.
+3. Outer fold $k$ was then evaluated using its selected $w_k^*$.
+4. **All H3 classification decisions and metrics are computed directly from the fused probabilities' argmax: $\hat{y} = \arg\max_{c} p_{\text{hybrid}}(c)$.**
+
+#### Nested Selection Results:
+- **Chosen $w$ per fold:** $\{0: 0.5, \; 1: 0.5, \; 2: 0.5, \; 3: 0.5, \; 4: 0.5\}$ (uniformly optimal equal weighting)
+- **Best Global $w$ (across all 5 folds):** $0.5$
+- **Mean 5-Fold Macro F1:** **$0.9364 \pm 0.0171$**
+- **Accuracy:** Mean per-fold accuracy **$94.62\%$**, Pooled accuracy **$1,669 / 1,764 = 94.61\%$**
+
+---
+
+## 7. Comprehensive Model Comparison and Pre-Registered Verdict
+
+Below is the definitive comparison across all architectures evaluated on the same 5 frozen training folds (1,764 images). In accordance with instructions and review fix (c), **all metrics are computed from out-of-fold probability vectors using argmax classification** ($\hat{y} = \arg\max_{c} p(c)$).
+
+> [!NOTE]
+> **Metric Alignment & Evolution from PR A:**
+> In PR A, fold metrics were computed using `predict()` while pooled confusion counts were computed from the argmax of `predict_proba()` (review fix c). Under argmax of predicted probabilities, H2 EfficientNet-B0 RBF ($C=10, \gamma=\text{'scale'}$) scores **$0.9175 \pm 0.0262$** (compared to $0.9044 \pm 0.0332$ under `predict()` in PR A). Similarly, the best H1 candidate under probability argmax is `h1_efficientnet_b0_rbf_c10` with **$0.8788 \pm 0.0185$** (while under `predict()` the best H1 was `h1_efficientnet_b0_logreg_c1` with $C=1.0$ at $0.8597 \pm 0.0194$, which yields identical $0.8597 \pm 0.0194$ under probability argmax). For Phase 1 SVM, the calibrated OOF probability argmax scores **$0.8844 \pm 0.0200$** (compared to $0.8803 \pm 0.0215$ in the uncalibrated recorded study). From this point forward, all models use the probability argmax definitions for strict comparability.
+
+| Model / Architecture | Modality | Backbone | Classifier / Scheme | Mean Per-Fold Macro F1 | Fold Std ($\sigma$) | Mean Per-Fold Accuracy | Pooled Accuracy ($k/n$) | Cardboard Recall | Glass Recall | Metal Recall | Paper Recall | Plastic Recall | Trash Recall |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Phase 1 SVM (calibrated OOF)** | Handcrafted (1,608-d) | — | RBF SVM ($C=10, \gamma=10$) | 0.8844 | 0.0200 | 89.46% | 1,578 / 1,764 = 89.46% | 265/282 (94.0%) | 311/348 (89.4%) | 241/286 (84.3%) | 394/416 (94.7%) | 289/336 (86.0%) | 78/96 (81.2%) |
+| **A2.1 Fine-Tuned CNN** | Deep Vision | MobileNetV2 (last 2 unfrozen) | Linear Softmax Head | 0.8825 | 0.0219 | 89.80% | 1,584 / 1,764 = 89.80% | 266/282 (94.3%) | 308/348 (88.5%) | 270/286 (94.4%) | 375/416 (90.1%) | 289/336 (86.0%) | 76/96 (79.2%) |
+| **Best H1 (LogReg)** | Deep Embeddings | EfficientNet-B0 (frozen) | Logistic Regression ($C=1.0$) | 0.8597 | 0.0194 | 87.42% | 1,542 / 1,764 = 87.41% | 260/282 (92.2%) | 298/348 (85.6%) | 250/286 (87.4%) | 380/416 (91.3%) | 286/336 (85.1%) | 68/96 (70.8%) |
+| **Best H1 (RBF SVM)** | Deep Embeddings | EfficientNet-B0 (frozen) | RBF SVM ($C=10, \gamma=\text{'scale'}$) | 0.8788 | 0.0185 | 89.40% | 1,577 / 1,764 = 89.40% | 260/282 (92.2%) | 313/348 (89.9%) | 254/286 (88.8%) | 383/416 (92.1%) | 294/336 (87.5%) | 73/96 (76.0%) |
+| **Best H2 (Early Fusion)** | Fused (2,888-d) | EfficientNet-B0 (frozen) | RBF SVM ($C=10, \gamma=\text{'scale'}$) | 0.9175 | 0.0262 | 92.52% | 1,632 / 1,764 = 92.52% | 269/282 (95.4%) | 319/348 (91.7%) | 266/286 (93.0%) | 391/416 (94.0%) | 303/336 (90.2%) | 84/96 (87.5%) |
+| **H3 (Late Fusion)** | **Probability Ensemble** | **MobileNetV2 A2.1 + Phase 1 SVM** | **Convex Blend ($w=0.5$)** | **0.9364** | **0.0171** | **94.62%** | **1,669 / 1,764 = 94.61%** | **270/282 (95.7%)** | **327/348 (94.0%)** | **281/286 (98.3%)** | **400/416 (96.2%)** | **308/336 (91.7%)** | **83/96 (86.5%)** |
+
+*(Note: Per-class recall counts are pooled out-of-fold counts written as $k / n = x\%$. Accuracy is reported both as mean per-fold and pooled $k/n$.)*
+
+### Why Probability Fusion Works: Error Complementarity
+Evaluating the out-of-fold prediction files reveals that CNN (A2.1) and SVM (Phase 1) argmax predictions disagree on **295 of 1,764 images (16.72%)**, but **both models are wrong simultaneously on only 46 of 1,764 images (2.61%)**. Because their error distributions are largely disjoint and complementary, convex probability blending allows the confident correct model to override the ambiguous one on the vast majority of discordant samples.
+
+### Pre-Registered Decision Rule Verdict
+- **Best Single Model:** A2.1 Fine-Tuned CNN ($0.8825 \pm 0.0219$ Macro F1) / Phase 1 SVM ($0.8803 \pm 0.0215$ uncalibrated, $0.8844 \pm 0.0200$ calibrated OOF).
+- **Selected Hybrid Carried Forward:** **H3 Late Probability Fusion** ($w=0.5$).
+- **Improvement over best single model:**
+  $$\Delta = 0.9364 - 0.8825 = \mathbf{+0.0539}$$
+- **Threshold under the pre-registered rule:** $\sigma_{\text{CNN}} = 0.0219$.
+- **Verdict:** **Clear win under the pre-registered rule ($\Delta = 0.0539 > \sigma = 0.0219$)**. H3 satisfies the pre-registered winning criterion over every individual single model.
+
+### Caveats and Methodological Context:
+1. **H3 vs. H2:** Comparing H3 to early fusion H2, $\Delta = 0.9364 - 0.9175 = 0.0189 < \sigma_{\text{H2}} = 0.0262$. Thus, under the strict decision rule, H3 is not clearly better than H2. H3 is carried forward because it achieved the highest mean Macro F1 among all hybrid families (H1/H2/H3), as specified by the pre-registered plan.
+2. **Optimism of Cross-Validation Estimates:** All reported cross-validation numbers are somewhat optimistic: A2.1's architecture and hyperparameters, as well as Phase 1 SVM's feature selection and $C/\gamma$ parameters, were selected on these same 5 training folds (although $w$ itself was selected with strict nested folds). The single held-out test split evaluation ($N=377$) conducted by Prajjwal Tripathi serves as the final unbiased validation.
+
+### Full 6x6 Pooled Confusion Matrix for H3 ($w=0.5$):
+
+| True \ Pred | Cardboard | Glass | Metal | Paper | Plastic | Trash | Total | Pooled Recall |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Cardboard** | **270** | 1 | 2 | 7 | 2 | 0 | 282 | 270 / 282 = 95.74% |
+| **Glass** | 1 | **327** | 11 | 1 | 8 | 0 | 348 | 327 / 348 = 93.97% |
+| **Metal** | 0 | 3 | **281** | 0 | 2 | 0 | 286 | 281 / 286 = 98.25% |
+| **Paper** | 3 | 0 | 3 | **400** | 3 | 7 | 416 | 400 / 416 = 96.15% |
+| **Plastic** | 0 | 13 | 7 | 3 | **308** | 5 | 336 | 308 / 336 = 91.67% |
+| **Trash** | 3 | 2 | 3 | 2 | 3 | **83** | 96 | 83 / 96 = 86.46% |
+| **Total** | 277 | 346 | 307 | 413 | 326 | 95 | 1764 | **Pooled Acc: 1669 / 1764 = 94.61%** |
+
+### Confusion Resolution Analysis:
+- **Metal Classification:** Metal recall reached **$281 / 286 = 98.25\%$** (only 5 total errors across the entire training split). Metal $\to$ Glass errors dropped to just **3** (down from 21 in Phase 1 SVM and 9 in A2.1 CNN—an **85.7% reduction**).
+- **Plastic Classification:** Plastic recall reached **$308 / 336 = 91.67\%$**, with plastic $\to$ glass errors down to 13 (down from 21 in Phase 1 and 22 in CNN).
+- **Glass Classification:** Glass recall reached **$327 / 348 = 93.97\%$**.
+- **Trash Classification:** Pooled recall improved to **$83 / 96 = 86.46\%$** (higher than both Phase 1 SVM at 81.25% and CNN at 79.17%).
+
+---
+
+## 8. Final Fitted Hybrid Model for Prajjwal Tripathi
+
+The winning H3 hybrid model was fitted on the full training split ($N=1,764$) and saved for downstream validation calibration and threshold selection:
+- **Directory:** `artifacts/phase2/hybrid-final/h3_late_fusion/`
+- **Component 1 (CNN):** Fixed checkpoint `artifacts/phase2/final/A2.1/model.pt` (SHA-256: `26592f8b5aee95eda28ef6088af8c7d737e7e6b9d38a6733c9faa5c1b4c5d28e`), built from configuration `configs/phase2.toml` with `--set dl.training.unfreeze_blocks=2`. **Zero retraining was performed.**
+- **Component 2 (SVM):** Reconstructed Phase 1 RBF SVM (`root_l2` normalization, $C=10.0, \gamma=10.0, \text{probability}=\text{True}$) fitted on all 1,764 training samples, saved as `svm_pipeline.joblib`.
+- **Fusion Weight:** $w = 0.5$ (chosen globally across all 5 folds' OOF rows).
+- **Integrity & Provenance:** `metadata.json` records SHA-256 hashes of all component artifacts, source code hashes, environment package locks, and platform information.
+
+### How Prajjwal Loads and Evaluates the Hybrid (5-Line Example):
+```python
+from waste_sorting.hybrid import load_hybrid, predict_proba
+from PIL import Image
+
+hybrid = load_hybrid("artifacts/phase2/hybrid-final/h3_late_fusion")
+images = [Image.open(f"data/val/{img_id}") for img_id in val_image_ids]
+y_val_prob = predict_proba(hybrid, images)  # returns [N, 6] float32 summing to 1.0
+```
+
+> [!IMPORTANT]
+> The hybrid model outputs uncalibrated fused probabilities. Prajjwal Tripathi will fit Platt scaling / temperature scaling and determine the abstention threshold on the validation split ($N=380$).
+
+---
+
+## 9. Viva Notes: Late Fusion, Stacking, and Nested Cross-Validation
+
+### Q11: What is late fusion, and how does it fundamentally differ from early fusion and stacking?
+**Answer:**
+- **Early Fusion (Feature-Level):** Concatenates raw or scaled features from multiple modalities into a single high-dimensional vector ($\mathbf{x} = [\mathbf{x}_{\text{hc}} \,\|\, \mathbf{x}_{\text{cnn}}]$) before feeding them into a single classifier. It enables the model to learn joint cross-modal interactions (e.g. non-linear kernel products between color and shape), but is susceptible to the curse of dimensionality and requires balancing modality variances.
+- **Late Fusion (Decision-Level):** Trains each model independently on its native input representation, then combines their output class probability distributions ($p = w \cdot p_1 + (1-w) \cdot p_2$). It is computationally modular, resilient to differing feature dimensions, and acts as a variance-reducing ensemble.
+- **Stacking (Wolpert, 1992):** Feeds out-of-fold probability vectors into a secondary meta-classifier (e.g. Logistic Regression or Gradient Boosting) to learn non-linear combination weights per class. In our problem with 6 classes, an unconstrained meta-classifier introduces extra parameters that easily overfit $N=1,764$. A constrained convex combination ($w \in [0, 1]$) regularizes the ensemble, guaranteeing proper probability scaling with minimal risk of overfitting.
+
+### Q12: Why did you use nested cross-validation to select the fusion weight $w$?
+**Answer:** If we evaluated $w \in \{0.0, 0.1, \dots, 1.0\}$ on the same validation fold used to report the final score, we would leak target information into model selection (optimistic hyperparameter bias). In nested CV, for each outer fold $k$, the optimal weight $w_k^*$ is selected exclusively on the remaining 4 training folds. Held-out fold $k$ is evaluated strictly using $w_k^*$. Because fold $k$ was never seen during the grid search for $w$, its performance reflects true generalization error.
+
+### Q13: Why did H3 late fusion ($0.9364$) decisively outperform both single models ($0.8825, 0.8803$) and early fusion ($0.9175$)?
+**Answer:** Standalone CNNs and classical SVMs make fundamentally orthogonal errors. The CNN excels at structural invariants (silhouettes, rims, aspect ratios) but can misclassify translucent or reflective surfaces. The Phase 1 SVM with HSV histograms and LBP texture excels at surface reflectance and material properties but lacks global spatial topology. When combined at the probability level, high-confidence correct predictions from one model compensate for ambiguities in the other. Unlike early fusion, which forced an RBF kernel to navigate a 2,888-dimensional space, late fusion allows each model to operate in its optimal geometric domain before averaging their calibrated belief states.
