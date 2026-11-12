@@ -1,0 +1,105 @@
+{
+  "config": {
+    "classes": [
+      "cardboard",
+      "glass",
+      "metal",
+      "paper",
+      "plastic",
+      "trash"
+    ],
+    "dl": {
+      "augmentation": {
+        "brightness": 0.15,
+        "color_jitter": true,
+        "contrast": 0.15,
+        "crop_ratio": [
+          0.75,
+          1.3333
+        ],
+        "crop_scale": [
+          0.8,
+          1.0
+        ],
+        "enabled": true,
+        "flip_probability": 0.5,
+        "horizontal_flip": true,
+        "hue": 0.0,
+        "random_resized_crop": true,
+        "rotation": true,
+        "rotation_degrees": 10,
+        "saturation": 0.1
+      },
+      "data": {
+        "balanced_sampling": false,
+        "batch_size": 32,
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "num_workers": 2,
+        "seed": 42,
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ]
+      },
+      "training": {
+        "backbone": "efficientnet_b0",
+        "class_weighted_loss": false,
+        "dropout": 0.2,
+        "lr_backbone": 0.0001,
+        "lr_head": 0.001,
+        "lr_min": 1e-05,
+        "max_epochs": 40,
+        "patience": 8,
+        "unfreeze_blocks": 0,
+        "weight_decay": 0.01
+      }
+    },
+    "paths": {
+      "artifacts": "artifacts/phase2",
+      "folds": "docs/training/folds.json",
+      "image_root": "data/raw/trashnet",
+      "manifest": "docs/dataset/manifest.csv"
+    },
+    "preprocessing": {
+      "height": 224,
+      "padding_rgb": [
+        255,
+        255,
+        255
+      ],
+      "preserve_aspect_ratio": true,
+      "width": 224
+    }
+  },
+  "device": "mps",
+  "mean_accuracy": 0.8724768875192603,
+  "mean_macro_f1": 0.8556749765006997,
+  "median_best_epoch": 34,
+  "mode": "cv",
+  "selection_metric": "mean fold macro F1",
+  "source": {
+    "git_revision": "ca50ab71f1239510c2b19ed56986e53f04591a55",
+    "package_source_sha256": "36e6375756095065c84e2ede8ea074cecf560deb196a93e52f69ccf1eb1fc9a2",
+    "packages": {
+      "joblib": "1.6.0",
+      "numpy": "2.5.4",
+      "pandas": "3.0.6",
+      "scikit-image": "0.26.0",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1"
+    },
+    "platform": "macOS-26.3.1-arm64-arm-64bit-Mach-O",
+    "python": "3.13.1",
+    "requirements_lock_sha256": "56ecb8a1355df784c856df7472bc5252309d4d1b32a5b7f4f78a7cb182f8cd52",
+    "torch": "2.15.0",
+    "torchvision": "0.29.2",
+    "working_tree_dirty": false
+  },
+  "std_macro_f1": 0.026307110854523922,
+  "trainable_parameters": 7686
+}
