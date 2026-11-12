@@ -21,10 +21,14 @@ from waste_sorting.dl_training import build_model
 from waste_sorting.phase2_evaluation import (
     apply_temperature_scaling,
     calibrate_and_freeze,
+    compute_bootstrap_ci,
+    compute_gradcam_for_image,
+    compute_pairwise_mcnemar,
     fit_temperature,
     load_and_validate_oof,
     main,
     predict_split,
+    run_test_evaluation,
 )
 
 REPO = Path(__file__).resolve().parents[1]
@@ -314,6 +318,128 @@ class Phase2EvaluationWorkflowTests(unittest.TestCase):
         ids_test, y_test, p_test = predict_split("h3_hybrid", "test", self.root)
         self.assertEqual(len(ids_test), 6)
         self.assertEqual(p_test.shape, (6, 6))
+
+    def test_bootstrap_ci_deterministic_and_bounded(self):
+        y_true = np.array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5])
+        y_pred = np.array([0, 1, 2, 3, 4, 0, 0, 1, 2, 3, 4, 5])
+
+        ci1 = compute_bootstrap_ci(y_true, y_pred, n_resamples=200, seed=42)
+        ci2 = compute_bootstrap_ci(y_true, y_pred, n_resamples=200, seed=42)
+        self.assertEqual(ci1, ci2)
+        for metric_key in ("macro_f1", "accuracy"):
+            m = ci1[metric_key]
+            self.assertGreaterEqual(m["ci_low"], 0.0)
+            self.assertLessEqual(m["ci_low"], m["point_estimate"])
+            self.assertLessEqual(m["point_estimate"], m["ci_high"])
+            self.assertLessEqual(m["ci_high"], 1.0)
+
+        with self.assertRaises(ValueError):
+            compute_bootstrap_ci(np.array([]), np.array([]))
+
+    def test_pairwise_mcnemar_counts_and_pvalues(self):
+        # 20 samples: both_ok=7, a_only=10, b_only=1, both_err=2 -> p = binomtest(1, 11, 0.5)
+        y_true = np.zeros(20, dtype=np.int64)
+        pred_a = np.array([0] * 7 + [0] * 10 + [1] * 1 + [1] * 2, dtype=np.int64)
+        pred_b = np.array([0] * 7 + [1] * 10 + [0] * 1 + [1] * 2, dtype=np.int64)
+
+        res = compute_pairwise_mcnemar(y_true, pred_a, pred_b, bonferroni_comparisons=3)
+        self.assertEqual(res["both_correct"], 7)
+        self.assertEqual(res["a_only_correct"], 10)
+        self.assertEqual(res["b_only_correct"], 1)
+        self.assertEqual(res["both_wrong"], 2)
+        self.assertEqual(res["discordant_total"], 11)
+        self.assertAlmostEqual(res["bonferroni_alpha"], 0.05 / 3.0)
+        # binomtest(1, 11, 0.5).pvalue = 12 / 1024 = 0.01171875 < 0.01667
+        self.assertAlmostEqual(res["p_value"], 12.0 / 1024.0, places=10)
+        self.assertTrue(res["significant_unadjusted"])
+        self.assertTrue(res["significant_bonferroni"])
+
+        identical = compute_pairwise_mcnemar(y_true, pred_a, pred_a)
+        self.assertEqual(identical["discordant_total"], 0)
+        self.assertEqual(identical["p_value"], 1.0)
+        self.assertFalse(identical["significant_bonferroni"])
+
+    def test_gradcam_heatmap_shape_range_and_finite(self):
+        import torch
+
+        torch.manual_seed(0)
+        model = build_model(self.config, pretrained=False)
+        img_tensor = torch.randn(3, 64, 64, dtype=torch.float32)
+        cam = compute_gradcam_for_image(model, img_tensor, target_class_idx=1)
+
+        self.assertEqual(cam.shape, (64, 64))
+        self.assertTrue(np.isfinite(cam).all())
+        self.assertGreaterEqual(float(cam.min()), 0.0)
+        self.assertLessEqual(float(cam.max()), 1.0)
+
+    def test_test_evaluation_cli_guards_hashes_overwrite_and_writes_artifacts(self):
+        out_dir = self.root / "docs/phase-2/evaluation"
+        main(["calibrate", "--root", str(self.root), "--output", str(out_dir)])
+        main(["test", "--root", str(self.root), "--output", str(out_dir)])
+
+        pred_csv = out_dir / "test-predictions.csv"
+        metrics_json = out_dir / "test-metrics.json"
+        self.assertTrue(pred_csv.is_file())
+        self.assertTrue(metrics_json.is_file())
+        self.assertTrue((out_dir / "test-gradcam-a2_1_cnn.png").is_file())
+
+        pred_df = pd.read_csv(pred_csv)
+        self.assertEqual(len(pred_df), 6)
+        for model_name in ("phase1_svm", "a2_1_cnn", "h3_hybrid"):
+            self.assertIn(f"{model_name}_abstained_headline", pred_df.columns)
+            self.assertIn(f"{model_name}_abstained_demo", pred_df.columns)
+            self.assertTrue((out_dir / f"test-confusion-{model_name}.png").is_file())
+            self.assertTrue((out_dir / f"test-reliability-{model_name}.png").is_file())
+
+        metrics = json.loads(metrics_json.read_text(encoding="utf-8"))
+        self.assertEqual(metrics["sample_count"], 6)
+        self.assertEqual(metrics["robustness"], "robustness set not available")
+        self.assertEqual(
+            set(metrics["mcnemar"].keys()),
+            {
+                "h3_hybrid_vs_a2_1_cnn",
+                "h3_hybrid_vs_phase1_svm",
+                "a2_1_cnn_vs_phase1_svm",
+            },
+        )
+        for model_name in ("phase1_svm", "a2_1_cnn", "h3_hybrid"):
+            m = metrics["models"][model_name]
+            self.assertIn("selective_headline", m)
+            self.assertIn("selective_demo", m)
+            self.assertIn("bootstrap_95_ci", m)
+
+        # Report generation from saved files only (no inference)
+        latex_out = self.root / "report/evaluation-section.tex"
+        main(
+            [
+                "report",
+                "--root",
+                str(self.root),
+                "--output",
+                str(out_dir),
+                "--latex",
+                str(latex_out),
+            ]
+        )
+        readme_text = (out_dir / "README.md").read_text(encoding="utf-8")
+        tex_text = latex_out.read_text(encoding="utf-8")
+        self.assertIn("Headline (90% val target)", readme_text)
+        self.assertIn("Demo (95% val target)", readme_text)
+        self.assertIn("robustness set not available", readme_text)
+        self.assertIn("Pairwise Exact McNemar Tests", readme_text)
+        self.assertIn("tab:phase2_main", tex_text)
+        self.assertIn("tab:phase2_mcnemar", tex_text)
+
+        # Overwrite must be refused
+        with self.assertRaises(FileExistsError):
+            run_test_evaluation(root=self.root, output_dir=out_dir, allow_overwrite=False)
+
+        # Tampering with frozen artifact must fail hash verification
+        pred_csv.unlink()
+        model_pt = self.root / "artifacts/phase2/final/A2.1/model.pt"
+        model_pt.write_bytes(b"corrupted-checkpoint")
+        with self.assertRaises(ValueError):
+            run_test_evaluation(root=self.root, output_dir=out_dir)
 
 
 if __name__ == "__main__":
