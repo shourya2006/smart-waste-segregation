@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import tempfile
 import unittest
@@ -305,6 +306,26 @@ class TestFinalHybrid(unittest.TestCase):
 
             with self.assertRaises(ValueError):
                 load_hybrid(d)
+
+    def test_windows_a2_model_dir_resolves_on_any_os(self):
+        """A hybrid exported on Windows (backslash a2_model_dir) loads elsewhere."""
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            d, root = Path(tmp_dir) / "hybrid", Path(tmp_dir) / "repo"
+            d.mkdir()
+            svm_bytes = b"svm"
+            (d / "svm_pipeline.joblib").write_bytes(svm_bytes)
+            meta = {
+                "svm_model_sha256": hashlib.sha256(svm_bytes).hexdigest(),
+                "a2_model_dir": "artifacts\\phase2\\final\\A2.1",
+                "a2_model_sha256": "unused",
+            }
+            (d / "metadata.json").write_text(json.dumps(meta))
+            with patch(
+                "waste_sorting.hybrid.load_trained_model", side_effect=RuntimeError("stop")
+            ) as loader:
+                with self.assertRaises(RuntimeError):
+                    load_hybrid(d, root=root)
+            loader.assert_called_once_with(root.resolve() / "artifacts/phase2/final/A2.1")
 
     def test_predict_proba_synthetic_contract(self):
         """Test predict_proba returns [N, 6] summing to 1.0."""

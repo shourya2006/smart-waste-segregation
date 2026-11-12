@@ -12,7 +12,7 @@ import hashlib
 import json
 import time
 import warnings
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any
 
 import joblib
@@ -766,7 +766,7 @@ def fit_final_hybrid(
         "w": float(w),
         "classes": list(CLASSES),
         "svm_model_sha256": svm_hash,
-        "a2_model_dir": str(a2_dir.relative_to(root)),
+        "a2_model_dir": a2_dir.relative_to(root).as_posix(),
         "a2_model_sha256": a2_hash,
         "selected_family": SELECTED_FAMILY,
         "num_training_samples": len(ext_labels),
@@ -818,7 +818,8 @@ def load_hybrid(directory: Path | str, root: Path | str = ".") -> HybridPredicto
         )
 
     # Verify CNN model
-    a2_path = root / meta["a2_model_dir"]
+    # Hybrids exported on Windows before this fix stored backslash separators.
+    a2_path = root / PureWindowsPath(meta["a2_model_dir"]).as_posix()
     cnn_model, a2_meta = load_trained_model(a2_path)
     if a2_meta["model_sha256"] != meta["a2_model_sha256"]:
         raise ValueError(
