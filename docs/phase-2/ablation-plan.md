@@ -86,27 +86,33 @@ Each experiment varies exactly one factor relative to the baseline configuration
 
 Each run logs individual fold metrics to `docs/phase-2/ablations/runs.csv`, which are aggregated into `docs/phase-2/ablations/summary.csv`:
 
+*Results filled in after the runs; plan text unchanged.*
+
 | Exp ID | Factor Tested | Configuration Description | Mean Macro F1 | Std F1 | Mean Accuracy | Cardboard Recall | Glass Recall | Metal Recall | Paper Recall | Plastic Recall | Trash Recall | Epochs (Mean) | Mean Train Time (s) |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **BASE** | Baseline | MobileNetV2, Frozen, 224, Drop 0.2, Aug Full, None | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A1.1** | Architecture | EfficientNet-B0, Frozen, 224, Drop 0.2, Aug Full, None | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A2.1** | Fine-Tuning | MobileNetV2, Last 2 Blocks, 224, Drop 0.2, Aug Full, None | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A3.1** | Resolution | MobileNetV2, Frozen, 160, Drop 0.2, Aug Full, None | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A4.0** | Dropout | MobileNetV2, Frozen, 224, Drop 0.0, Aug Full, None | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A4.2** | Dropout | MobileNetV2, Frozen, 224, Drop 0.5, Aug Full, None | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A5.1** | Augmentation | No Augmentation (All Off) | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A5.2** | Augmentation | No Random Resized Crop | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A5.3** | Augmentation | No Horizontal Flip | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A5.4** | Augmentation | No Random Rotation | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A5.5** | Augmentation | No Color Jitter | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A6.1** | Imbalance | Class-Weighted Cross-Entropy | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
-| **A6.2** | Imbalance | Balanced Random Sampling | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* | *TBD* |
+| **BASE** | Baseline | MobileNetV2, Frozen, 224, Drop 0.2, Aug Full, None | 0.8515 | 0.0235 | 0.8719 | 0.9257 | 0.8936 | 0.8950 | 0.8967 | 0.8155 | 0.6563 | 39.8 | 178.1 |
+| **A1.1** | Architecture | EfficientNet-B0, Frozen, 224, Drop 0.2, Aug Full, None | 0.8557 | 0.0263 | 0.8725 | 0.9080 | 0.9108 | 0.8846 | 0.8991 | 0.8184 | 0.6668 | 36.2 | 201.9 |
+| **A2.1** | Fine-Tuning | MobileNetV2, Last 2 Blocks, 224, Drop 0.2, Aug Full, None | 0.8825 | 0.0219 | 0.8980 | 0.9433 | 0.8850 | 0.9439 | 0.9015 | 0.8601 | 0.7921 | 20.2 | 100.9 |
+| **A3.1** | Resolution | MobileNetV2, Frozen, 160, Drop 0.2, Aug Full, None | 0.8271 | 0.0257 | 0.8470 | 0.9221 | 0.8419 | 0.8638 | 0.8654 | 0.8096 | 0.6458 | 36.4 | 118.6 |
+| **A4.0** | Dropout | MobileNetV2, Frozen, 224, Drop 0.0, Aug Full, None | 0.8503 | 0.0226 | 0.8708 | 0.9257 | 0.8994 | 0.8845 | 0.8967 | 0.8125 | 0.6563 | 39.2 | 175.3 |
+| **A4.2** | Dropout | MobileNetV2, Frozen, 224, Drop 0.5, Aug Full, None | 0.8479 | 0.0193 | 0.8691 | 0.9115 | 0.8850 | 0.9020 | 0.8991 | 0.8155 | 0.6458 | 40.0 | 175.7 |
+| **A5.1** | Augmentation | No Augmentation (All Off) | 0.8339 | 0.0204 | 0.8600 | 0.9149 | 0.8591 | 0.8775 | 0.9087 | 0.8245 | 0.5621 | 40.0 | 168.5 |
+| **A5.2** | Augmentation | No Random Resized Crop | 0.8472 | 0.0243 | 0.8702 | 0.9185 | 0.8965 | 0.8880 | 0.9015 | 0.8155 | 0.6353 | 39.8 | 172.8 |
+| **A5.3** | Augmentation | No Horizontal Flip | 0.8422 | 0.0248 | 0.8651 | 0.9150 | 0.8908 | 0.8915 | 0.8919 | 0.8125 | 0.6142 | 39.6 | 174.6 |
+| **A5.4** | Augmentation | No Random Rotation | 0.8490 | 0.0208 | 0.8725 | 0.9256 | 0.8821 | 0.8949 | 0.9111 | 0.8274 | 0.6032 | 39.8 | 169.2 |
+| **A5.5** | Augmentation | No Color Jitter | 0.8463 | 0.0234 | 0.8680 | 0.9257 | 0.8879 | 0.8915 | 0.8943 | 0.8125 | 0.6353 | 39.8 | 168.8 |
+| **A6.1** | Imbalance | Class-Weighted Cross-Entropy | 0.8453 | 0.0275 | 0.8662 | 0.9257 | 0.8850 | 0.8811 | 0.8774 | 0.8096 | 0.7289 | 39.8 | 176.7 |
+| **A6.2** | Imbalance | Balanced Random Sampling | 0.8419 | 0.0258 | 0.8640 | 0.9187 | 0.8908 | 0.8810 | 0.8798 | 0.7946 | 0.7284 | 39.0 | 174.3 |
 
 ---
 
-## 5. Execution Rules for PR B (Phase 2 Hand-off)
+## 1. Scientific Protocol & Integrity Rules
 
-1. PR B will be launched only after Shourya Bafna's training loop PR is merged into `main`.
-2. PR B will reuse Shourya's training engine directly to run all 13 planned configurations across the 5 CV folds (a total of 65 training runs).
-3. All code modifications will be strictly confined to `scripts/run_ablations.py` (or CLI flags) and `docs/phase-2/ablations/*`. No model weights, checkpoints, or `.npz` caches will be committed to the repository.
-
+1. **Pre-Registration:** This plan defines the complete hypothesis space, candidate configurations, evaluation metric, and validation split protocol *before* any Phase 2 model weights are trained or compared.
+2. **Selection Rule:** Model selection and configuration ranking are strictly governed by **mean Macro F1 across the 5 frozen training cross-validation folds** (`docs/training/folds.json`).
+3. **Split Isolation:**
+   - **Training CV Folds (1,764 images, 5 folds):** Used exclusively for training candidate models and computing out-of-fold validation metrics for the ablation table.
+   - **Validation Split (380 images):** Strictly held out from model selection and architecture comparisons. It is reserved exclusively for Prajjwal Tripathi to calibrate probability estimates (temperature scaling / Platt scaling) and sweep abstention thresholds.
+   - **Test Split (377 images):** Completely untouched and uninspected until the final single frozen system evaluation.
+4. **Honest Reporting:** If any additional configuration is evaluated that was not explicitly listed in this initial protocol, it must be explicitly labelled in all tables and reports as *"added after seeing results"*.
+5. **Statistical Significance & Uncertainty:** We report both the mean and sample standard deviation across all 5 folds (`mean ± std`). If the performance difference between two variants is smaller than the cross-fold standard deviation ($\Delta < \sigma$), we do not claim superiority.
