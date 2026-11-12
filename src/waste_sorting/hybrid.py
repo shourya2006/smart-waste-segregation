@@ -236,6 +236,9 @@ def run_cv(
     Every transformation and estimator is fitted strictly on fold-train rows.
     Collects per-fold metrics, out-of-fold predictions, and fit timings.
     """
+    if not (candidate_type.startswith("h1") or candidate_type.startswith("h2")):
+        raise ValueError(f"Unknown candidate_type: {candidate_type!r}. Must be 'h1' or 'h2'.")
+
     root = Path(root).resolve()
     folds_path = root / "docs/training/folds.json"
     if not folds_path.is_file():
@@ -254,10 +257,8 @@ def run_cv(
 
     if candidate_type.startswith("h1"):
         X_all = features_bundle["embeddings"]
-    elif candidate_type.startswith("h2"):
-        X_all = features_bundle["fused_raw"]
     else:
-        raise ValueError(f"Unknown candidate_type: {candidate_type!r}. Must be 'h1' or 'h2'.")
+        X_all = features_bundle["fused_raw"]
 
     # Per-fold storage
     fold_records: list[dict[str, Any]] = []
