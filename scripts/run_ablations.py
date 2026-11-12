@@ -222,6 +222,12 @@ def summarise_ablations(
         )
         recall_cols = [f"recall_{c}" for c in classes]
 
+        if "median_best_epoch" not in summary:
+            raise KeyError(
+                f"Run '{ablation.id}' summary file {summary_file} is missing 'median_best_epoch'"
+            )
+        median_best = int(summary["median_best_epoch"])
+
         row: dict[str, object] = {
             "id": ablation.id,
             "factor": ablation.factor,
@@ -229,6 +235,7 @@ def summarise_ablations(
             "mean_macro_f1": float(summary["mean_macro_f1"]),
             "std_macro_f1": float(summary["std_macro_f1"]),
             "mean_accuracy": float(summary["mean_accuracy"]),
+            "median_best_epoch": median_best,
         }
         for col in recall_cols:
             val = float(runs_df[col].mean()) if col in runs_df.columns else float("nan")
