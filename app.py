@@ -1,7 +1,9 @@
-"""Local Gradio photo-upload demo for Phase 1 waste classification.
+"""Local Gradio photo-upload demo for Phase 1 and Phase 2 waste classification.
 
 Loads the preserved evaluated artifact once per process and calls
-predict_image for every classification. Importing this module does not
+predict_image for every Phase 1 classification. Phase 2 models (H3 hybrid,
+A2.1 CNN, Phase 1 SVM) are loaded on-demand using calibrated probabilities
+and thresholds from the frozen protocol.json. Importing this module does not
 start a server.
 """
 
@@ -11,8 +13,8 @@ import argparse
 from pathlib import Path
 
 import gradio as gr
-
 from waste_sorting.demo import (
+    CLASS_DISPLAY_LABELS,
     DEFAULT_ARTIFACT_PATH,
     EXPECTED_ARTIFACT_SHA256,
     EXPECTED_ARTIFACT_SIZE,
@@ -27,6 +29,12 @@ from waste_sorting.demo import (
     load_evaluated_artifact,
 )
 from waste_sorting.extended_features import DIMENSION as EXTENDED_DIMENSION
+from waste_sorting.phase2_demo import (
+    DEFAULT_MODEL_LABEL,
+    SELECTOR_LABELS,
+    Phase2DemoError,
+    predict_phase2,
+)
 from waste_sorting.prediction import CANONICAL_CLASSES
 
 PROBABILITY_HEADERS = ["Category", "Calibrated probability"]
@@ -34,6 +42,22 @@ SYNTHETIC_BANNER = (
     "Synthetic fixture mode is active. Displayed scores are not predictions "
     "from the preserved evaluated model."
 )
+
+# Updated limitations note for Phase 2
+PHASE2_LIMITATIONS_NOTE = (
+    "**Research prototype** — not a disposal service. "
+    "This model assigns one of six TrashNet categories: cardboard, glass, metal, "
+    "paper, plastic, and trash. "
+    "TrashNet images were captured on **white backgrounds** and may not reflect "
+    "real-world conditions; performance on other backgrounds is untested. "
+    "Calibrated confidence is not a guarantee of correctness. "
+    "**Local recycling rules decide disposal** — always check with your local authority. "
+    "Test-split results and evaluation details are in "
+    "[docs/phase-2/evaluation/README.md](docs/phase-2/evaluation/README.md)."
+)
+
+PHASE2_MODEL_CHOICES = list(SELECTOR_LABELS.values())
+UNCERTAIN_PRIMARY_P2 = "Uncertain — manual inspection recommended"
 
 CUSTOM_CSS = """
 .uncertain-banner:has(textarea:placeholder-shown) {
@@ -62,8 +86,21 @@ CUSTOM_CSS = """
     font-size: 1rem !important;
     margin-bottom: 10px !important;
 }
+.phase2-error-box textarea {
+    background: #fde8e8 !important;
+    border: 2px solid #c0392b !important;
+    color: #7b241c !important;
+}
 """
 
+
+# ---------------------------------------------------------------------------
+# Phase 1 helpers (unchanged)
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Phase 1 helpers (unchanged)
+# ---------------------------------------------------------------------------
 
 def view_to_outputs(view: DemoView) -> tuple:
     return (
@@ -97,6 +134,76 @@ def clear_all() -> tuple:
     return (None, *clear_outputs())
 
 
+# ---------------------------------------------------------------------------
+# Phase 2 helpers
+# ---------------------------------------------------------------------------
+
+def _phase2_outputs_from_error(msg: str) -> tuple:
+    """Return a 7-tuple (error, result, uncertainty, confidence, table, tentative, threshold)."""
+    return (msg, "", "", "", [], "", "")
+
+
+def _phase2_clear_outputs() -> tuple:
+    return ("", "", "", "", [], "", "")
+
+
+def classify_phase2_callback(image, model_name: str) -> tuple:
+    """Classify *image* with the selected Phase 2 model and return 7 Gradio outputs."""
+    if image is None:
+        return _phase2_outputs_from_error(
+            "No image uploaded. Please upload a photo before classifying."
+        )
+    try:
+        result = predict_phase2(model_name, image)
+    except Phase2DemoError as exc:
+        return _phase2_outputs_from_error(str(exc))
+    except Exception as exc:  # noqa: BLE001
+        return _phase2_outputs_from_error(f"Unexpected error: {exc}")
+
+    probs = result["probabilities"]
+    rows = [
+        [CLASS_DISPLAY_LABELS[c], f"{probs[c] * 100:.2f}%"]
+        for c in CANONICAL_CLASSES
+    ]
+    threshold = result["threshold"]
+    max_prob = result["max_probability"]
+    abstained = result["abstained"]
+    predicted = result["predicted_class"]
+    display_class = CLASS_DISPLAY_LABELS[predicted]
+
+    confidence_text = (
+        f"Calibrated confidence: {max_prob * 100:.1f}% "
+        f"(demo threshold {threshold:.2f})"
+    )
+    threshold_text = f"Demo threshold: {threshold:.2f}"
+
+    if abstained:
+        return (
+            "",                       # error
+            UNCERTAIN_PRIMARY_P2,     # result
+            UNCERTAIN_PRIMARY_P2,     # uncertainty banner
+            confidence_text,
+            rows,
+            f"Tentative top class (not accepted): {display_class}",
+            threshold_text,
+        )
+    return (
+        "",           # error
+        display_class,
+        "",           # no uncertainty banner
+        confidence_text,
+        rows,
+        "",           # no tentative class
+        threshold_text,
+    )
+
+
+def on_phase2_image_change(image) -> tuple:
+    """Clear Phase 2 outputs whenever the uploaded image changes."""
+    del image
+    return _phase2_clear_outputs()
+
+
 def build_interface(synthetic_fixture: bool = False) -> gr.Blocks:
     """Construct the Gradio demo interface.
     Returns a Gradio Blocks object without launching.
@@ -105,38 +212,139 @@ def build_interface(synthetic_fixture: bool = False) -> gr.Blocks:
         if synthetic_fixture:
             gr.Markdown(SYNTHETIC_BANNER, elem_classes=["synthetic-warning-box"])
         gr.Markdown("# Smart Waste Segregation Demo")
-        gr.Markdown(LIMITATIONS_NOTE, elem_classes=["limitations-box"])
-        image_input = gr.Image(label="Upload Photo", type="numpy")
-        with gr.Row():
-            classify_btn = gr.Button("Classify")
-            clear_btn = gr.Button("Clear")
-        error_msg = gr.Textbox(label="Status", interactive=False, elem_id="demo-status")
-        primary_res = gr.Textbox(
-            label="Result", interactive=False, elem_classes=["primary-result"]
-        )
-        uncertainty_msg = gr.Textbox(
-            label="Uncertainty", interactive=False, elem_classes=["uncertain-banner"]
-        )
-        confidence_txt = gr.Textbox(label="Confidence", interactive=False, lines=3)
-        prob_table = gr.Dataframe(
-            headers=PROBABILITY_HEADERS, datatype=["str", "str"], interactive=False
-        )
-        tentative_cls = gr.Textbox(label="Tentative Class", interactive=False)
-        outputs = [
-            error_msg, primary_res, uncertainty_msg,
-            confidence_txt, prob_table, tentative_cls,
-        ]
-        prediction_event = classify_btn.click(
-            classify_callback, inputs=image_input, outputs=outputs, api_name="classify"
-        )
-        image_input.change(
-            on_image_change, inputs=image_input, outputs=outputs,
-            cancels=[prediction_event], queue=False,
-        )
-        clear_btn.click(
-            clear_all, outputs=[image_input, *outputs],
-            cancels=[prediction_event], queue=False, api_name="clear",
-        )
+
+        with gr.Tabs():
+            # ------------------------------------------------------------------
+            # Tab 1: Phase 1 (unchanged)
+            # ------------------------------------------------------------------
+            with gr.TabItem("Phase 1 (SVM)"):
+                gr.Markdown(LIMITATIONS_NOTE, elem_classes=["limitations-box"])
+                image_input = gr.Image(label="Upload Photo", type="numpy")
+                with gr.Row():
+                    classify_btn = gr.Button("Classify")
+                    clear_btn = gr.Button("Clear")
+                error_msg = gr.Textbox(
+                    label="Status", interactive=False, elem_id="demo-status"
+                )
+                primary_res = gr.Textbox(
+                    label="Result", interactive=False, elem_classes=["primary-result"]
+                )
+                uncertainty_msg = gr.Textbox(
+                    label="Uncertainty",
+                    interactive=False,
+                    elem_classes=["uncertain-banner"],
+                )
+                confidence_txt = gr.Textbox(
+                    label="Confidence", interactive=False, lines=3
+                )
+                prob_table = gr.Dataframe(
+                    headers=PROBABILITY_HEADERS,
+                    datatype=["str", "str"],
+                    interactive=False,
+                )
+                tentative_cls = gr.Textbox(label="Tentative Class", interactive=False)
+                outputs = [
+                    error_msg,
+                    primary_res,
+                    uncertainty_msg,
+                    confidence_txt,
+                    prob_table,
+                    tentative_cls,
+                ]
+                prediction_event = classify_btn.click(
+                    classify_callback,
+                    inputs=image_input,
+                    outputs=outputs,
+                    api_name="classify",
+                )
+                image_input.change(
+                    on_image_change,
+                    inputs=image_input,
+                    outputs=outputs,
+                    cancels=[prediction_event],
+                    queue=False,
+                )
+                clear_btn.click(
+                    clear_all,
+                    outputs=[image_input, *outputs],
+                    cancels=[prediction_event],
+                    queue=False,
+                    api_name="clear",
+                )
+
+            # ------------------------------------------------------------------
+            # Tab 2: Phase 2 (new)
+            # ------------------------------------------------------------------
+            with gr.TabItem("Phase 2 (Multi-model)"):
+                gr.Markdown(PHASE2_LIMITATIONS_NOTE, elem_classes=["limitations-box"])
+                p2_model_selector = gr.Radio(
+                    choices=PHASE2_MODEL_CHOICES,
+                    value=DEFAULT_MODEL_LABEL,
+                    label="Model",
+                )
+                p2_image_input = gr.Image(label="Upload Photo", type="numpy")
+                with gr.Row():
+                    p2_classify_btn = gr.Button("Classify")
+                    p2_clear_btn = gr.Button("Clear")
+                p2_error_msg = gr.Textbox(
+                    label="Status",
+                    interactive=False,
+                    elem_id="demo-p2-status",
+                )
+                p2_primary_res = gr.Textbox(
+                    label="Result",
+                    interactive=False,
+                    elem_classes=["primary-result"],
+                )
+                p2_uncertainty_msg = gr.Textbox(
+                    label="Uncertainty",
+                    interactive=False,
+                    elem_classes=["uncertain-banner"],
+                )
+                p2_confidence_txt = gr.Textbox(
+                    label="Confidence", interactive=False, lines=3
+                )
+                p2_prob_table = gr.Dataframe(
+                    headers=PROBABILITY_HEADERS,
+                    datatype=["str", "str"],
+                    interactive=False,
+                )
+                p2_tentative_cls = gr.Textbox(
+                    label="Tentative Class", interactive=False
+                )
+                p2_threshold_txt = gr.Textbox(
+                    label="Threshold in use", interactive=False
+                )
+                p2_outputs = [
+                    p2_error_msg,
+                    p2_primary_res,
+                    p2_uncertainty_msg,
+                    p2_confidence_txt,
+                    p2_prob_table,
+                    p2_tentative_cls,
+                    p2_threshold_txt,
+                ]
+                p2_prediction_event = p2_classify_btn.click(
+                    classify_phase2_callback,
+                    inputs=[p2_image_input, p2_model_selector],
+                    outputs=p2_outputs,
+                    api_name="classify_phase2",
+                )
+                p2_image_input.change(
+                    on_phase2_image_change,
+                    inputs=p2_image_input,
+                    outputs=p2_outputs,
+                    cancels=[p2_prediction_event],
+                    queue=False,
+                )
+                p2_clear_btn.click(
+                    lambda: (None, *_phase2_clear_outputs()),
+                    outputs=[p2_image_input, *p2_outputs],
+                    cancels=[p2_prediction_event],
+                    queue=False,
+                    api_name="clear_phase2",
+                )
+
     return demo
 
 def _synthetic_fixture_artifact(abstain: bool = False) -> dict:
