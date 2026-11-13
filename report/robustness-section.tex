@@ -1,0 +1,10 @@
+% Placeholder. Replaced by `waste-phase2-eval robustness` with numbers from
+% docs/phase-2/robustness/robustness-metrics.json. Do not edit numbers by hand.
+\subsection{External Robustness Set}
+\label{sec:robustness}
+TrashNet photos share a white posterboard background, so the held-out test split cannot show
+how the models behave on ordinary photos. We therefore collected an external set of everyday
+waste photos on tables, floors, cloth and grass, under daylight, indoor and dim lighting, with
+several phones. The set is audited for duplicates (including against TrashNet) and location
+metadata, and is scored exactly once with the three models frozen in \texttt{protocol.json};
+nothing is tuned on it. Results are pending and will be reported here.

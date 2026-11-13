@@ -28,6 +28,16 @@ def main():
     audit.add_argument("--phash-distance", type=int, default=6)
     sub.add_parser("split", help="Apply completed reviews and create fixed group-aware splits")
     sub.add_parser("eda", help="Create train-only exploratory charts and sample grids")
+    robust = sub.add_parser(
+        "robustness-audit",
+        help="Audit the external robustness photos and write docs/robustness/manifest.csv",
+    )
+    robust.add_argument(
+        "--image-root",
+        type=Path,
+        default=Path("data/raw/robustness"),
+        help="Folder holding <class>/<photo> (relative to --root)",
+    )
     feat = sub.add_parser(
         "features", help="Extract and cache handcrafted features from manifest"
     )
@@ -38,6 +48,14 @@ def main():
     )
     args = parser.parse_args()
     root = args.root.resolve()
+    if args.command == "robustness-audit":
+        # Separate set and separate records: never touches docs/dataset or the TrashNet splits.
+        from waste_sorting.robustness_evaluation import format_audit_report, run_robustness_audit
+
+        summary = run_robustness_audit(root, image_root=args.image_root)
+        print(f"Audited {summary['total_files']} robustness photos -> docs/robustness/manifest.csv")
+        print(format_audit_report(summary))
+        return
     reports = root / "docs/dataset"
     reports.mkdir(parents=True, exist_ok=True)
     dataset = root / "data/raw/trashnet"
