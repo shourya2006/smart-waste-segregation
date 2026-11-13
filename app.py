@@ -13,6 +13,7 @@ import argparse
 from pathlib import Path
 
 import gradio as gr
+
 from waste_sorting.demo import (
     CLASS_DISPLAY_LABELS,
     DEFAULT_ARTIFACT_PATH,
