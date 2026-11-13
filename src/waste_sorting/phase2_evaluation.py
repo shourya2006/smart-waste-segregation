@@ -1214,35 +1214,33 @@ def _display_model_name(model_name: str) -> str:
 
 
 def _default_gradcam_paragraph(test_metrics: dict[str, Any]) -> str:
-    """Build an honest Grad-CAM assessment grounded in visual review & CAM stats."""
+    """Build the Grad-CAM paragraph from recorded cases and McNemar results only."""
     cases = test_metrics.get("gradcam_cases", [])
     if not cases:
         return "Grad-CAM cases were not recorded."
-    fg_shares = [float(c["fg_cam_energy_fraction"]) for c in cases]
-    high_fg_count = sum(1 for s in fg_shares if s >= 0.80)
-    min_share = min(fg_shares) * 100.0
-    max_share = max(fg_shares) * 100.0
-    mean_share = float(np.mean(fg_shares)) * 100.0
+    shares = np.array([float(c["fg_cam_energy_fraction"]) for c in cases]) * 100.0
+    areas = np.array([float(c["fg_area_fraction"]) for c in cases]) * 100.0
+    n_wrong = sum(1 for c in cases if c["status"] == "wrong")
+    mcnemar = test_metrics["mcnemar"]
+    single = mcnemar["a2_1_cnn_vs_phase1_svm"]
+    gain = mcnemar["h3_hybrid_vs_a2_1_cnn"]
     return (
-        f"Visual inspection of the 12-image Grad-CAM grid (6 correct spanning all "
-        f"classes, 6 high-confidence test errors spanning glass/metal/plastic confusions) "
-        f"shows a mixed but informative result regarding Daksh's \"CNN sees shape\" "
-        f"hypothesis. On the positive side, A2.1 CNN does not cheat on the empty white "
-        f"posterboard or letterbox padding: {high_fg_count} of {len(cases)} inspected "
-        f"heatmaps concentrate 80% or more of their activation mass on the foreground "
-        f"object region (mean {mean_share:.1f}%, range {min_share:.0f}%--{max_share:.0f}%), "
-        f"with only minor spill onto lower padding/background in `glass/glass10.jpg` "
-        f"(69% foreground) and a weak top-left corner spot in `plastic/plastic1.jpg` "
-        f"(87% foreground). However, attending to the object silhouette alone is not "
-        f"sufficient to resolve fine-grained material ambiguity: in all 6 inspected "
-        f"errors (`glass307` -> metal at p=1.00, `glass102` -> plastic at p=0.98, "
-        f"`plastic233` -> glass at p=0.96, `metal293` -> glass at p=0.95, `plastic467` "
-        f"-> metal at p=0.95, and `plastic398` -> glass at p=0.94), Grad-CAM centers "
-        f"tightly on the object body, cup rim, metallic label, or specular highlight "
-        f"(93%--99% foreground energy). Because transparent cups, cylindrical bottles/cans, "
-        f"and reflective wrappers share overlapping geometry, shape cues alone fail on "
-        f"hard glass/metal/plastic pairs—explaining why A2.1 CNN trails Phase 1 SVM on "
-        f"test Macro F1 yet provides complementary spatial features that lift H3 Hybrid."
+        f"Grad-CAM on the final block of the A2.1 CNN was inspected for {len(cases)} test "
+        f"images ({len(cases) - n_wrong} correct, {n_wrong} high-confidence errors). "
+        "\"Foreground\" is a colour heuristic, not an object mask: pixels with HSV "
+        "saturation > 0.12 or value < 0.92. "
+        f"{int((shares >= 80).sum())} of {len(cases)} heatmaps place at least 80% of their "
+        f"activation on the foreground (mean {shares.mean():.1f}%, range "
+        f"{shares.min():.0f}%-{shares.max():.0f}%), while the foreground covers "
+        f"{areas.min():.0f}%-{areas.max():.0f}% of each image; in "
+        f"{int((shares > areas).sum())} of {len(cases)} cases the activation share exceeds "
+        "the foreground's area share. The error cases also focus on the object, so "
+        "attending to the object does not by itself separate glass, metal and plastic. "
+        "Grad-CAM does not explain why the A2.1 CNN trails the Phase 1 SVM, which is not a "
+        f"significant difference (McNemar p = {single['p_value']:.3f}), nor H3's gain, which "
+        f"is shown by the McNemar discordant counts ({gain['a_only_correct']} vs "
+        f"{gain['b_only_correct']}, p = {gain['p_value']:.2g}). The grid has only "
+        f"{len(cases)} images."
     )
 
 
