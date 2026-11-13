@@ -438,23 +438,7 @@ refs = [("Sandler et al. (2018)","MobileNetV2"),("Tan and Le (2019)","EfficientN
 rc = "".join(f'<div style="width:calc(50% - 14px);margin-bottom:10px"><h3 style="font-family:IBM Plex Sans;font-size:15px;font-weight:700">{a}</h3><p class="small">{b}</p></div>' for a, b in refs)
 slide(f"""<div style="display:flex;flex-wrap:wrap;gap:0 28px">{rc}</div>
 <div class="card pn" style="margin-top:6px;padding:12px 18px"><p style="color:var(--ink)">Project metrics come from the versioned CSV and JSON records in the repository, not from these papers.</p></div>""",
-"Backup", "References", notes="Backup slide.")
-
-# 22 Reproduce --------------------------------------------------------------
-slide(f"""
-<div class="row" style="height:100%">
-  <div class="card" style="flex:1.3;padding:18px 22px">
-    <h3>Check the frozen results</h3>
-    <p style="margin-top:8px">Full steps: <span class="mono">docs/phase-2/reproduction.md</span></p>
-    <ul style="margin-top:6px"><li>Install from the pinned lock files</li><li><span class="mono">waste-data download</span> (1,764 / 380 / 377)</li>
-    <li>Unzip the two frozen models; hashes are checked on load</li><li><span class="mono">notebooks/phase2-summary.ipynb</span> rebuilds the tables</li><li><span class="mono">python app.py</span> runs the demo</li></ul>
-  </div>
-  <div class="card dk" style="flex:1;padding:20px 22px">
-    <h3>Frozen file hashes</h3>
-    <p style="margin-top:10px">A2.1 <span class="mono">model.pt</span></p><p class="mono lime" style="font-size:11.5px;word-break:break-all">{P['a2_1_cnn']['hashes']['model_pt_sha256']}</p>
-    <p style="margin-top:10px">Hybrid <span class="mono">svm_pipeline.joblib</span></p><p class="mono lime" style="font-size:11.5px;word-break:break-all">{P['h3_hybrid']['hashes']['svm_pipeline_sha256']}</p>
-  </div>
-</div>""", "Backup", "How to reproduce", notes="Backup slide.")
+"", "References", notes="References.")
 
 # ---------------------------------------------------------------------------
 html = ['<!doctype html><html><head><meta charset="utf-8"><title>Smart Waste Segregation · Phase 2</title>',
@@ -462,7 +446,7 @@ html = ['<!doctype html><html><head><meta charset="utf-8"><title>Smart Waste Seg
         f"<style>{CSS}</style></head><body>"]
 notes = []
 for i, (body_html, eyebrow, title, kind, note) in enumerate(slides, 1):
-    head = "" if kind == "dark" else f'<div class="eyebrow">{eyebrow}</div><h1>{title}</h1>'
+    head = "" if kind == "dark" else f'<div class="eyebrow">{eyebrow or "&nbsp;"}</div><h1>{title}</h1>'
     inner = body_html if kind == "dark" else f'{head}<div class="body">{body_html}</div>'
     foot = "" if (kind == "dark") else f'<div class="foot"><span>Smart Waste Segregation · Phase 2</span><span class="n">{i:02d}</span></div>'
     if kind == "mid":
