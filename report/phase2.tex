@@ -1,0 +1,174 @@
+\RequirePackage[T1]{fontenc}
+\documentclass[conference]{IEEEtran}
+\usepackage{cite,amsmath,amssymb,graphicx,booktabs,url,balance}
+\usepackage[hidelinks]{hyperref}
+\hyphenation{classi-fi-ca-tion cali-bra-tion}
+\graphicspath{{../docs/phase-2/evaluation/}{../docs/phase-2/ablations/}{../docs/phase-2/}}
+\begin{document}
+\title{Smart Waste Segregation Assistant: Phase~2\\Deep Transfer Learning, Hybrid Fusion, and Frozen Evaluation}
+\author{\IEEEauthorblockN{Om Yadav, Aditya Bharadwaj, Shourya Bafna,\\Daksh Batra, Prajjwal Tripathi, Saksham Miglani}
+\IEEEauthorblockA{CSAI Project 12 --- Phase 2: Deep Learning and Evaluation\\13 November 2026}}
+\maketitle
+\pagestyle{plain}
+\thispagestyle{plain}
+\begin{abstract}
+This paper reports Phase~2 of a six-class waste material classifier on the TrashNet benchmark. Building on Phase~1's RBF SVM (test macro F1 0.8963), we evaluate deep transfer learning with MobileNetV2 and EfficientNet-B0, a systematic one-factor-at-a-time ablation study, and a late-fusion hybrid combining the fine-tuned CNN with the Phase~1 SVM. Temperature scaling is applied on training out-of-fold (OOF) predictions, and two abstention thresholds are pre-registered on the validation set before a single frozen test pass. The H3 late-fusion hybrid achieves macro F1 \textbf{0.9233} [0.889, 0.952] and accuracy \textbf{93.63\%} on 377 held-out test images, significantly outperforming the A2.1 CNN ($p=0.000019$, McNemar exact). The advantage over the Phase~1 SVM ($p=0.035$) is suggestive but does not survive Bonferroni correction at $\alpha_{Bonf}=0.0167$. An educational Gradio demo with per-class probabilities and an uncertainty banner uses frozen calibrated thresholds from \texttt{protocol.json}.
+\end{abstract}
+\begin{IEEEkeywords}
+Waste classification, MobileNetV2, EfficientNet, transfer learning, late fusion, temperature scaling, selective classification, McNemar test.
+\end{IEEEkeywords}
+
+%% ======================================================
+\section{Introduction}
+%% ======================================================
+\label{sec:intro}
+Automated visual waste sorting can support municipal recycling by routing items to the correct stream. Phase~1 established a reproducible evaluation protocol on the TrashNet benchmark~\cite{yang2016trashnet}: a group-aware 70/15/15 split of 2,521 images, five frozen training folds, and an RBF SVM on 1,608 handcrafted color and texture features that reached test macro F1 0.8999. Phase~2 investigates whether deep transfer learning and hybrid fusion can improve on this baseline while respecting the same frozen test split and pre-registration discipline.
+
+Three questions structure Phase~2: (1)~Can a pretrained CNN adapted for TrashNet beat handcrafted features? (2)~Does late probability fusion correct the residual errors of either modality? (3)~Does temperature calibration on training OOF predictions transfer reliably to test? We answer each via a pre-registered protocol~\cite{elyaniv2010selective} in which all configuration decisions are made before the test split is touched.
+
+%% ======================================================
+\section{Related Work}
+%% ======================================================
+\label{sec:related}
+MobileNetV2 uses inverted residuals and linear bottlenecks to build an efficient deep feature extractor~\cite{sandler2018mobilenetv2}. EfficientNet-B0 compounds depth, width, and resolution scaling for strong ImageNet performance with fewer parameters~\cite{tan2019efficientnet}. Yosinski et al.\ show that lower CNN layers learn generic features (edges, textures) transferable across domains, while upper layers are task-specific and benefit from fine-tuning~\cite{yosinski2014transferable}; this motivates our OFAT ablation across freezing depths.
+
+Probabilistic calibration is especially important for selective classification~\cite{niculescu2005predicting}. Guo et al.\ show that modern neural networks are often overconfident and that temperature scaling is a simple, effective post-hoc fix~\cite{guo2017calibration}. We apply scalar temperature scaling~\cite{guo2017calibration} fitted on training OOF predictions to avoid any validation leakage.
+
+Late fusion combines independent class-probability vectors from complementary models, reducing variance when their errors are largely disjoint~\cite{wolpert1992stacked}. Razavian et al.\ demonstrate that CNN features off-the-shelf outperform many purpose-built representations~\cite{razavian2014cnn}; our work extends this by combining them with domain-engineered features rather than replacing them.
+
+%% ======================================================
+\section{Data and Regularisation}
+%% ======================================================
+% Author: Om Yadav
+\label{sec:data}
+\textit{(Data pipeline and regularisation: Om Yadav.)}
+
+We reuse the Phase~1 audit: 2,521 images partitioned group-aware into 1,764 training, 380 validation, and 377 test images (seed 42, manifest fingerprint \texttt{affd3e9d}). No new images are added in Phase~2 and the outer split is immutable.
+
+For deep learning, images are resized to $224\times224$ with letterbox padding (white fill to preserve aspect ratio). Training augmentation applies random resized crop (scale $0.8$--$1.0$), horizontal flip ($p=0.5$), rotation ($\pm10^\circ$), and color jitter (brightness/contrast 0.15, saturation 0.10), followed by ImageNet mean/std normalization. Validation and test images use center crop only. Balanced sampling and class-weighted loss are ablated as alternatives to standard training (see Sec.~\ref{sec:ablation}).
+
+Augmentation is implemented as a togglable \texttt{build\_transforms(train=True/False)} call that applies strictly to training loaders; validation and test use the identical deterministic pipeline. Five frozen training folds from Phase~1 are reused for all cross-validation, ensuring zero data leakage between selection and final evaluation.
+
+%% ======================================================
+\section{Architectures}
+%% ======================================================
+% Author: Aditya Bharadwaj
+\label{sec:arch}
+\textit{(Backbone architectures: Aditya Bharadwaj.)}
+
+Two pretrained ImageNet backbones are evaluated:
+\begin{itemize}
+\item \textbf{MobileNetV2}~\cite{sandler2018mobilenetv2}: 2.2M parameters, inverted residual blocks with depthwise separable convolutions, 1,280-dimensional penultimate embedding. We index its 19 structural layers (features 0--18); ``last 2 blocks'' refers to features 17--18 (the final InvertedResidual and the $1\times1$ pointwise conv).
+\item \textbf{EfficientNet-B0}~\cite{tan2019efficientnet}: compound-scaled variant with squeeze-and-excitation, 1,280-dimensional embedding.
+\end{itemize}
+In the frozen baseline (\textsc{Base}), all backbone weights are frozen and only a 6-class linear head with $p=0.2$ dropout is trained (7,686 parameters). In configuration \texttt{A2.1}, the last two MobileNetV2 blocks are unfrozen and trained at learning rate $10^{-4}$, while the head uses $10^{-3}$; total trainable parameters: 893,766.
+
+Deterministic cached embeddings (SHA-256 provenance, stale-cache rejection) are pre-extracted for the H1 and H2 hybrid candidates evaluated in Sec.~\ref{sec:hybrid}.
+
+%% ======================================================
+\section{Training Procedure}
+%% ======================================================
+% Author: Shourya Bafna
+\label{sec:training}
+\textit{(Training loop and scheduling: Shourya Bafna.)}
+
+Training uses AdamW~\cite{loshchilov2019adamw} with decoupled weight decay $10^{-4}$, cosine annealing with warm restarts~\cite{loshchilov2017sgdr} and $T_{\max}=10$. Frozen backbone blocks are kept in \texttt{eval()} mode (BatchNorm and stochastic depth off) throughout training. Early stopping triggers when validation fold loss fails to improve for five consecutive epochs; maximum budget is 40 epochs.
+
+The final A2.1 model is trained for exactly 13 epochs on the full 1,764 training images (the median best epoch from 5-fold CV), without touching validation data, and saved as \texttt{artifacts/phase2/final/A2.1/model.pt} (SHA-256 \texttt{26592f8b...5d28e}). Out-of-fold probability vectors are exported for downstream late fusion (H3) and temperature calibration.
+
+%% ======================================================
+\section{Ablation Study}
+%% ======================================================
+% Author: Aditya Bharadwaj
+\label{sec:ablation}
+\input{ablation-section}
+
+%% ======================================================
+\section{Hybrid Models}
+%% ======================================================
+% Author: Daksh Batra
+\label{sec:hybrid}
+\input{hybrid-section}
+
+%% ======================================================
+\section{Calibration and Final Evaluation}
+%% ======================================================
+% Author: Prajjwal Tripathi
+\label{sec:eval}
+\input{evaluation-section}
+
+\subsection{Grad-CAM Interpretability}
+\label{sec:gradcam}
+Hook-based Grad-CAM~\cite{selvaraju2017gradcam} is applied to \texttt{A2.1}'s final convolutional block across a 12-image grid (6 correct spanning all classes, 6 high-confidence test errors spanning glass/metal/plastic confusions). The ``foreground'' heuristic is HSV saturation $> 0.12$ or value $< 0.92$ (a colour threshold, not an object mask); Table~\ref{tab:gradcam} reports the foreground activation share for each inspected case.
+
+
+\begin{table}[t]
+\caption{A2.1 Grad-CAM Foreground Activation Share}
+\label{tab:gradcam}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllr}
+\toprule
+Image & Outcome & True$\to$Pred & FG CAM\\
+\midrule
+\texttt{cardboard1} & Correct & card$\to$card & 98.3\%\\
+\texttt{glass10} & Correct & glass$\to$glass & 69.3\%\\
+\texttt{metal103} & Correct & metal$\to$metal & 98.7\%\\
+\texttt{paper106} & Correct & paper$\to$paper & 88.1\%\\
+\texttt{plastic1} & Correct & plastic$\to$plastic & 86.9\%\\
+\texttt{trash109} & Correct & trash$\to$trash & 98.0\%\\
+\texttt{glass307} & Wrong & glass$\to$metal & 93.0\%\\
+\texttt{glass102} & Wrong & glass$\to$plastic & 97.7\%\\
+\texttt{plastic233} & Wrong & plastic$\to$glass & 97.1\%\\
+\texttt{metal293} & Wrong & metal$\to$glass & 99.2\%\\
+\texttt{plastic467} & Wrong & plastic$\to$metal & 97.2\%\\
+\texttt{plastic398} & Wrong & plastic$\to$glass & 99.3\%\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Key finding:} 11 of 12 heatmaps concentrate ${\geq}80\%$ of activation mass on the foreground object (mean 93.6\%), suggesting foreground-focused attention in these inspected examples, without ruling out background dependence. However, Grad-CAM \emph{does not} explain the performance gap between A2.1 and Phase~1 SVM (McNemar $p=0.358$, not significant); nor does it explain H3's gain, which is demonstrated by discordant-count analysis (23 vs 2, $p=0.000019$). Shape-focused attention is insufficient for glass/metal/plastic disambiguation because those materials share overlapping silhouette geometry.
+
+%% ======================================================
+\section{Demo}
+%% ======================================================
+\label{sec:demo}
+The Gradio 6.x application loads all three Phase~2 models once per process from frozen artifacts and reads temperatures and demo thresholds from \texttt{protocol.json}. A model selector (H3 hybrid recommended, A2.1 CNN, Phase~1 SVM) lets users compare all three in a single interface. Predictions below the frozen demo threshold trigger an amber ``Uncertain --- manual inspection recommended'' banner. SHA-256 hash verification at startup rejects mismatched or missing model files. The demo is for educational purposes; local recycling rules determine actual disposal.
+
+%% ======================================================
+\section{Limitations}
+%% ======================================================
+\label{sec:limits}
+\begin{enumerate}
+\item \textbf{Cross-validation optimism:} All models reuse the same 5 training folds for model selection; reported CV scores are optimistic ($H3$ CV 0.9364 vs test 0.9233; A2.1 CV 0.8825 vs test 0.8577).
+\item \textbf{Small test set ($N=377$, trash $n=20$):} With only 33 discordant predictions between H3 and SVM, the nominal $p=0.035$ does not survive Bonferroni correction ($\alpha_{Bonf}=0.0167$).
+\item \textbf{TrashNet white background:} All images were photographed against a uniform white posterboard; the robustness set was not collected (\texttt{docs/robustness/} absent on \texttt{main}).
+\item \textbf{OOF temperature applied to full-train models:} Temperature was fitted on fold-model OOF predictions but applied to the full-training final models, following Phase~1 practice.
+\item \textbf{H3 from uncommitted working tree:} \texttt{protocol.json} records \texttt{working\_tree\_dirty} in H3's metadata; model and OOF SHA-256 hashes are pinned and verified before every test prediction.
+\item \textbf{Threshold fragility:} A2.1's demo threshold (0.87) achieved 82.4\% validation coverage but only 76.4\% test coverage, showing that tight confidence thresholds do not transfer exactly across splits.
+\end{enumerate}
+
+%% ======================================================
+\section{Conclusion}
+%% ======================================================
+\label{sec:conc}
+Phase~2 shows that partial fine-tuning of the last two MobileNetV2 blocks matches the Phase~1 handcrafted SVM (A2.1 CV 0.8825 vs SVM 0.8803) and that late probability fusion of complementary error patterns yields a clear improvement (H3 test macro F1 \textbf{0.9233}, significantly better than A2.1, $p=0.000019$, Bonferroni-corrected). Temperature calibration on OOF data reduces ECE from 0.095 to 0.019 for H3. The frozen evaluation protocol with pre-registered thresholds ensures an auditable, single-pass test result.
+
+\balance
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+%% Contributions table
+\begin{table}[t]\caption{Phase~2 Technical Contributions}\centering
+\begin{tabular}{lp{5.2cm}}\toprule
+Member & Primary contribution\\\midrule
+Om Yadav & Phase~2 data pipeline, augmentation, balanced sampling\\
+Aditya Bharadwaj & Backbone loaders, OFAT ablation study (13 configs, 65 folds)\\
+Shourya Bafna & Training loop, AdamW/cosine schedule, early stopping\\
+Daksh Batra & H1/H2 hybrids, H3 late fusion, error complementarity analysis\\
+Prajjwal Tripathi & Temperature scaling, abstention thresholds, frozen test eval\\
+Saksham Miglani & Demo, Phase~2 report and presentation assembly\\\bottomrule
+\end{tabular}\end{table}
+
+\end{document}

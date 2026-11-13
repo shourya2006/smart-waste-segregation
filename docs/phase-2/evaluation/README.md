@@ -50,7 +50,7 @@ All test numbers, confidence intervals, significance tests, confusion matrices, 
 ### Final Verdict
 
 - **Best Model on Test**: **H3 Hybrid (`w=0.5`)** ranks first across every unconditional metric—Macro F1 **0.9233** (vs. Phase 1 SVM **0.8963** and A2.1 CNN **0.8577**), accuracy **93.63%**, lowest ECE (**0.0130**), lowest Brier score (**0.0971**), and lowest log loss (**0.2257**). At its frozen `demo_threshold` (`0.53`), H3 also achieves **95.33%** accepted accuracy at **96.55%** coverage, outperforming both single models.
-- **Statistical Support**: Under exact pairwise McNemar tests (Bonferroni threshold `0.05 / 3 = 0.0167`), H3 Hybrid is **statistically superior to A2.1 CNN** (`p = 0.000019`, 23 vs 2 discordant wins). Against **Phase 1 SVM**, H3 Hybrid leads `23` vs `10` on discordant test images (nominal exact `p = 0.0351 < 0.05`), which is suggestive in H3's favor but **does not clear the strict Bonferroni threshold `0.0167`** on `N = 377` test images. Between the two single models, A2.1 CNN and Phase 1 SVM show no significant difference (`p = 0.3581`).
+- **Statistical Support**: Under exact pairwise McNemar tests (Bonferroni threshold `0.05 / 3 = 0.0167`), H3 Hybrid is **statistically superior to A2.1 CNN** (`p = 0.000019`, 23 vs 2 discordant wins, survives Bonferroni). Against **Phase 1 SVM**, H3 Hybrid leads `23` vs `10` on discordant test images (nominal exact `p = 0.0351 < 0.05`), which is suggestive in H3's favor but **does not clear the strict Bonferroni threshold `0.0167`** on `N = 377` test images (with overlapping 95% bootstrap CIs: [0.8885, 0.9520] vs [0.8604, 0.9259]). Between the two single models, A2.1 CNN and Phase 1 SVM do not differ significantly (`p = 0.3581`).
 
 ## 3. Pairwise Exact McNemar Tests
 
@@ -69,7 +69,7 @@ Exact two-sided binomial test (`scipy.stats.binomtest`) on unconditional predict
 | Phase 1 (`docs/evaluation`) | 5-fold `CalibratedClassifierCV(ensemble=True)` | Internal Platt sigmoid | 0.8999 | 0.9019 | 0.1325 | 0.1828 | 0.4599 | `0.52` (0.9841 / 0.9137) |
 | Phase 2 (`phase1_svm`) | Single `SVC(probability=True)` on full train | Platt + OOF Temp (`T=0.8341`) | 0.8963 | 0.9019 | 0.0361 | 0.1415 | 0.3188 | `0.45` (0.9761 / 0.9158) |
 
-Phase 2's `phase1_svm` achieves the exact same test accuracy (`0.9019`, 340/377) as Phase 1's recorded result, with a minor `-0.0036` difference in Macro F1 (`0.8963` vs `0.8999`) caused by replacing the 5-fold ensemble average with a single `SVC(probability=True)` refitted on all 1,764 training images (whose predicted borders shift slightly on low-support `trash`, n=20). Crucially, applying OOF temperature scaling (`T = 0.8341`) removes Phase 1's underconfidence in the top confidence bin, cutting test ECE from `0.1325` to `0.0361` and log loss from `0.4599` to `0.3188`.
+Phase 2's `phase1_svm` achieves the exact same test accuracy (`0.9019`, 340/377) as Phase 1's recorded result, with a minor `-0.0036` difference in Macro F1 (`0.8963` vs `0.8999`) caused by replacing Phase 1's 5-fold `CalibratedClassifierCV(ensemble=True)` ensemble with a single `SVC(probability=True)` refitted on all 1,764 training images using SVC's internal Platt scaling (whose predicted borders shift slightly on low-support `trash`, n=20). Crucially, applying OOF temperature scaling (`T = 0.8341`) removes Phase 1's underconfidence in the top confidence bin, cutting test ECE from `0.1325` to `0.0361` and log loss from `0.4599` to `0.3188`.
 
 ## 5. Per-Class Test Metrics and Visualizations
 
@@ -149,22 +149,22 @@ Phase 2's `phase1_svm` achieves the exact same test accuracy (`0.9019`, 340/377)
 
 ![A2.1 CNN Grad-CAM Grid](test-gradcam-a2_1_cnn.png)
 
-Visual inspection of the 12-image Grad-CAM grid (6 correct spanning all classes, 6 high-confidence test errors spanning glass/metal/plastic confusions) shows a mixed but informative result regarding Daksh's "CNN sees shape" hypothesis. On the positive side, A2.1 CNN does not cheat on the empty white posterboard or letterbox padding: 11 of 12 inspected heatmaps concentrate 80% or more of their activation mass on the foreground object region (mean 93.6%, range 69%--99%), with only minor spill onto lower padding/background in `glass/glass10.jpg` (69% foreground) and a weak top-left corner spot in `plastic/plastic1.jpg` (87% foreground). However, attending to the object silhouette alone is not sufficient to resolve fine-grained material ambiguity: in all 6 inspected errors (`glass307` -> metal at p=1.00, `glass102` -> plastic at p=0.98, `plastic233` -> glass at p=0.96, `metal293` -> glass at p=0.95, `plastic467` -> metal at p=0.95, and `plastic398` -> glass at p=0.94), Grad-CAM centers tightly on the object body, cup rim, metallic label, or specular highlight (93%--99% foreground energy). Because transparent cups, cylindrical bottles/cans, and reflective wrappers share overlapping geometry, shape cues alone fail on hard glass/metal/plastic pairs—explaining why A2.1 CNN trails Phase 1 SVM on test Macro F1 yet provides complementary spatial features that lift H3 Hybrid.
+Visual inspection of the 12-image Grad-CAM grid (6 correct spanning all classes, 6 high-confidence test errors spanning glass/metal/plastic confusions) shows a mixed but informative qualitative result regarding convolutional attention on MobileNetV2's final block. "Foreground" is defined heuristically as pixels with HSV saturation > 0.12 or value < 0.92 (a colour heuristic, without ground-truth object masks). On the positive side, A2.1 CNN does not cheat on the empty white posterboard or letterbox padding: 11 of 12 inspected heatmaps concentrate 80% or more of their activation mass on the foreground object region (mean 93.6%, range 69%--99%), with only minor spill onto lower padding/background in `glass/glass10.jpg` (69.3% foreground activation, 72.8% foreground area) and a weak top-left corner spot in `plastic/plastic1.jpg` (86.9% foreground activation, 69.7% foreground area). However, attending to the object silhouette alone is not sufficient to resolve fine-grained material ambiguity: in all 6 inspected errors (`glass307` -> metal at p=1.00, `glass102` -> plastic at p=0.98, `plastic233` -> glass at p=0.96, `metal293` -> glass at p=0.95, `plastic467` -> metal at p=0.95, and `plastic398` -> glass at p=0.94), Grad-CAM centers tightly on the object body, cup rim, metallic label, or specular highlight (93%--99% foreground activation mass; 66%--75% foreground area). Because transparent cups, cylindrical bottles/cans, and reflective wrappers share overlapping geometry, shape cues alone fail on hard glass/metal/plastic pairs. Crucially, Grad-CAM does not explain why A2.1 CNN trails Phase 1 SVM on test Macro F1 (the two single models do not differ significantly, McNemar exact p=0.358), nor does it establish complementary spatial features that lift H3 Hybrid; H3's gain is demonstrated by McNemar discordant counts (23 vs 2 wins over A2.1, p=0.000019), not Grad-CAM. Note that the inspected grid is limited to 12 images.
 
-| Image ID | Outcome | True -> Predicted | Calibrated p | Foreground CAM Energy |
-| :--- | :---: | :--- | :---: | :---: |
-| `cardboard/cardboard1.jpg` | correct | `cardboard` -> `cardboard` | 0.9839 | 98.3% |
-| `glass/glass10.jpg` | correct | `glass` -> `glass` | 0.9882 | 69.3% |
-| `metal/metal103.jpg` | correct | `metal` -> `metal` | 0.9628 | 98.7% |
-| `paper/paper106.jpg` | correct | `paper` -> `paper` | 0.9989 | 88.1% |
-| `plastic/plastic1.jpg` | correct | `plastic` -> `plastic` | 0.7328 | 86.9% |
-| `trash/trash109.jpg` | correct | `trash` -> `trash` | 0.9714 | 98.0% |
-| `glass/glass307.jpg` | wrong | `glass` -> `metal` | 0.9975 | 93.0% |
-| `glass/glass102.jpg` | wrong | `glass` -> `plastic` | 0.9803 | 97.7% |
-| `plastic/plastic233.jpg` | wrong | `plastic` -> `glass` | 0.9612 | 97.1% |
-| `metal/metal293.jpg` | wrong | `metal` -> `glass` | 0.9501 | 99.2% |
-| `plastic/plastic467.jpg` | wrong | `plastic` -> `metal` | 0.9469 | 97.2% |
-| `plastic/plastic398.jpg` | wrong | `plastic` -> `glass` | 0.9390 | 99.3% |
+| Image ID | Outcome | True -> Predicted | Calibrated p | Foreground Area Share | Foreground CAM Energy |
+| :--- | :---: | :--- | :---: | :---: | :---: |
+| `cardboard/cardboard1.jpg` | correct | `cardboard` -> `cardboard` | 0.9839 | 75.0% | 98.3% |
+| `glass/glass10.jpg` | correct | `glass` -> `glass` | 0.9882 | 72.8% | 69.3% |
+| `metal/metal103.jpg` | correct | `metal` -> `metal` | 0.9628 | 74.8% | 98.7% |
+| `paper/paper106.jpg` | correct | `paper` -> `paper` | 0.9989 | 60.6% | 88.1% |
+| `plastic/plastic1.jpg` | correct | `plastic` -> `plastic` | 0.7328 | 69.7% | 86.9% |
+| `trash/trash109.jpg` | correct | `trash` -> `trash` | 0.9714 | 74.7% | 98.0% |
+| `glass/glass307.jpg` | wrong | `glass` -> `metal` | 0.9975 | 66.1% | 93.0% |
+| `glass/glass102.jpg` | wrong | `glass` -> `plastic` | 0.9803 | 74.2% | 97.7% |
+| `plastic/plastic233.jpg` | wrong | `plastic` -> `glass` | 0.9612 | 75.0% | 97.1% |
+| `metal/metal293.jpg` | wrong | `metal` -> `glass` | 0.9501 | 75.0% | 99.2% |
+| `plastic/plastic467.jpg` | wrong | `plastic` -> `metal` | 0.9469 | 74.8% | 97.2% |
+| `plastic/plastic398.jpg` | wrong | `plastic` -> `glass` | 0.9390 | 75.0% | 99.3% |
 
 ## 7. Failure Analysis (Derived from `test-predictions.csv`)
 
@@ -179,11 +179,12 @@ Visual inspection of the 12-image Grad-CAM grid (6 correct spanning all classes,
 
 ## 9. Limitations
 
-1. **Small Test Sample Size (N = 377, `trash` n = 20)**: With only 33 discordant predictions between H3 Hybrid and Phase 1 SVM, `p = 0.0351` falls short of the Bonferroni threshold (`0.0167`), so H3's win over SVM is directional rather than Bonferroni-confirmed on this test split.
-2. **TrashNet White-Posterboard Domain**: TrashNet images were photographed against a uniform white posterboard. Without `docs/robustness/`, out-of-domain generalization to cluttered, low-light, or multi-object photos remains unverified.
+1. **Small Test Sample Size (N = 377, `trash` n = 20)**: With only 33 discordant predictions between H3 Hybrid and Phase 1 SVM, `p = 0.0351` falls short of the Bonferroni threshold (`0.0167`), so H3's win over SVM is suggestive/directional rather than Bonferroni-confirmed on this test split.
+2. **TrashNet White-Posterboard Domain**: TrashNet images were photographed against a uniform white posterboard. The robustness set was not collected (`docs/robustness/` is not present on `main`), leaving out-of-domain generalization to cluttered, low-light, or multi-object photos unverified.
 3. **Cross-Validation Optimism**: All models reused the same 5 training folds during model selection, inflating CV estimates (`H3` CV `0.9364` vs test `0.9233`; `A2.1` CV `0.8825` vs test `0.8577`).
 4. **Fold-OOF Temperatures Applied to Full-Train Models**: Temperatures were fitted on out-of-fold predictions of fold models, while the evaluated models are the final full-training-split models, as in Phase 1.
-5. **Validation-to-Test Coverage Shift under Tight Thresholds**: Under `demo_threshold` (`0.87`), `a2_1_cnn` validation coverage was `82.37%` (>=80%) but test coverage dropped to `76.39%`, showing threshold fragility near strict accuracy targets when confidence margins shift across splits.
+5. **Validation-to-Test Coverage Shift under Tight Thresholds**: Under `demo_threshold` (`0.87`), `a2_1_cnn` reached 76.4% test coverage (76.39%), falling below its 80% validation coverage (82.37%), showing that validation-chosen thresholds do not transfer exactly near strict accuracy targets when confidence margins shift across splits.
+6. **H3 Fitted from Uncommitted Working Tree**: The final H3 hybrid was fitted from a working tree with uncommitted modifications (`working_tree_dirty: true` in metadata); component model and OOF SHA-256 hashes are pinned and verified in `protocol.json`.
 
 ## 10. Viva Notes (Q&A)
 

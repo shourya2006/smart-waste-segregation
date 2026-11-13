@@ -19,6 +19,7 @@ from sklearn.pipeline import Pipeline
 from waste_sorting.acquisition import sha256
 from waste_sorting.dl_training import build_model
 from waste_sorting.phase2_evaluation import (
+    _default_gradcam_paragraph,
     apply_temperature_scaling,
     calibrate_and_freeze,
     compute_bootstrap_ci,
@@ -440,6 +441,29 @@ class Phase2EvaluationWorkflowTests(unittest.TestCase):
         model_pt.write_bytes(b"corrupted-checkpoint")
         with self.assertRaises(ValueError):
             run_test_evaluation(root=self.root, output_dir=out_dir)
+
+
+class GradcamParagraphTests(unittest.TestCase):
+    def test_paragraph_uses_recorded_numbers_and_makes_no_causal_claim(self):
+        def case(share, area, status):
+            return {"fg_cam_energy_fraction": share, "fg_area_fraction": area, "status": status}
+
+        def pair(p, a, b):
+            return {"p_value": p, "a_only_correct": a, "b_only_correct": b}
+
+        metrics = {
+            "gradcam_cases": [case(0.9, 0.6, "correct"), case(0.7, 0.8, "wrong")],
+            "mcnemar": {
+                "a2_1_cnn_vs_phase1_svm": pair(0.5, 1, 2),
+                "h3_hybrid_vs_a2_1_cnn": pair(0.01, 9, 1),
+            },
+        }
+        text = _default_gradcam_paragraph(metrics)
+        self.assertIn("1 of 2 heatmaps place at least 80%", text)
+        self.assertIn("in 1 of 2 cases the activation share exceeds", text)
+        self.assertIn("Grad-CAM does not explain", text)
+        self.assertIn("(9 vs 1, p = 0.01)", text)
+        self.assertNotIn("explaining why", text)
 
 
 if __name__ == "__main__":

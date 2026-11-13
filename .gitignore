@@ -48,3 +48,6 @@ artifacts/*
 *.log
 *.out
 *.synctex.gz
+
+# Built by `make -C report phase2`; the committed copy is output/pdf/phase-2-report.pdf
+report/phase2.pdf
